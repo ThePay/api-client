@@ -1,0 +1,47 @@
+{
+    "name": "thepay/api-client",
+    "description": "API client for ThePay - payment gate API",
+    "type": "library",
+    "require": {
+        "php": "~5.3|~7.0",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "*",
+        "mockery/mockery": "~0.9",
+        "phpunit/phpunit": "~4.0"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "ThePay\\ApiClient\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ThePay\\ApiClient\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "ci": [
+            "@cs-check",
+            "@stan",
+            "@test"
+        ],
+        "cs-fix": [
+            "vendor/bin/php-cs-fixer fix"
+        ],
+        "cs-check": [
+            "vendor/bin/php-cs-fixer fix --stop-on-violation --dry-run"
+        ],
+        "test": [
+            "vendor/bin/phpunit tests --log-junit ./test-reports/junit.xml"
+        ],
+        "stan": [
+            "vendor/bin/phpstan analyse src tests --level=4"
+        ]
+    }
+}

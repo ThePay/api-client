@@ -1,0 +1,81 @@
+// THEPAY PAYMENTS GRID
+// Container for payment buttons.
+.tp-btn-grid {
+    display: $tp-btn-grid-display;
+    flex-wrap: $tp-btn-grid-wrap;
+    justify-content: $tp-btn-grid-justify;
+
+    margin: -$tp-btn-grid-spacing / 2;
+
+    // Button in grid
+    .tp-btn {
+        margin: $tp-btn-grid-spacing / 2;
+        width: calc(100% - #{$tp-btn-grid-spacing});
+        min-width: $tp-btn-grid-min-btn-width;
+        @each $breakpoint, $count in $tp-btn-grid-cols {
+            @include tp-media-breakpoint-up($breakpoint){
+                width: calc(#{100% / $count} - #{$tp-btn-grid-spacing});
+            }
+        }
+
+        .tp-icon {
+            // Width of button always defines icon width in grid
+            width: 100%;
+        }
+    }
+}
+
+.tp-btn {
+    text-align: center;
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+    max-width: 100%;
+    border: $tp-btn-border solid $tp-btn-border-color;
+    box-shadow: $tp-btn-shadow;
+    text-decoration: $tp-link-decoration;
+
+    .tp-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+        background-color: $tp-icon-bg;
+        margin: $tp-icon-margin;
+        transition: $tp-icon-transition;
+        width: $tp-icon-width;
+        height: $tp-icon-height;
+        max-width: 100%;
+        max-height: 100%;
+        padding: $tp-btn-padding-y $tp-btn-padding-x;
+        border: $tp-icon-border solid $tp-icon-border-color;
+        border-radius: $tp-btn-radius;
+        box-shadow: $tp-icon-shadow;
+        img {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    .tp-title {
+        color: $tp-btn-title-color;
+        text-decoration: $tp-btn-title-decoration;
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+        border-color: $tp-btn-hover-border-color;
+        box-shadow: $tp-btn-hover-shadow;
+        text-decoration: $tp-link-hover-decoration;
+        .tp-icon {
+            border-color: $tp-icon-hover-border-color;
+            box-shadow: $tp-icon-hover-shadow;
+        }
+
+        .tp-title {
+            color: $tp-btn-title-hover-color;
+            text-decoration: $tp-btn-title-hover-decoration;
+        }
+    }
+}

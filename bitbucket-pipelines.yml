@@ -1,0 +1,121 @@
+pipelines:
+    default:
+        -   step:
+                name: Check Code Style
+                image: nofutur3/php-component:7.4
+                caches:
+                    - composer
+                artifacts:
+                    - vendor/**
+                script:
+                    - composer install --no-interaction
+                    - composer cs-check
+        -   step:
+                name: Static Analysis
+                image: nofutur3/php-component:7.4
+                caches:
+                    - composer
+                artifacts:
+                script:
+                    # phpstan has to be added in pipeline bc it requires PHP 7.1+
+                    - composer req phpstan/phpstan --dev
+                    - composer stan
+        -   parallel:
+                -   step:
+                        name: PHP 5.3
+                        image: nofutur3/php-component:5.3
+                        caches:
+                            - composer
+                        artifacts:
+                        script:
+                            # Install composer dependencies
+                            - composer install --no-interaction
+
+                            # tests
+                            - composer test
+                -   step:
+                        name: PHP 5.5
+                        image: nofutur3/php-component:5.5
+                        caches:
+                            - composer
+                        artifacts:
+                        script:
+                            # Install composer dependencies
+                            - composer install --no-interaction
+
+                            # tests
+                            - composer test
+                -   step:
+                        name: PHP 5.6
+                        image: nofutur3/php-component:5.6
+                        caches:
+                            - composer
+                        artifacts:
+                        script:
+                            # Install composer dependencies
+                            - composer install --no-interaction
+
+                            # tests
+                            - composer test
+                -   step:
+                        name: PHP 7.0
+                        image: nofutur3/php-component:7.0
+                        caches:
+                            - composer
+                        artifacts:
+                        script:
+                            # Install composer dependencies
+                            - composer install --no-interaction
+
+                            # tests
+                            - composer test
+
+                -   step:
+                        name: PHP 7.1
+                        image: nofutur3/php-component:7.1
+                        caches:
+                            - composer
+                        artifacts:
+                        script:
+                            # Install composer dependencies
+                            - composer install --no-interaction
+
+                            # tests
+                            - composer test
+                -   step:
+                        name: PHP 7.2
+                        image: nofutur3/php-component:7.2
+                        caches:
+                            - composer
+                        artifacts:
+                        script:
+                            # Install composer dependencies
+                            - composer install --no-interaction
+
+                            # tests
+                            - composer test
+                -   step:
+                        name: PHP 7.3
+                        image: nofutur3/php-component:7.3
+                        caches:
+                            - composer
+                        artifacts:
+                        script:
+                            # Install composer dependencies
+                            - composer install --no-interaction
+
+                            # tests
+                            - composer test
+
+                -   step:
+                        name: PHP 7.4
+                        image: nofutur3/php-component:7.4
+                        caches:
+                            - composer
+                        artifacts:
+                        script:
+                            # Install composer dependencies
+                            - composer install --no-interaction
+
+                            # tests
+                            - composer test

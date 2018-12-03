@@ -1,0 +1,11 @@
+/.idea
+/node_modules
+/vendor
+composer.phar
+composer.lock
+package-lock.json
+mix-manifest.json
+phpunit.phar
+phpunit.xml.dist
+.php_cs.cache
+/test-reports/

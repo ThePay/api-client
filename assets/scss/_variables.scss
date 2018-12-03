@@ -1,0 +1,79 @@
+
+// THEPAY COLOR VARIABLES
+$tp-white:      #ffffff !default;
+$tp-black:      #000000 !default;
+$tp-gray:       #e0e0e0 !default;
+$tp-main-color: #1f46ed !default;
+
+// MAIN VARIABLES
+$tp-base-color:             $tp-black !default;
+$tp-link-color:             $tp-base-color !default;
+$tp-link-decoration:        none !default;
+$tp-link-hover-color:       $tp-main-color !default;
+$tp-link-hover-decoration:  underline !default;
+$tp-border:                 1px !default;
+$tp-border-color:           $tp-gray !default;
+$tp-base-radius:            5px !default;
+$tp-spacing:                1rem !default;
+
+// GRID BREAKPOINTS
+// Define the minimum dimensions at which your layout will change,
+// adapting to different screen sizes, for use in media queries.
+$tp-breakpoints: (
+    xs: 330px,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px
+) !default;
+
+// GRID CONTAINER FOR PAYMENT BUTTONS
+$tp-btn-grid-display:   flex !default;
+$tp-btn-grid-wrap:      wrap !default;
+$tp-btn-grid-justify:   flex-start !default;
+$tp-btn-grid-spacing:   $tp-spacing !default;
+
+// COUNT OF BUTTONS IN GRID
+// Define maximum count of button per each line for each breakpoint and up
+$tp-btn-grid-cols:(
+    xs: 2,
+    sm: 3,
+    md: 4,
+    lg: 6
+) !default;
+
+$tp-btn-grid-min-btn-width: 100px !default;
+$tp-btn-grid-min-btn-width: 100px !default;
+
+// THEPAY PAYMENT BUTTON
+$tp-btn-width:              150px !default;
+$tp-btn-border:             0px !default;
+$tp-btn-border-color:       $tp-border-color !default;
+$tp-btn-radius:             $tp-base-radius !default;
+$tp-btn-padding-x:          $tp-spacing !default;
+$tp-btn-padding-y:          $tp-spacing !default;
+$tp-btn-shadow:             none !default;
+$tp-btn-hover-border-color: $tp-main-color !default;
+$tp-btn-hover-shadow:       none !default;
+
+// THEPAY PAYMENT BUTTON ICON
+$tp-icon-width:             200px !default;
+$tp-icon-height:            81px !default;
+$tp-icon-bg:                $tp-white !default;
+$tp-icon-border:            $tp-border !default;
+$tp-icon-border-color:      $tp-border-color !default;
+$tp-icon-shadow:            none !default;
+$tp-icon-margin:            0 0 $tp-spacing / 2 !default;
+$tp-icon-transition:        .3s !default;
+$tp-icon-hover-border-color: $tp-main-color !default;
+$tp-icon-hover-shadow:      0 4px 5px transparentize($tp-icon-hover-border-color, .31) !default;
+
+// THEPAY PAYMENT BUTTON TEXT UNDER ICON
+$tp-btn-title-color:            $tp-link-color !default;
+$tp-btn-title-decoration:       $tp-link-decoration !default;
+$tp-btn-title-hover-color:      $tp-link-hover-color !default;
+$tp-btn-title-hover-decoration: $tp-link-hover-decoration !default;
+
+
+
+
