@@ -44,7 +44,7 @@ final class SignatureService
      */
     public function getSignatureForApi()
     {
-        $date = new \DateTime();
+        $date = new \DateTime('now', new \DateTimeZone('GMT'));
 
         $date = $date->format(self::FORMAT_RFC7231);
 
