@@ -337,7 +337,7 @@ final class CreatePaymentParams
             $result['language_code'] = $this->languageCode->getValue();
         }
         if ($this->customer) {
-            $jsonParams['customer'] = array(
+            $result['customer'] = array(
                 'name' => $this->customer->getName(),
                 'surname' => $this->customer->getSurname(),
                 'email' => $this->customer->getEmail(),
@@ -346,7 +346,7 @@ final class CreatePaymentParams
 
             $billingAddress = $this->customer->getBillingAddress();
             if ($billingAddress) {
-                $jsonParams['customer']['billing_address'] = array(
+                $result['customer']['billing_address'] = array(
                     'country_code' => $billingAddress->getCountryCode(),
                     'city' => $billingAddress->getCity(),
                     'zip' => $billingAddress->getZip(),
@@ -354,7 +354,7 @@ final class CreatePaymentParams
                 );
             }
         } else {
-            $jsonParams['customer'] = null;
+            $result['customer'] = null;
         }
 
         if ($this->isRecurring()) {
