@@ -384,9 +384,7 @@ final class CreatePaymentParams
             $result['is_deposit'] = $this->isDeposit();
         }
 
-        if (is_bool($this->canCustomerChangeMethod())) {
-            $result['can_customer_change_method'] = $this->canCustomerChangeMethod();
-        }
+        $result['can_customer_change_method'] = $this->canCustomerChangeMethod();
 
         return $result;
     }
