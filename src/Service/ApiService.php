@@ -155,9 +155,9 @@ class ApiService implements ApiServiceInterface
         $url = $this->url(array('payments', $uid, 'method'));
         $response = $this
             ->httpService
-            ->put($url, json_encode([
+            ->put($url, json_encode(array(
                 'payment_method_code' => $paymentMethod->getCode()
-            ]));
+            )));
 
         if ($response->getCode() !== 204) {
             throw $this->buildException($url, $response);
