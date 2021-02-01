@@ -23,6 +23,13 @@ interface HttpServiceInterface
 
     /**
      * @param string $url
+     * @param string $data PUT request body content
+     * @return HttpResponse
+     */
+    public function put($url, $data = '');
+
+    /**
+     * @param string $url
      * @return HttpResponse
      */
     public function delete($url);

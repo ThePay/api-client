@@ -147,6 +147,26 @@ class ApiService implements ApiServiceInterface
     }
 
     /**
+     * @throws ApiException
+     * @return bool
+     */
+    public function changePaymentMethod(Identifier $uid, PaymentMethod $paymentMethod)
+    {
+        $url = $this->url(array('payments', $uid, 'method'));
+        $response = $this
+            ->httpService
+            ->put($url, json_encode([
+                'payment_method_code' => $paymentMethod->getCode()
+            ]));
+
+        if ($response->getCode() !== 204) {
+            throw $this->buildException($url, $response);
+        }
+
+        return true;
+    }
+
+    /**
      * @param RealizePreauthorizedPaymentParams $realizePreauthorizedPaymentParams
      * @throws ApiException
      * @return bool

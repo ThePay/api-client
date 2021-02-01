@@ -9,6 +9,7 @@ class CurlWrapper
     const METHOD_GET = 'GET';
     const METHOD_POST = 'POST';
     const METHOD_DELETE = 'DELETE';
+    const METHOD_PUT = 'PUT';
     const HEADER_HOST = 'Host';
 
     /** @var resource */
@@ -48,6 +49,14 @@ class CurlWrapper
                     CURLOPT_POST => true,
                     CURLOPT_POSTFIELDS => $data,
                     CURLOPT_RETURNTRANSFER => true,
+                ));
+                break;
+            case self::METHOD_PUT:
+                curl_setopt_array($this->curl, array(
+                    CURLOPT_CUSTOMREQUEST => 'PUT',
+                    CURLOPT_POSTFIELDS => $data,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLINFO_HEADER_OUT => true
                 ));
                 break;
             default:
