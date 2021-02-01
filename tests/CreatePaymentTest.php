@@ -43,13 +43,13 @@ class CreatePaymentTest extends BaseTestCase
         return array(
             array(
                 new CreatePaymentParams(100, 'CZK', '202001010001'),
-                'eyJhbW91bnQiOjEwMCwiY3VycmVuY3lfY29kZSI6IkNaSyIsInVpZCI6IjIwMjAwMTAxMDAwMSIsImxhbmd1YWdlX2NvZGUiOiJjcyIsIm1lcmNoYW50X2lkIjoiODZhM2VlZDAtOTVhNC0xMWVhLWFjOWYtMzcxZjM0ODhlMGZhIiwicHJvamVjdF9pZCI6MX',
-                '3b7080dac07aa30eeffef379a591d50ad8fe1774d4dd52a552c647e3c3994da4'
+                'yJhbW91bnQiOjEwMCwiY3VycmVuY3lfY29kZSI6IkNaSyIsInVpZCI6IjIwMjAwMTAxMDAwMSIsImxhbmd1YWdlX2NvZGUiOiJjcyIsImNhbl9jdXN0b21lcl9jaGFuZ2VfbWV0aG9kIjp0cnVlLCJtZXJjaGFudF9pZCI6Ijg2YTNlZWQwLTk1YTQtMTFlYS1hYzlmLTM3MWYzNDg4ZTBmYSIsInByb2plY3RfaWQiOjF9',
+                'f406d46e50fe4fc1398e1e8a218c9b7ca2c29be0d212a8cf66bed0eaa1d094dc'
             ),
             array(
                 new CreatePaymentParams(100, 'EUR', '202001010002'),
-                'eyJhbW91bnQiOjEwMCwiY3VycmVuY3lfY29kZSI6IkVVUiIsInVpZCI6IjIwMjAwMTAxMDAwMiIsImxhbmd1YWdlX2NvZGUiOiJjcyIsIm1lcmNoYW50X2lkIjoiODZhM2VlZDAtOTVhNC0xMWVhLWFjOWYtMzcxZjM0ODhlMGZhIiwicHJvamVjdF9pZCI6MX',
-                '983002188240fed94b0b3095b7aed5d0d3f8a17210e5611ce3eca751d23f59de'
+                'yJhbW91bnQiOjEwMCwiY3VycmVuY3lfY29kZSI6IkVVUiIsInVpZCI6IjIwMjAwMTAxMDAwMiIsImxhbmd1YWdlX2NvZGUiOiJjcyIsImNhbl9jdXN0b21lcl9jaGFuZ2VfbWV0aG9kIjp0cnVlLCJtZXJjaGFudF9pZCI6Ijg2YTNlZWQwLTk1YTQtMTFlYS1hYzlmLTM3MWYzNDg4ZTBmYSIsInByb2plY3RfaWQiOjF9',
+                '71caf65ba3424eb928c165322f9d64daafbcd2e2bb8d3476f0230843a541cb9c'
             )
         );
     }

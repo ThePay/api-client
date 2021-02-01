@@ -52,6 +52,9 @@ final class CreatePaymentParams
     /** @var bool */
     private $isDeposit;
 
+    /** @var bool */
+    private $canCustomerChangeMethod = true;
+
     /**
      * CreatePaymentParams constructor.
      *
@@ -302,6 +305,22 @@ final class CreatePaymentParams
     }
 
     /**
+     * @return bool
+     */
+    public function canCustomerChangeMethod()
+    {
+        return $this->canCustomerChangeMethod;
+    }
+
+    /**
+     * @param bool $canCustomerChangeMethod
+     */
+    public function setCanCustomerChangeMethod($canCustomerChangeMethod)
+    {
+        $this->canCustomerChangeMethod = $canCustomerChangeMethod;
+    }
+
+    /**
      * @return array The associative array of all parameters for signing the request (interface SignableRequest)
      */
     public function toArray()
@@ -364,6 +383,8 @@ final class CreatePaymentParams
         if ($this->isDeposit()) {
             $result['is_deposit'] = $this->isDeposit();
         }
+
+        $result['can_customer_change_method'] = $this->canCustomerChangeMethod();
 
         return $result;
     }

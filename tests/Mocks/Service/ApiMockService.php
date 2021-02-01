@@ -11,6 +11,7 @@ use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\CreateRecurringPaymentParams;
 use ThePay\ApiClient\Model\Payment;
+use ThePay\ApiClient\Model\PaymentMethod;
 use ThePay\ApiClient\Model\PaymentRefund;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
@@ -440,6 +441,11 @@ class ApiMockService implements ApiServiceInterface
     }
 
     public function cancelPreauthorizedPayment(Identifier $uid)
+    {
+        return true;
+    }
+
+    public function changePaymentMethod(Identifier $uid, PaymentMethod $paymentMethod)
     {
         return true;
     }

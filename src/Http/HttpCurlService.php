@@ -54,6 +54,17 @@ class HttpCurlService implements HttpServiceInterface
 
     /**
      * @param string $url
+     * @param string $data put request body content
+     * @return HttpResponse
+     */
+    public function put($url, $data = '')
+    {
+        $curl = $this->curlWrapperFactory->create($this->getSignatureAndVersionHeaders());
+        return $curl->request(CurlWrapper::METHOD_PUT, $url, $data);
+    }
+
+    /**
+     * @param string $url
      * @return HttpResponse
      */
     public function delete($url)

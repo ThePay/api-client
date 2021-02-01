@@ -12,6 +12,7 @@ use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\CreateRecurringPaymentParams;
+use ThePay\ApiClient\Model\PaymentMethod;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Service\ApiService;
@@ -174,6 +175,19 @@ class TheClient
         return $this
             ->api
             ->createPayment($params);
+    }
+    
+    /**
+     * @param string $uid
+     * @param PaymentMethod $paymentMethod
+     * @throws ApiException
+     * @return bool
+     */
+    public function changePaymentMethod($uid, PaymentMethod $paymentMethod)
+    {
+        return $this
+            ->api
+            ->changePaymentMethod(new Identifier($uid), $paymentMethod);
     }
 
     /**
