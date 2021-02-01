@@ -52,8 +52,8 @@ final class CreatePaymentParams
     /** @var bool */
     private $isDeposit;
 
-    /** @var bool|null */
-    private $canCustomerChangeMethod;
+    /** @var bool */
+    private $canCustomerChangeMethod = true;
 
     /**
      * CreatePaymentParams constructor.
@@ -385,7 +385,7 @@ final class CreatePaymentParams
         }
 
         if (is_bool($this->canCustomerChangeMethod())) {
-            $result['canCustomerChangeMethod'] = $this->canCustomerChangeMethod();
+            $result['can_customer_change_method'] = $this->canCustomerChangeMethod();
         }
 
         return $result;
