@@ -48,7 +48,7 @@ class SimplePayment
     private $createdAt;
 
     /**
-     * @var DateTime
+     * @var DateTime|null
      */
     private $finishedAt;
 
@@ -72,7 +72,7 @@ class SimplePayment
         $this->currency = $data['currency'];
         $this->amount = $data['amount'];
         $this->createdAt = new DateTime($data['created_at']);
-        $this->finishedAt = new DateTime($data['finished_at']);
+        $this->finishedAt = $data['finished_at'] !== null ? new DateTime($data['finished_at']) : null;
         $this->paymentMethod = $data['payment_method'];
     }
 
@@ -125,7 +125,7 @@ class SimplePayment
     }
 
     /**
-     * @return DateTime
+     * @return DateTime|null
      */
     public function getFinishedAt()
     {
