@@ -52,7 +52,7 @@ final class CreatePaymentParams
     /** @var bool */
     private $isDeposit;
 
-    /** @var bool */
+    /** @var bool|null */
     private $canCustomerChangeMethod;
 
     /**

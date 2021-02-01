@@ -34,6 +34,10 @@
 
 [Refund payment](refund-payment.md)
 
+[Disable change of payment method](payment-disable-payment-method-change.md)
+
+[Change payment method of payment](change-payment-method-of-payment.md)
+
 ## Methods
 
 ### getActivePaymentMethods
