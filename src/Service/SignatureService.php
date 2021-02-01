@@ -91,7 +91,7 @@ final class SignatureService
     public function getSignedDataForGate(CreatePaymentParams $params)
     {
         $createPaymentData = $params->toArray();
-        if (array_key_exists('customer', $createPaymentData)) {
+        if (array_key_exists('customer', $createPaymentData) && is_array($createPaymentData['customer'])) {
             $createPaymentData['customer_name'] = $createPaymentData['customer']['name'];
             $createPaymentData['customer_surname'] = $createPaymentData['customer']['surname'];
             $createPaymentData['customer_email'] = $createPaymentData['customer']['email'];

@@ -10,13 +10,6 @@ class BankAccount
     /** @var string */
     private $iban;
 
-    /**
-     * Full account number in country specific format.
-     *
-     * @var string
-     */
-    private $rawAccountNumber;
-
     /** @var string */
     private $ownerName;
 
@@ -28,7 +21,6 @@ class BankAccount
         $data = is_array($values) ? $values : Json::decode($values, true);
 
         $this->iban = $data['iban'];
-        $this->rawAccountNumber = $data['raw_account_number'];
         $this->ownerName = $data['owner_name'];
     }
 
@@ -47,27 +39,6 @@ class BankAccount
     public function setIban($iban)
     {
         $this->iban = $iban;
-        return $this;
-    }
-
-    /**
-     * Returns the full account number in country specific format.
-     *
-     * @return string
-     */
-    public function getRawAccountNumber()
-    {
-        return $this->rawAccountNumber;
-    }
-
-    /**
-     * @param string $rawAccountNumber
-     *
-     * @return self
-     */
-    public function setRawAccountNumber($rawAccountNumber)
-    {
-        $this->rawAccountNumber = $rawAccountNumber;
         return $this;
     }
 
@@ -96,7 +67,6 @@ class BankAccount
     {
         return array(
             'iban' => $this->iban,
-            'number' => $this->rawAccountNumber,
             'ownerName' => $this->ownerName
         );
     }
