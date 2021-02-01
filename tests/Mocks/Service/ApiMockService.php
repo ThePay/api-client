@@ -445,7 +445,8 @@ class ApiMockService implements ApiServiceInterface
         return true;
     }
 
-    public function changePaymentMethod(Identifier $uid, PaymentMethod $paymentMethod) {
+    public function changePaymentMethod(Identifier $uid, PaymentMethod $paymentMethod)
+    {
         return true;
     }
 

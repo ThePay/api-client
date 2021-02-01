@@ -60,7 +60,8 @@ class ChangePaymentMethod extends BaseTestCase
         return new HttpResponse(null, 404);
     }
 
-    private function getPaymentMethod() {
+    private function getPaymentMethod()
+    {
         return new PaymentMethod(array(
             'code' => 'test',
             'title' => 'test',
