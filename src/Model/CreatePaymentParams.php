@@ -73,7 +73,7 @@ final class CreatePaymentParams
             $this->languageCode = LanguageCode::create($languageCode);
         }
         $this->isRecurring = false;
-        $this->isDeposit = false;
+        $this->isDeposit = true;
     }
 
     /**
@@ -376,13 +376,8 @@ final class CreatePaymentParams
             $result['customer'] = null;
         }
 
-        if ($this->isRecurring()) {
-            $result['is_recurring'] = $this->isRecurring();
-        }
-
-        if ($this->isDeposit()) {
-            $result['is_deposit'] = $this->isDeposit();
-        }
+        $result['is_recurring'] = $this->isRecurring();
+        $result['is_deposit'] = $this->isDeposit();
 
         $result['can_customer_change_method'] = $this->canCustomerChangeMethod();
 
