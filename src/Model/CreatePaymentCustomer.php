@@ -21,7 +21,7 @@ final class CreatePaymentCustomer
      * @param string $name
      * @param string $surname
      * @param string $email
-     * @param string $phone
+     * @param string $phone - up to 15 digits, no other characters allowed
      */
     public function __construct($name, $surname, $email, $phone, Address $billingAddress = null)
     {

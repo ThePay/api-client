@@ -146,7 +146,7 @@ class TheClient
      * @param CreatePaymentParams $params
      * @param string $title
      * @param bool $useInlineAssets false value disable generation default style & scripts
-     * @return string This is HTML snippet with link redirection to payment gate
+     * @return string This is HTML snippet with link redirection to payment gate. To payment method selection page.
      */
     public function getPaymentButton(CreatePaymentParams $params, $title = 'Pay!', $useInlineAssets = true)
     {
@@ -176,7 +176,7 @@ class TheClient
             ->api
             ->createPayment($params);
     }
-    
+
     /**
      * @param string $uid
      * @param PaymentMethod $paymentMethod
