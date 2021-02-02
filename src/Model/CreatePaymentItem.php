@@ -38,7 +38,8 @@ class CreatePaymentItem
             'name' => $this->name,
             'price' => $this->price->getValue(),
             'ean' => $this->ean,
-            'count' => $this->count
+            'count' => $this->count,
+            'total_price' => $this->price->getValue() * $this->count,
         );
     }
 }
