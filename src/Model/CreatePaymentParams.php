@@ -49,7 +49,7 @@ final class CreatePaymentParams
     /** @var bool */
     private $isRecurring;
 
-    /** @var bool */
+    /** @var bool set to false for pre-authorization */
     private $isDeposit;
 
     /** @var bool */
@@ -58,10 +58,10 @@ final class CreatePaymentParams
     /**
      * CreatePaymentParams constructor.
      *
-     * @param int $amount
-     * @param string $currencyCode
+     * @param int $amount - payment amount in cents
+     * @param string $currencyCode - 3 letter UPPERCASE currency code
      * @param string $uid
-     * @param string $languageCode
+     * @param string $languageCode - 2 letter lowercase language code
      */
     public function __construct($amount, $currencyCode, $uid, $languageCode = null)
     {

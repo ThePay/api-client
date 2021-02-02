@@ -17,7 +17,7 @@ final class Address
     private $street;
 
     /**
-     * @param string $countryCode
+     * @param string $countryCode - 2 letter UPPERCASE country code
      * @param string $city
      * @param string $zip
      * @param string $street

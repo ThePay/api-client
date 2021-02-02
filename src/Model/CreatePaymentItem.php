@@ -7,7 +7,7 @@ use ThePay\ApiClient\ValueObject\Amount;
 
 class CreatePaymentItem
 {
-    /** @var string */
+    /** @var string one of {item, delivery, discount} */
     private $type;
 
     /** @var string */
@@ -22,6 +22,15 @@ class CreatePaymentItem
     /** @var int */
     private $count;
 
+    /**
+     * CreatePaymentItem constructor.
+     *
+     * @param string $type - one of {item, delivery, discount}
+     * @param string $name
+     * @param int $price - price for one item in cents
+     * @param int $count - number of items
+     * @param null $ean
+     */
     public function __construct($type, $name, $price, $count, $ean = null)
     {
         $this->type = $type;
