@@ -35,7 +35,7 @@ class CreatePaymentItem
     {
         $this->type = $type;
         $this->name = $name;
-        $this->price = $price;
+        $this->price = is_int($price) ? new Amount($price) : $price;
         $this->ean = $ean;
         $this->count = $count;
     }
