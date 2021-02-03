@@ -27,7 +27,7 @@ class CreatePaymentItem
      *
      * @param string $type - one of {item, delivery, discount}
      * @param string $name
-     * @param int $price - price for all items in cents
+     * @param int|Amount $price - price for all items in cents
      * @param int $count - number of items
      * @param null $ean
      */
