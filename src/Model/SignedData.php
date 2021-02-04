@@ -1,6 +1,5 @@
 <?php
 
-
 namespace ThePay\ApiClient\Model;
 
 class SignedData

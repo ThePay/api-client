@@ -79,7 +79,7 @@ class HttpCurlService implements HttpServiceInterface
         return array(
             static::HEADER_SIGNATURE . ': ' . $signature->getHash(),
             static::HEADER_SIGNATURE_DATE . ': ' . $signature->getDate(),
-            static::HEADER_PLATFORM . ': ' . 'php_' . TheClient::VERSION
+            static::HEADER_PLATFORM . ': ' . 'php_' . TheClient::VERSION,
         );
     }
 }

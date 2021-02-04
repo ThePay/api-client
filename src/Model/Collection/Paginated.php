@@ -1,6 +1,5 @@
 <?php
 
-
 namespace ThePay\ApiClient\Model\Collection;
 
 interface Paginated

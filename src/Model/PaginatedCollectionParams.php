@@ -35,7 +35,7 @@ class PaginatedCollectionParams implements SignableRequest
      */
     public function setLimit($limit)
     {
-        $this->limit = (int)$limit;
+        $this->limit = (int) $limit;
     }
 
     /**
@@ -51,7 +51,7 @@ class PaginatedCollectionParams implements SignableRequest
      */
     public function setPage($page)
     {
-        $this->page = (int)$page;
+        $this->page = (int) $page;
     }
 
     /**

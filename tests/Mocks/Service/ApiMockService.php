@@ -417,7 +417,7 @@ class ApiMockService implements ApiServiceInterface
                             'ip' => '192.168.0.1',
                             'email' => '',
                         ),
-                )
+                ),
             ),
             1,
             1,
@@ -457,7 +457,7 @@ class ApiMockService implements ApiServiceInterface
      */
     public function realizeRecurringPayment(CreateRecurringPaymentParams $params)
     {
-        switch ((string)$params->getParentUid()) {
+        switch ((string) $params->getParentUid()) {
             case 'failed':
                 $state = 'failed';
                 break;

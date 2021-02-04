@@ -29,7 +29,7 @@ class ChangePaymentMethod extends BaseTestCase
         call_user_func(array($this->httpService, 'shouldReceive'), 'put')->once()
             ->with($this->config->getApiUrl() . 'projects/1/payments/abc/method?merchant_id=' . self::MERCHANT_ID, json_encode(
                 array(
-                    'payment_method_code' => $this->getPaymentMethod()->getCode()
+                    'payment_method_code' => $this->getPaymentMethod()->getCode(),
                 )
             ))
             ->andReturn($this->getOkResponse());

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace ThePay\ApiClient\ValueObject;
 
 abstract class BaseValueObject implements ValueObject

@@ -325,7 +325,7 @@ final class CreatePaymentParams
      */
     public function toArray()
     {
-        $result =  array(
+        $result = array(
             'amount' => $this->amount->getValue(),
             'currency_code' => $this->currencyCode->getValue(),
             'uid' => $this->uid->getValue(),

@@ -13,7 +13,6 @@ use ThePay\ApiClient\Utils\Json;
  */
 class SimplePayment
 {
-
     /**
      * Unique ID of the payment
      * @var string

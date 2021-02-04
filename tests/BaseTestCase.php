@@ -1,6 +1,5 @@
 <?php
 
-
 namespace ThePay\ApiClient\Tests;
 
 use PHPUnit\Framework\TestCase;

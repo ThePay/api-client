@@ -22,7 +22,7 @@ final class Identifier extends BaseValueObject
             throw new InvalidArgumentException('Value\'s length has to be up to 100 characters');
         }
 
-        $this->value = (string)$value;
+        $this->value = (string) $value;
     }
 
     /**

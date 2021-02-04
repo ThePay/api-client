@@ -1,6 +1,5 @@
 <?php
 
-
 namespace ThePay\ApiClient\Tests;
 
 use PHPUnit\Framework\TestCase;
@@ -62,7 +61,7 @@ class ValueObjectTest extends TestCase
      */
     public function testCurrencyCodeInvalidValues($currency)
     {
-        $this->setExpectedException('InvalidArgumentException', 'Value `'.$currency.'` is not valid ISO 4217 currency code');
+        $this->setExpectedException('InvalidArgumentException', 'Value `' . $currency . '` is not valid ISO 4217 currency code');
         CurrencyCode::create($currency);
     }
 
@@ -116,7 +115,7 @@ class ValueObjectTest extends TestCase
      */
     public function testLanguageCodeInvalidValues($code)
     {
-        $this->setExpectedException('InvalidArgumentException', 'Value `'.$code.'` is not valid ISO 6391 language code');
+        $this->setExpectedException('InvalidArgumentException', 'Value `' . $code . '` is not valid ISO 6391 language code');
         LanguageCode::create($code);
     }
 
@@ -181,7 +180,7 @@ class ValueObjectTest extends TestCase
         return array(
             array('cz'),
             array(1),
-            array('HELLO')
+            array('HELLO'),
         );
     }
 
@@ -245,7 +244,7 @@ class ValueObjectTest extends TestCase
         $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-';
 
         for ($i = 0; $i < $length; $i++) {
-            $result .= substr($characters, rand(0, strlen($characters)-1), 1);
+            $result .= substr($characters, rand(0, strlen($characters) - 1), 1);
         }
 
         return $result;

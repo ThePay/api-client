@@ -10,7 +10,7 @@ final class StringValue extends BaseValueObject
     public function __construct($value)
     {
         if ( ! is_string($value)) {
-            throw new \InvalidArgumentException('type of value: '.(string)$value.' is not string');
+            throw new \InvalidArgumentException('type of value: ' . (string) $value . ' is not string');
         }
 
         $this->value = $value;
