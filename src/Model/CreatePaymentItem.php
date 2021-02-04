@@ -13,7 +13,7 @@ class CreatePaymentItem
     /** @var string */
     private $name;
 
-    /** @var Amount */
+    /** @var Amount price of all items combined */
     private $price;
 
     /** @var string|null */
@@ -27,7 +27,7 @@ class CreatePaymentItem
      *
      * @param string $type - one of {item, delivery, discount}
      * @param string $name
-     * @param int $price - price for one item in cents
+     * @param int|Amount $price - price for all items in cents
      * @param int $count - number of items
      * @param null $ean
      */
@@ -35,7 +35,7 @@ class CreatePaymentItem
     {
         $this->type = $type;
         $this->name = $name;
-        $this->price = $price;
+        $this->price = ! is_object($price) ? new Amount($price) : $price;
         $this->ean = $ean;
         $this->count = $count;
     }
@@ -48,7 +48,7 @@ class CreatePaymentItem
             'price' => $this->price->getValue(),
             'ean' => $this->ean,
             'count' => $this->count,
-            'total_price' => $this->price->getValue() * $this->count,
+            'total_price' => $this->price->getValue(),
         );
     }
 }
