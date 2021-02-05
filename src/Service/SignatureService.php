@@ -50,7 +50,7 @@ final class SignatureService
 
         return new ApiSignature(
             $date,
-            hash('sha256', $this->config->getMerchantId().$this->config->getPassword().$date)
+            hash('sha256', $this->config->getMerchantId() . $this->config->getPassword() . $date)
         );
     }
 

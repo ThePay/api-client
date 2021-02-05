@@ -90,7 +90,7 @@ class PaymentMethod
             'title' => $this->title,
             'tags' => $this->tags,
             'availableCurrencies' => $this->availableCurrencies,
-            'imageUrl' => (string)$this->imageUrl
+            'imageUrl' => (string) $this->imageUrl,
         );
     }
 }

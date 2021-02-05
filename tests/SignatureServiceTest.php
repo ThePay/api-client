@@ -27,7 +27,7 @@ class SignatureServiceTest extends TestCase
         static::assertNotNull($signature->getHash());
         static::assertSame(
             $signature->getHash(),
-            hash('sha256', $config->getMerchantId().$config->getPassword().$signature->getDate())
+            hash('sha256', $config->getMerchantId() . $config->getPassword() . $signature->getDate())
         );
         static::assertSame(64, strlen($signature->getHash())); // length of sha256 hash should always be 64 characters
     }

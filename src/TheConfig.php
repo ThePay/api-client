@@ -60,7 +60,7 @@ class TheConfig
      */
     public function getApiUrl()
     {
-        return $this->apiUrl->getValue().$this->apiVersion.'/';
+        return $this->apiUrl->getValue() . $this->apiVersion . '/';
     }
 
     /**

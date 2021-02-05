@@ -56,7 +56,7 @@ class CurlWrapper
                     CURLOPT_CUSTOMREQUEST => 'PUT',
                     CURLOPT_POSTFIELDS => $data,
                     CURLOPT_RETURNTRANSFER => true,
-                    CURLINFO_HEADER_OUT => true
+                    CURLINFO_HEADER_OUT => true,
                 ));
                 break;
             default:
@@ -74,7 +74,7 @@ class CurlWrapper
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
 
         curl_setopt_array($this->curl, array(
-            CURLOPT_URL => $url
+            CURLOPT_URL => $url,
         ));
 
         return $this->resolveResponse(curl_exec($this->curl), curl_error($this->curl));

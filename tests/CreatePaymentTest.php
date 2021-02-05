@@ -1,6 +1,5 @@
 <?php
 
-
 namespace ThePay\ApiClient\Tests;
 
 use Mockery;
@@ -44,13 +43,13 @@ class CreatePaymentTest extends BaseTestCase
             array(
                 new CreatePaymentParams(100, 'CZK', '202001010001'),
                 'eyJhbW91bnQiOjEwMCwiY3VycmVuY3lfY29kZSI6IkNaSyIsInVpZCI6IjIwMjAwMTAxMDAwMSIsImxhbmd1YWdlX2NvZGUiOiJjcyIsImlzX3JlY3VycmluZyI6ZmFsc2UsImlzX2RlcG9zaXQiOnRydWUsImNhbl9jdXN0b21lcl9jaGFuZ2VfbWV0aG9kIjp0cnVlLCJtZXJjaGFudF9pZCI6Ijg2YTNlZWQwLTk1YTQtMTFlYS1hYzlmLTM3MWYzNDg4ZTBmYSIsInByb2plY3RfaWQiOjF9',
-                'b84277841226f0276ff1f39587555ca3ce2439f71cfdf880b41692f4a0f59ca6'
+                'b84277841226f0276ff1f39587555ca3ce2439f71cfdf880b41692f4a0f59ca6',
             ),
             array(
                 new CreatePaymentParams(100, 'EUR', '202001010002'),
                 'eyJhbW91bnQiOjEwMCwiY3VycmVuY3lfY29kZSI6IkVVUiIsInVpZCI6IjIwMjAwMTAxMDAwMiIsImxhbmd1YWdlX2NvZGUiOiJjcyIsImlzX3JlY3VycmluZyI6ZmFsc2UsImlzX2RlcG9zaXQiOnRydWUsImNhbl9jdXN0b21lcl9jaGFuZ2VfbWV0aG9kIjp0cnVlLCJtZXJjaGFudF9pZCI6Ijg2YTNlZWQwLTk1YTQtMTFlYS1hYzlmLTM3MWYzNDg4ZTBmYSIsInByb2plY3RfaWQiOjF9',
-                'e58fcfb7056dd74974ff8656873d9867762ab420176c0a6db5bfbbdbc22b1500'
-            )
+                'e58fcfb7056dd74974ff8656873d9867762ab420176c0a6db5bfbbdbc22b1500',
+            ),
         );
     }
 

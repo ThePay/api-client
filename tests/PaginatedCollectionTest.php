@@ -28,7 +28,7 @@ class PaginatedCollectionTest extends TestCase
     {
         return array(
             array(1, 10, 100, true),
-            array(10, 10, 100, false)
+            array(10, 10, 100, false),
         );
     }
 }

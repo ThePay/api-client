@@ -4,7 +4,6 @@ namespace ThePay\ApiClient\Http;
 
 class HttpResponse
 {
-
     /**
      * @var string|null
      */

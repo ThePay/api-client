@@ -7,7 +7,6 @@ namespace ThePay\ApiClient\Http;
  */
 interface HttpServiceInterface
 {
-
     /**
      * @param string $url
      * @return HttpResponse

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace ThePay\ApiClient\Tests;
 
 use Mockery;
@@ -60,7 +59,7 @@ class PaymentMethodsTest extends BaseTestCase
                     array(),
                     array()
                 ),
-                1
+                1,
             ),
             array(
                 new PaymentMethodFilter(
@@ -68,7 +67,7 @@ class PaymentMethodsTest extends BaseTestCase
                     array('online'),
                     array()
                 ),
-                7
+                7,
             ),
             array(
                 new PaymentMethodFilter(
@@ -76,7 +75,7 @@ class PaymentMethodsTest extends BaseTestCase
                     array('online'),
                     array('access_account_owner')
                 ),
-                2
+                2,
             ),
             array(
                 new PaymentMethodFilter(
@@ -84,7 +83,7 @@ class PaymentMethodsTest extends BaseTestCase
                     array('online'),
                     array('access_account_owner', 'alternative_method')
                 ),
-                1
+                1,
             ),
         );
     }

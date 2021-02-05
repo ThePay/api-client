@@ -6,7 +6,6 @@ use ThePay\ApiClient\Utils\Json;
 
 class Customer
 {
-
     /** @var string|null */
     private $accountIban;
 
@@ -73,7 +72,7 @@ class Customer
             'accountIban' => $this->accountIban,
             'name' => $this->name,
             'ip' => $this->ip,
-            'email' => $this->email
+            'email' => $this->email,
         );
     }
 }

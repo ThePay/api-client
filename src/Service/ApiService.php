@@ -31,7 +31,6 @@ use ThePay\ApiClient\ValueObject\StringValue;
  */
 class ApiService implements ApiServiceInterface
 {
-
     /** @var TheConfig */
     private $config;
 
@@ -156,7 +155,7 @@ class ApiService implements ApiServiceInterface
         $response = $this
             ->httpService
             ->put($url, json_encode(array(
-                'payment_method_code' => $paymentMethod->getCode()
+                'payment_method_code' => $paymentMethod->getCode(),
             )));
 
         if ($response->getCode() !== 204) {
@@ -176,7 +175,7 @@ class ApiService implements ApiServiceInterface
         $url = $this->url(array(
             'payments',
             $realizePreauthorizedPaymentParams->getUid(),
-            'preauthorized'
+            'preauthorized',
         ));
         $response = $this
             ->httpService
@@ -314,9 +313,9 @@ class ApiService implements ApiServiceInterface
      */
     private function buildException($requestUrl, HttpResponse $response)
     {
-        $responseCode = (int)$response->getCode();
-        $message = 'TheApi call "'.$requestUrl.'" failed, status code: '.$responseCode.' '.$response->getCodeMessage();
-        $message .= $this->getErrorResponseMessage((string)$response->getBody());
+        $responseCode = (int) $response->getCode();
+        $message = 'TheApi call "' . $requestUrl . '" failed, status code: ' . $responseCode . ' ' . $response->getCodeMessage();
+        $message .= $this->getErrorResponseMessage((string) $response->getBody());
 
         if ($responseCode == 0 || $responseCode >= 500) {
             return new ApiException($message, $responseCode);
@@ -341,9 +340,9 @@ class ApiService implements ApiServiceInterface
             &&
             property_exists($bodyData, 'message')
         ) {
-            return ' message: "'.$bodyData->message.'"';
+            return ' message: "' . $bodyData->message . '"';
         }
 
-        return ' invalid error response format body: "'.$bodyString.'"';
+        return ' invalid error response format body: "' . $bodyString . '"';
     }
 }

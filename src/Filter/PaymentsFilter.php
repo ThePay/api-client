@@ -51,7 +51,7 @@ class PaymentsFilter implements SignableRequest
     public function __construct(
         \DateTime $createdFrom = null,
         \DateTime$createdTo = null,
-        \DateTime $finishedFrom= null,
+        \DateTime $finishedFrom = null,
         \DateTime $finishedTo = null,
         PaymentMethodCode $paymentMethod = null,
         PaymentState $state = null,
@@ -81,7 +81,7 @@ class PaymentsFilter implements SignableRequest
      */
     public function toArray()
     {
-        $res =  array(
+        $res = array(
             'created_from' => $this->createdFrom,
             'created_to' => $this->createdTo,
             'finished_from' => $this->finishedFrom,

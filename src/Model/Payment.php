@@ -130,7 +130,7 @@ class Payment extends SimplePayment
             'orderId' => $this->orderId,
             'paymentMethod' => $this->getPaymentMethod(),
             'bankAccount' => $this->offsetAccount ? $this->offsetAccount->toArray() : null,
-            'customer' => $this->customer ? $this->customer->toArray() : null
+            'customer' => $this->customer ? $this->customer->toArray() : null,
         );
     }
 }
