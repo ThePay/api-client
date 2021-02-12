@@ -8,7 +8,6 @@ You can change payment method of created payment that is waiting for payment. Th
 
 /** @var $client \ThePay\ApiClient\TheClient */
 
-// for example we pick first active payment method
 $paymentMethodCode = PaymentMethodCode::TRANSFER;
 
 $client->changePaymentMethod('UID_OF_PAYMENT', $paymentMethodCode);
