@@ -23,6 +23,7 @@ use ThePay\ApiClient\Utils\Json;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
+use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 use ThePay\ApiClient\ValueObject\StringValue;
 
 /**
@@ -149,13 +150,13 @@ class ApiService implements ApiServiceInterface
      * @throws ApiException
      * @return bool
      */
-    public function changePaymentMethod(Identifier $uid, PaymentMethod $paymentMethod)
+    public function changePaymentMethod(Identifier $uid, PaymentMethodCode $paymentMethodCode)
     {
         $url = $this->url(array('payments', $uid, 'method'));
         $response = $this
             ->httpService
             ->put($url, json_encode(array(
-                'payment_method_code' => $paymentMethod->getCode(),
+                'payment_method_code' => $paymentMethodCode->getValue(),
             )));
 
         if ($response->getCode() !== 204) {

@@ -11,7 +11,6 @@ use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\CreateRecurringPaymentParams;
 use ThePay\ApiClient\Model\Payment;
-use ThePay\ApiClient\Model\PaymentMethod;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Model\RealizeRecurringPaymentResponse;
@@ -19,6 +18,7 @@ use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
+use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 use ThePay\ApiClient\ValueObject\StringValue;
 
 interface ApiServiceInterface
@@ -75,7 +75,7 @@ interface ApiServiceInterface
      * @return bool
      * @throws ApiException
      */
-    public function changePaymentMethod(Identifier $uid, PaymentMethod $paymentMethod);
+    public function changePaymentMethod(Identifier $uid, PaymentMethodCode $paymentMethodCode);
 
     /**
      * @param CreateRecurringPaymentParams $params

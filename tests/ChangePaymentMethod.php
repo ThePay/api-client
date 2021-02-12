@@ -4,9 +4,9 @@ namespace ThePay\ApiClient\Tests;
 
 use Mockery;
 use ThePay\ApiClient\Http\HttpResponse;
-use ThePay\ApiClient\Model\PaymentMethod;
 use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\TheClient;
+use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 
 class ChangePaymentMethod extends BaseTestCase
 {
@@ -29,12 +29,12 @@ class ChangePaymentMethod extends BaseTestCase
         call_user_func(array($this->httpService, 'shouldReceive'), 'put')->once()
             ->with($this->config->getApiUrl() . 'projects/1/payments/abc/method?merchant_id=' . self::MERCHANT_ID, json_encode(
                 array(
-                    'payment_method_code' => $this->getPaymentMethod()->getCode(),
+                    'payment_method_code' => new PaymentMethodCode(PaymentMethodCode::TRANSFER),
                 )
             ))
             ->andReturn($this->getOkResponse());
 
-        $this->client->changePaymentMethod('abc', $this->getPaymentMethod());
+        $this->client->changePaymentMethod('abc', new PaymentMethodCode(PaymentMethodCode::TRANSFER));
         \Mockery::close();
     }
 
@@ -47,7 +47,7 @@ class ChangePaymentMethod extends BaseTestCase
         call_user_func(array($this->httpService, 'shouldReceive'), 'delete')
             ->andReturn($this->getNotOkResponse());
 
-        $this->client->changePaymentMethod('abc', $this->getPaymentMethod());
+        $this->client->changePaymentMethod('abc', new PaymentMethodCode(PaymentMethodCode::TRANSFER));
     }
 
     private function getOkResponse()
@@ -58,18 +58,5 @@ class ChangePaymentMethod extends BaseTestCase
     private function getNotOkResponse()
     {
         return new HttpResponse(null, 404);
-    }
-
-    private function getPaymentMethod()
-    {
-        return new PaymentMethod(array(
-            'code' => 'test',
-            'title' => 'test',
-            'image' => array(
-                'src' => 'https://example.com/',
-            ),
-            'tags' => array(),
-            'available_currencies' => array(),
-        ));
     }
 }
