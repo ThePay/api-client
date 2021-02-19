@@ -11,7 +11,7 @@ final class PaymentRefundState extends EnumValueObject
     /**
      * @return string[]
      */
-    protected function getOptions()
+    public static function getOptions()
     {
         return array(
             self::WAITING,

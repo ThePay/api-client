@@ -12,7 +12,7 @@ abstract class EnumValueObject extends BaseValueObject
      */
     public function __construct($value)
     {
-        if ( ! in_array($value, $this->getOptions(), true)) {
+        if ( ! in_array($value, static::getOptions(), true)) {
             throw new \InvalidArgumentException(sprintf('%s in not valid value', $value));
         }
 
@@ -38,5 +38,5 @@ abstract class EnumValueObject extends BaseValueObject
     /**
      * @return string[]
      */
-    abstract protected function getOptions();
+    abstract public static function getOptions();
 }
