@@ -5,6 +5,7 @@ namespace ThePay\ApiClient\Model\Collection;
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Model\PaymentMethod;
 use ThePay\ApiClient\Utils\Json;
+use ThePay\ApiClient\ValueObject\PaymentMethodTag;
 
 /**
  * @method PaymentMethod[] all()
@@ -48,14 +49,22 @@ class PaymentMethodCollection extends Collection
      * Filter payment methods by currencies or tags.
      *
      * @param PaymentMethodFilter $filter
-     *
+     * @param bool $isRecurring
+     * @param bool $isDeposit
      * @return PaymentMethodCollection
      */
-    public function getFiltered(PaymentMethodFilter $filter)
+    public function getFiltered(PaymentMethodFilter $filter, $isRecurring = false, $isDeposit = true)
     {
         $requiredCurrencies = $filter->getCurrencies();
         $mustHaveTags = $filter->getUsedTags();
         $canNotHaveTags = $filter->getBannedTags();
+
+        if ($isRecurring) {
+            $mustHaveTags[] = PaymentMethodTag::RECURRING_PAYMENTS;
+        }
+        if ( ! $isDeposit) {
+            $mustHaveTags[] = PaymentMethodTag::PRE_AUTHORIZATION;
+        }
 
         $result = $this->data;
 
