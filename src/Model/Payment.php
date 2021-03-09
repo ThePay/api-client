@@ -9,6 +9,11 @@ use ThePay\ApiClient\Utils\Json;
 class Payment extends SimplePayment
 {
     /**
+     * @var string
+     */
+    private $orderId;
+
+    /**
      * @var DateTime
      */
     private $validTo;
@@ -24,6 +29,21 @@ class Payment extends SimplePayment
     private $description;
 
     /**
+     * @var string
+     */
+    private $payUrl;
+
+    /**
+     * @var string
+     */
+    private $detailUrl;
+
+    /**
+     * @var Customer|null
+     */
+    private $customer;
+
+    /**
      * Information about bank account if available
      * @var BankAccount|null
      */
@@ -35,14 +55,9 @@ class Payment extends SimplePayment
     private $offsetAccountStatus;
 
     /**
-     * @var Customer|null
+     * @var \Datetime|null
      */
-    private $customer;
-
-    /**
-     * @var string
-     */
-    private $orderId;
+    private $offsetAccountDeterminedAt;
 
     /**
      * @param string|array $values Json in string or associative array
@@ -57,10 +72,13 @@ class Payment extends SimplePayment
         $this->validTo = new DateTime($data['valid_to']);
         $this->fee = $data['fee'];
         $this->description = $data['description'];
+        $this->payUrl = $data['pay_url'];
+        $this->detailUrl = $data['detail_url'];
         $this->orderId = $data['order_id'];
         $this->offsetAccount = $data['offset_account_status'] === 'loaded' ? new BankAccount($data['offset_account']) : null;
         $this->offsetAccountStatus = $data['offset_account_status'];
         $this->customer = $data['customer'] ? new Customer($data['customer']) : null;
+        $this->offsetAccountDeterminedAt = $data['offset_account_determined_at'] !== null ? new \DateTime($data['offset_account_determined_at']) : null;
     }
 
     /**
@@ -104,11 +122,43 @@ class Payment extends SimplePayment
     }
 
     /**
+     * @return string
+     */
+    public function getPayUrl()
+    {
+        return $this->payUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDetailUrl()
+    {
+        return $this->detailUrl;
+    }
+
+    /**
      * @return Customer
      */
     public function getCustomer()
     {
         return $this->customer;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOffsetAccountStatus()
+    {
+        return $this->offsetAccountStatus;
+    }
+
+    /**
+     * @return Datetime|null
+     */
+    public function getOffsetAccountDeterminedAt()
+    {
+        return $this->offsetAccountDeterminedAt;
     }
 
     /**
@@ -119,6 +169,7 @@ class Payment extends SimplePayment
         return array(
             'uid' => $this->getUid(),
             'projectId' => $this->getProjectId(),
+            'orderId' => $this->orderId,
             'state' => $this->getState(),
             'currency' => $this->getCurrency(),
             'amount' => $this->getAmount(),
@@ -127,10 +178,13 @@ class Payment extends SimplePayment
             'validTo' => $this->validTo,
             'fee' => $this->fee,
             'description' => $this->description,
-            'orderId' => $this->orderId,
             'paymentMethod' => $this->getPaymentMethod(),
-            'bankAccount' => $this->offsetAccount ? $this->offsetAccount->toArray() : null,
+            'payUrl' => $this->payUrl,
+            'detailUrl' => $this->detailUrl,
             'customer' => $this->customer ? $this->customer->toArray() : null,
+            'bankAccount' => $this->offsetAccount ? $this->offsetAccount->toArray() : null,
+            'offsetAccountStatus' => $this->offsetAccountStatus,
+            'offsetAccountDeterminedAt' => $this->offsetAccountDeterminedAt,
         );
     }
 }
