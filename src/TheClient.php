@@ -61,18 +61,19 @@ class TheClient
     /**
      * @param PaymentMethodFilter|null $filter
      * @param LanguageCode|null $languageCode language for payment method titles, null value language from TheConfig used
-     *
+     * @param bool $isRecurring
+     * @param bool $isDeposit
      * @return PaymentMethodCollection
      * @throws ApiException
      */
-    public function getActivePaymentMethods(PaymentMethodFilter $filter = null, LanguageCode $languageCode = null)
+    public function getActivePaymentMethods(PaymentMethodFilter $filter = null, LanguageCode $languageCode = null, $isRecurring = false, $isDeposit = true)
     {
         $paymentMethods = $this
                 ->api
                 ->getActivePaymentMethods($languageCode);
 
         if ($filter !== null) {
-            return $paymentMethods->getFiltered($filter);
+            return $paymentMethods->getFiltered($filter, $isRecurring, $isDeposit);
         }
 
         return $paymentMethods;
@@ -132,7 +133,7 @@ class TheClient
             $filter->setCurrency($params->getCurrencyCode()->getValue());
         }
 
-        $methods = $this->getActivePaymentMethods($filter, $params->getLanguageCode());
+        $methods = $this->getActivePaymentMethods($filter, $params->getLanguageCode(), $params->isRecurring(), $params->isDeposit());
 
         $result = '';
         if ($useInlineAssets) {

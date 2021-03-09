@@ -42,10 +42,12 @@ class PaymentMethodsTest extends BaseTestCase
      * @dataProvider filterDataProvider
      *
      * @param int $result
+     * @param bool $isRecurring
+     * @param bool $isDeposit
      */
-    public function testFiltering(PaymentMethodFilter $filter, $result)
+    public function testFiltering(PaymentMethodFilter $filter, $result, $isRecurring = false, $isDeposit = true)
     {
-        $methods = $this->client->getActivePaymentMethods($filter);
+        $methods = $this->client->getActivePaymentMethods($filter, null, $isRecurring, $isDeposit);
 
         static::assertSame($result, $methods->size());
     }
@@ -84,6 +86,17 @@ class PaymentMethodsTest extends BaseTestCase
                     array('access_account_owner', 'alternative_method')
                 ),
                 1,
+            ),
+            array(
+                new PaymentMethodFilter(array(), array(), array()),
+                1,
+                true,
+            ),
+            array(
+                new PaymentMethodFilter(array(), array(), array()),
+                1,
+                false,
+                false,
             ),
         );
     }
