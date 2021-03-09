@@ -74,7 +74,7 @@ class ApiService implements ApiServiceInterface
     /**
      * Get complete information about the specified payment.
      *
-     * @see https://dataapi21.docs.apiary.io/#reference/projects/payment/get-specific-payment
+     * @see https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/get-payment-detail
      *
      * @param Identifier $paymentUid
      *
