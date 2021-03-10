@@ -139,11 +139,11 @@ class ApiService implements ApiServiceInterface
             ->httpService
             ->post($url, json_encode($jsonParams));
 
-        if ($response->getCode() !== 201) {
+        if ( ! in_array($response->getCode(), array(200, 201), true)) {
             throw $this->buildException($url, $response);
         }
 
-        return new CreatePaymentResponse($response->getBody());
+        return new CreatePaymentResponse($response->getBody(), $response->getCode() === 201);
     }
 
     /**
