@@ -3,6 +3,8 @@
 namespace ThePay\ApiClient\Tests;
 
 use Mockery;
+use ThePay\ApiClient\Model\Address;
+use ThePay\ApiClient\Model\CreatePaymentCustomer;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Tests\Mocks\Service\ApiMockService;
 use ThePay\ApiClient\TheClient;
@@ -96,7 +98,25 @@ class CreatePaymentTest extends BaseTestCase
 
     public function testCreateApiPayment()
     {
-        $result = $this->client->createPayment(new CreatePaymentParams(100, 'CZK', '202001010006'));
+        // Create entity with information about customer
+        $customer = new CreatePaymentCustomer(
+            'Mike',
+            'Smith',
+            'mike.smith@example.com',
+            // Phone number in international format max 15 numeric chars https://en.wikipedia.org/wiki/MSISDN
+            '420589687963',
+            // Create billing address
+            new Address('CZ', 'Prague', '123 00', 'Downstreet 5')
+        );
+
+        // Create payment (105.20 € with unique id uid123)
+        $createPayment = new CreatePaymentParams(100, 'CZK', 'uid123');
+        $createPayment->setOrderId('15478');
+        $createPayment->setDescriptionForCustomer('Payment for items on example.com');
+        $createPayment->setDescriptionForMerchant('Payment from VIP customer XYZ');
+        $createPayment->setCustomer($customer);
+
+        $result = $this->client->createPayment($createPayment);
 
         static::assertTrue(get_class($result) === 'ThePay\ApiClient\Model\CreatePaymentResponse');
     }
