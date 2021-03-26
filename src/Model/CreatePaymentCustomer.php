@@ -2,6 +2,7 @@
 
 namespace ThePay\ApiClient\Model;
 
+use ThePay\ApiClient\ValueObject\PhoneNumber;
 use ThePay\ApiClient\ValueObject\StringValue;
 
 final class CreatePaymentCustomer
@@ -12,7 +13,7 @@ final class CreatePaymentCustomer
     private $surname;
     /** @var StringValue */
     private $email;
-    /** @var StringValue */
+    /** @var PhoneNumber */
     private $phone;
     /** @var Address|null */
     private $billingAddress;
@@ -21,14 +22,14 @@ final class CreatePaymentCustomer
      * @param string $name
      * @param string $surname
      * @param string $email
-     * @param string $phone - up to 15 digits, no other characters allowed
+     * @param string $phone - customer phone in international format max 15 numeric chars https://en.wikipedia.org/wiki/MSISDN
      */
     public function __construct($name, $surname, $email, $phone, Address $billingAddress = null)
     {
         $this->name = new StringValue($name);
         $this->surname = new StringValue($surname);
         $this->email = new StringValue($email);
-        $this->phone = new StringValue($phone);
+        $this->phone = new PhoneNumber($phone);
         $this->billingAddress = $billingAddress;
     }
 

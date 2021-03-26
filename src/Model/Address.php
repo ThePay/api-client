@@ -17,10 +17,10 @@ final class Address
     private $street;
 
     /**
-     * @param string $countryCode - 2 letter UPPERCASE country code
-     * @param string $city
-     * @param string $zip
-     * @param string $street
+     * @param string $countryCode 2 letter UPPERCASE country code - ISO 3166-1 (alpha-2) format e.g. "GB"
+     * @param string $city max 100 chars city name
+     * @param string $zip max 20 chars zip of the city
+     * @param string $street max 100 chars street name with house number
      */
     public function __construct($countryCode, $city, $zip, $street)
     {

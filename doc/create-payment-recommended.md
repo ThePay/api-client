@@ -23,8 +23,9 @@ $thePay = new TheClient($config);
 $customer = new CreatePaymentCustomer(
     'Mike',
     'Smith',
-    'mike.smith@gmail.com',
-    '+420 000 000 000',
+    'mike.smith@example.com',
+    // Phone number in international format max 15 numeric chars https://en.wikipedia.org/wiki/MSISDN
+    '420589687963',
     // Create billing address
     new Address('CZ', 'Prague', '123 00', 'Downstreet 5')
 );
