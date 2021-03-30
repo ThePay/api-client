@@ -43,7 +43,7 @@ interface ApiServiceInterface
 
     /**
      * @param Identifier $paymentUid
-     * @return Payment
+     * @return bool
      * @throws ApiException
      */
     public function invalidatePayment(Identifier $paymentUid);
