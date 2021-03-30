@@ -450,6 +450,11 @@ class ApiMockService implements ApiServiceInterface
         return true;
     }
 
+    public function invalidatePayment(Identifier $paymentUid)
+    {
+        return true;
+    }
+
     /**
      * @param CreateRecurringPaymentParams $params
      *

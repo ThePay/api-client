@@ -42,6 +42,13 @@ interface ApiServiceInterface
     public function getPayment(Identifier $paymentUid);
 
     /**
+     * @param Identifier $paymentUid
+     * @return Payment
+     * @throws ApiException
+     */
+    public function invalidatePayment(Identifier $paymentUid);
+
+    /**
      * @param PaymentsFilter $filter
      * @param int $page
      * @param null|int $limit
