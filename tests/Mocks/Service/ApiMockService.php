@@ -13,6 +13,7 @@ use ThePay\ApiClient\Model\CreateRecurringPaymentParams;
 use ThePay\ApiClient\Model\Payment;
 use ThePay\ApiClient\Model\PaymentRefund;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
+use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Model\RealizeRecurringPaymentResponse;
 use ThePay\ApiClient\Service\ApiServiceInterface;
@@ -39,6 +40,14 @@ class ApiMockService implements ApiServiceInterface
     {
         $this->config = $config;
         $this->httpService = $httpService;
+    }
+
+    /**
+     * @return Project[]
+     */
+    public function getProjects()
+    {
+        return array(new Project(1, 'https://somedomain.cz', 'TP5911113021710162319866'));
     }
 
     /**
