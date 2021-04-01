@@ -12,6 +12,7 @@ use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\CreateRecurringPaymentParams;
 use ThePay\ApiClient\Model\Payment;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
+use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Model\RealizeRecurringPaymentResponse;
 use ThePay\ApiClient\TheConfig;
@@ -24,6 +25,13 @@ use ThePay\ApiClient\ValueObject\StringValue;
 interface ApiServiceInterface
 {
     public function __construct(TheConfig $config, HttpServiceInterface $httpService);
+
+    /**
+     * Fetch all projects for merchant set in TheConfig
+     *
+     * @return Project[]
+     */
+    public function getProjects();
 
     /**
      * Fetch all active payment methods.

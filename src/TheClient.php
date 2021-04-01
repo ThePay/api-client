@@ -13,6 +13,7 @@ use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\CreateRecurringPaymentParams;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
+use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\Service\ApiServiceInterface;
@@ -56,6 +57,18 @@ class TheClient
         $this->http = $http ?: new HttpCurlService(new SignatureService($config));
         $this->api = $api ?: new ApiService($config, $this->http);
         $this->gate = $gate ?: new GateService($config, $this->api);
+    }
+
+    /**
+     * Fetch all projects for merchant set in TheConfig
+     *
+     * @see https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-projects
+     *
+     * @return Project[]
+     */
+    public function getProjects()
+    {
+        return $this->api->getProjects();
     }
 
     /**
