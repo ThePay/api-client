@@ -93,14 +93,12 @@ class TheClient
 
     /**
      * @param string $paymentUid
-     * @return bool
+     * @return void
      * @throws ApiException
      */
     public function invalidatePayment($paymentUid)
     {
-        return $this
-            ->api
-            ->invalidatePayment(Identifier::create($paymentUid));
+        $this->api->invalidatePayment(Identifier::create($paymentUid));
     }
 
     /**

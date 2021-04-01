@@ -25,8 +25,8 @@ class InvalidatePaymentTest extends BaseTestCase
 
     public function testRequest()
     {
-        call_user_func(array($this->httpService, 'shouldReceive'), 'get')->once()
-            ->with($this->config->getApiUrl() . 'projects/1/payments/abc/invalidate?merchant_id=' . self::MERCHANT_ID)
+        call_user_func(array($this->httpService, 'shouldReceive'), 'put')->once()
+            ->with($this->config->getApiUrl() . 'projects/1/payments/abc/expire?merchant_id=' . self::MERCHANT_ID)
             ->andReturn($this->getOkResponse());
 
         $this->client->invalidatePayment('abc');
@@ -39,7 +39,7 @@ class InvalidatePaymentTest extends BaseTestCase
      */
     public function testNotOkResponse()
     {
-        call_user_func(array($this->httpService, 'shouldReceive'), 'get')
+        call_user_func(array($this->httpService, 'shouldReceive'), 'put')
             ->andReturn($this->getNotOkResponse());
 
         $this->client->invalidatePayment('abdc');

@@ -102,21 +102,19 @@ class ApiService implements ApiServiceInterface
      *
      * @param Identifier $paymentUid
      *
-     * @return bool
+     * @return void
      * @throws ApiException
      */
     public function invalidatePayment(Identifier $paymentUid)
     {
-        $url = $this->url(array('payments', $paymentUid, 'invalidate'));
+        $url = $this->url(array('payments', $paymentUid, 'expire'));
         $response = $this
             ->httpService
-            ->get($url);
+            ->put($url);
 
         if ($response->getCode() !== 200) {
             throw $this->buildException($url, $response);
         }
-
-        return true;
     }
 
     /**

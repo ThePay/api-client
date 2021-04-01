@@ -452,7 +452,6 @@ class ApiMockService implements ApiServiceInterface
 
     public function invalidatePayment(Identifier $paymentUid)
     {
-        return true;
     }
 
     /**
