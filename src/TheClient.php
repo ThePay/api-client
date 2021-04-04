@@ -105,6 +105,16 @@ class TheClient
     }
 
     /**
+     * @param string $paymentUid
+     * @return void
+     * @throws ApiException
+     */
+    public function invalidatePayment($paymentUid)
+    {
+        $this->api->invalidatePayment(Identifier::create($paymentUid));
+    }
+
+    /**
      * @param PaymentsFilter $filter Associative array of filters
      * @param int $page
      * @param null|int $limit
