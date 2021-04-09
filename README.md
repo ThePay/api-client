@@ -22,7 +22,7 @@ Make sure that you have all required credentials and that you've set up the API 
 - merchant ID
 - project ID
 - password for API access
-- enabled your IP address in project settings (you have to add IP address of your server)
+- enabled your IP address in project settings (you have to add IP address or IP address range of your server)
 
 **To test the integration** you can create simplified "ready-to-go" DEMO account in our [DEMO environment](https://demo.admin.thepay.cz/registration).
 
