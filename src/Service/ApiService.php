@@ -127,7 +127,7 @@ class ApiService implements ApiServiceInterface
     /**
      * Invalidates the specified payment.
      *
-     * @see https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/get-payment-detail
+     * @see https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/invalidate-payment
      *
      * @param Identifier $paymentUid
      *
@@ -136,7 +136,7 @@ class ApiService implements ApiServiceInterface
      */
     public function invalidatePayment(Identifier $paymentUid)
     {
-        $url = $this->url(array('payments', $paymentUid, 'expire'));
+        $url = $this->url(array('payments', $paymentUid, 'invalidate'));
         $response = $this
             ->httpService
             ->put($url);
