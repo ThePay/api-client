@@ -56,6 +56,15 @@ echo $thePay->getPaymentButton($paymentParams);
 // echo $thePay->getPaymentButtons($paymentParams);
 ```
 
+```php
+// ... get payment state after user returned from payment gate or notification url triggered
+$uid = $_GET["payment_uid"];
+// $projectId = $_GET["project_id"];
+
+$payment = $thePay->getPayment($uid);
+echo $payment->getState();
+```
+
 ## Configuration
 
 ```php
