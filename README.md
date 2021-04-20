@@ -49,7 +49,11 @@ $thePay = new TheClient($config);
 // Render payment methods for payment (100,- Kč)
 $paymentParams = new CreatePaymentParams(10000, 'CZK', 'uid124');
 
+// display button, user will choose payment method at the payment gate
 echo $thePay->getPaymentButton($paymentParams);
+
+// or buttons with available payment methods
+// echo $thePay->getPaymentButtons($paymentParams);
 ```
 
 ## Configuration
