@@ -187,4 +187,13 @@ class Payment extends SimplePayment
             'offsetAccountDeterminedAt' => $this->offsetAccountDeterminedAt,
         );
     }
+
+    /**
+     * @return bool Returns true if the payment was paid
+     */
+    public function wasPaid()
+    {
+        return in_array($this->getState(), array('paid', 'partially_refunded', 'refunded'))
+            && $this->getFinishedAt() != null;
+    }
 }
