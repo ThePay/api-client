@@ -14,7 +14,6 @@
 | createPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/create-new-payment |
 | realizePreauthorizedPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-preauthorized-payment |
 | cancelPreauthorizedPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/cancel-preauthorized-payment |
-| realizeRecurringPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-recurring-payment |
 | getPaymentRefund | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/payment-refund-info |
 | createPaymentRefund | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/payment-refund-request |
 
@@ -22,7 +21,6 @@
 
 [Creating payment](create-payment.md)
 
-[Recurring payment](create-recurring-payment.md)
 
 [Preauth payment](preauth-payments.md)
 
@@ -127,15 +125,6 @@ Will cancel preauth payment
 | --- | --- | --- | --- |
 | $uid | string | required | UID of the recurring payment you want to cancel |
 
-### realizeRecurringPayment
-
-Will realize recurring payment
-
-#### Parameters
-
-| name | type |  |
-| --- | --- | --- |
-| $params | CreateRecurringPaymentParams | required |
 
 ### getPaymentRefund
 

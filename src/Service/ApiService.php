@@ -10,14 +10,12 @@ use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
-use ThePay\ApiClient\Model\CreateRecurringPaymentParams;
 use ThePay\ApiClient\Model\PaginatedCollectionParams;
 use ThePay\ApiClient\Model\Payment;
 use ThePay\ApiClient\Model\PaymentMethod;
 use ThePay\ApiClient\Model\PaymentRefund;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
-use ThePay\ApiClient\Model\RealizeRecurringPaymentResponse;
 use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\Utils\Json;
 use ThePay\ApiClient\ValueObject\Amount;
@@ -206,26 +204,6 @@ class ApiService implements ApiServiceInterface
         }
 
         return true;
-    }
-
-    /**
-     * @param CreateRecurringPaymentParams $params
-     *
-     * @return RealizeRecurringPaymentResponse
-     * @throws ApiException
-     */
-    public function realizeRecurringPayment(CreateRecurringPaymentParams $params)
-    {
-        $url = $this->url(array('payments', $params->getParentUid(), 'recurring'));
-        $response = $this
-            ->httpService
-            ->post($url, json_encode($params->toArray()));
-
-        if ($response->getCode() !== 200) {
-            throw $this->buildException($url, $response);
-        }
-
-        return new RealizeRecurringPaymentResponse($response->getBody());
     }
 
     /**

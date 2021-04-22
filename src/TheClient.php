@@ -11,7 +11,6 @@ use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
-use ThePay\ApiClient\Model\CreateRecurringPaymentParams;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Service\ApiService;
@@ -213,19 +212,6 @@ class TheClient
         return $this
             ->api
             ->cancelPreauthorizedPayment(new Identifier($uid));
-    }
-
-    /**
-     * @param CreateRecurringPaymentParams $params
-     *
-     * @return Model\RealizeRecurringPaymentResponse
-     * @throws ApiException
-     */
-    public function realizeRecurringPayment(CreateRecurringPaymentParams $params)
-    {
-        return $this
-            ->api
-            ->realizeRecurringPayment($params);
     }
 
     /**
