@@ -9,13 +9,11 @@ use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
-use ThePay\ApiClient\Model\CreateRecurringPaymentParams;
 use ThePay\ApiClient\Model\Payment;
 use ThePay\ApiClient\Model\PaymentRefund;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
-use ThePay\ApiClient\Model\RealizeRecurringPaymentResponse;
 use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\ValueObject\Amount;
@@ -461,30 +459,6 @@ class ApiMockService implements ApiServiceInterface
 
     public function invalidatePayment(Identifier $paymentUid)
     {
-    }
-
-    /**
-     * @param CreateRecurringPaymentParams $params
-     *
-     * @return RealizeRecurringPaymentResponse
-     */
-    public function realizeRecurringPayment(CreateRecurringPaymentParams $params)
-    {
-        switch ((string) $params->getParentUid()) {
-            case 'failed':
-                $state = 'failed';
-                break;
-            case 'expired':
-                $state = 'expired';
-                break;
-            default:
-                $state = 'success';
-                break;
-        }
-        return new RealizeRecurringPaymentResponse('{
-          "state": "' . $state . '",
-          "message": "success"
-        }');
     }
 
     /**

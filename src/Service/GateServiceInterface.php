@@ -16,7 +16,7 @@ interface GateServiceInterface
 
     public function getPaymentButtons(CreatePaymentParams $params, PaymentMethodCollection $methods);
 
-    public function getPaymentButton($content, CreatePaymentParams $params);
+    public function getPaymentButton($content, CreatePaymentParams $params, $methodCode = null, array $attributes = array(), $usePostMethod = true);
 
     public function getInlineAssets();
 

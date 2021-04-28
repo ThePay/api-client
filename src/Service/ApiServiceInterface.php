@@ -9,12 +9,10 @@ use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
-use ThePay\ApiClient\Model\CreateRecurringPaymentParams;
 use ThePay\ApiClient\Model\Payment;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
-use ThePay\ApiClient\Model\RealizeRecurringPaymentResponse;
 use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
@@ -91,14 +89,6 @@ interface ApiServiceInterface
      * @throws ApiException
      */
     public function changePaymentMethod(Identifier $uid, PaymentMethodCode $paymentMethodCode);
-
-    /**
-     * @param CreateRecurringPaymentParams $params
-     *
-     * @return RealizeRecurringPaymentResponse
-     * @throws ApiException
-     */
-    public function realizeRecurringPayment(CreateRecurringPaymentParams $params);
 
     /**
      * Returns information about payment refund.

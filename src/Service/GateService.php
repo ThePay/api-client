@@ -38,30 +38,33 @@ class GateService implements GateServiceInterface
      * Returns HTML code contains link with redirection to paygate
      * @param string $content HTML content of button
      * @param CreatePaymentParams $params
-     * @param PaymentMethod|null $method
+     * @param string|PaymentMethod|null $methodCode
      * @param array $attributes
      * @param bool $usePostMethod
      * @return string HTML
      */
-    public function getPaymentButton($content, CreatePaymentParams $params, PaymentMethod $method = null, array $attributes = array(), $usePostMethod = true)
+    public function getPaymentButton($content, CreatePaymentParams $params, $methodCode = null, array $attributes = array(), $usePostMethod = true)
     {
         $result = '';
 
         $paymentData = $this->getPaymentData($params);
-        $btnAttrs = array();
 
         if ($usePostMethod) {
             $formId = $this->generateFormId();
             $result .= $this->buildPaymentDataForm($paymentData, array('id' => $formId));
             // Add data-form-id attribute to send form on link click
-            $btnAttrs['data-form-id'] = $formId;
+            $attributes['data-form-id'] = $formId;
         }
 
-        if ($method) {
-            $btnAttrs['data-payment-method'] = $method->getCode();
+        if ($methodCode instanceof PaymentMethod) {
+            $methodCode = $methodCode->getCode();
         }
 
-        $result .= $this->buildButton($this->getUrlForPayment($paymentData, $method), $content, $btnAttrs);
+        if ($methodCode) {
+            $attributes['data-payment-method'] = $methodCode;
+        }
+
+        $result .= $this->buildButton($this->getUrlForPayment($paymentData, $methodCode), $content, $attributes);
 
         return $result;
     }
@@ -90,7 +93,7 @@ class GateService implements GateServiceInterface
         $result .= '<div class="tp-btn-grid" >';
         foreach ($methods as $method) {
             $btnAttrs['data-payment-method'] = $method->getCode();
-            $result .= $this->buildButton($this->getUrlForPayment($paymentData, $method), $this->getButtonMethodContent($method), $btnAttrs);
+            $result .= $this->buildButton($this->getUrlForPayment($paymentData, $method->getCode()), $this->getButtonMethodContent($method), $btnAttrs);
         }
         $result .= '</div>';
 
@@ -119,13 +122,13 @@ class GateService implements GateServiceInterface
     /**
      * Returns link for payment
      * @param array $paymentData
-     * @param PaymentMethod|null $method
+     * @param string|null $methodCode
      * @return string
      */
-    private function getUrlForPayment(array $paymentData, PaymentMethod $method = null)
+    private function getUrlForPayment(array $paymentData, $methodCode = null)
     {
-        if ($method) {
-            $paymentData['payment_method_code'] = $method->getCode();
+        if ($methodCode) {
+            $paymentData['payment_method_code'] = (string) $methodCode;
         }
         return $this->config->getGateUrl() . '?' . http_build_query($paymentData);
     }
@@ -159,7 +162,7 @@ class GateService implements GateServiceInterface
     {
         $attributes['href'] = $link;
         $attributes['data-thepay'] = 'payment-button';
-        $attributes['class'] = 'tp-btn';
+        $attributes['class'] = 'tp-btn' . (isset($attributes['class']) ? ' ' . $attributes['class'] : '');
 
         return '<a ' . $this->htmlAttributes($attributes) . '>' . $content . '</a>';
     }
