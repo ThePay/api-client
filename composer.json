@@ -3,7 +3,7 @@
     "description": "API client for ThePay - payment gate API",
     "type": "library",
     "require": {
-        "php": "~5.3|~7.0",
+        "php": "~5.3|~7.0|~8.0",
         "ext-curl": "*",
         "ext-json": "*"
     },

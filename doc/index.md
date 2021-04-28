@@ -36,6 +36,10 @@
 
 [Change payment method of payment](change-payment-method-of-payment.md)
 
+[Handling returns of customers](return-of-the-customer.md)
+
+[Handling notification about changes](notifications.md)
+
 ## Methods
 
 ### getActivePaymentMethods
