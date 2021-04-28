@@ -146,9 +146,12 @@ class TheClient
      * @param CreatePaymentParams $params
      * @param string $title
      * @param bool $useInlineAssets false value disable generation default style & scripts
+     * @param string|null $methodCode
+     * @param array $attributes
+     * @param bool $usePostMethod
      * @return string This is HTML snippet with link redirection to payment gate. To payment method selection page.
      */
-    public function getPaymentButton(CreatePaymentParams $params, $title = 'Pay!', $useInlineAssets = true)
+    public function getPaymentButton(CreatePaymentParams $params, $title = 'Pay!', $useInlineAssets = true, $methodCode = null, array $attributes = array(), $usePostMethod = true)
     {
         $this->setLanguageCodeIfMissing($params);
 
@@ -156,7 +159,7 @@ class TheClient
         if ($useInlineAssets) {
             $result .= $this->getInlineAssets();
         }
-        $result .= $this->gate->getPaymentButton(htmlspecialchars($title), $params);
+        $result .= $this->gate->getPaymentButton(htmlspecialchars($title), $params, $methodCode, $attributes, $usePostMethod);
         return $result;
     }
 

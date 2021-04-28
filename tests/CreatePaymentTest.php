@@ -55,12 +55,16 @@ class CreatePaymentTest extends BaseTestCase
         );
     }
 
-    public function testCreateButtonChangeTitle()
+    public function testCreateCustomButton()
     {
         $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010003'));
         static::assertContains('Pay!', $r);
-        $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010004'), 'Zaplatit!');
+        static::assertContains('class="tp-btn"', $r);
+        static::assertNotContains('data-payment-method', $r);
+        $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010004'), 'Zaplatit!', true, 'bitcoin', array('class' => 'btn btn-success'));
         static::assertContains('Zaplatit!', $r);
+        static::assertContains('class="tp-btn btn btn-success"', $r);
+        static::assertContains('data-payment-method="bitcoin"', $r);
     }
 
     public function testGetPaymentMethods()
