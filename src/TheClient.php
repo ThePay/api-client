@@ -12,6 +12,7 @@ use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
+use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\Service\ApiServiceInterface;
@@ -58,6 +59,18 @@ class TheClient
     }
 
     /**
+     * Fetch all projects for merchant set in TheConfig
+     *
+     * @see https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-projects
+     *
+     * @return Project[]
+     */
+    public function getProjects()
+    {
+        return $this->api->getProjects();
+    }
+
+    /**
      * @param PaymentMethodFilter|null $filter
      * @param LanguageCode|null $languageCode language for payment method titles, null value language from TheConfig used
      * @param bool $isRecurring
@@ -88,6 +101,16 @@ class TheClient
         return $this
             ->api
             ->getPayment(Identifier::create($paymentUid));
+    }
+
+    /**
+     * @param string $paymentUid
+     * @return void
+     * @throws ApiException
+     */
+    public function invalidatePayment($paymentUid)
+    {
+        $this->api->invalidatePayment(Identifier::create($paymentUid));
     }
 
     /**

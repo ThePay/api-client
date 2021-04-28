@@ -11,6 +11,7 @@ use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\Payment;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
+use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\ValueObject\Amount;
@@ -22,6 +23,13 @@ use ThePay\ApiClient\ValueObject\StringValue;
 interface ApiServiceInterface
 {
     public function __construct(TheConfig $config, HttpServiceInterface $httpService);
+
+    /**
+     * Fetch all projects for merchant set in TheConfig
+     *
+     * @return Project[]
+     */
+    public function getProjects();
 
     /**
      * Fetch all active payment methods.
@@ -38,6 +46,13 @@ interface ApiServiceInterface
      * @throws ApiException
      */
     public function getPayment(Identifier $paymentUid);
+
+    /**
+     * @param Identifier $paymentUid
+     * @return void
+     * @throws ApiException
+     */
+    public function invalidatePayment(Identifier $paymentUid);
 
     /**
      * @param PaymentsFilter $filter

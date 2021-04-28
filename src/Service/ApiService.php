@@ -15,6 +15,7 @@ use ThePay\ApiClient\Model\Payment;
 use ThePay\ApiClient\Model\PaymentMethod;
 use ThePay\ApiClient\Model\PaymentRefund;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
+use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\Utils\Json;
@@ -40,6 +41,34 @@ class ApiService implements ApiServiceInterface
     {
         $this->config = $config;
         $this->httpService = $httpService;
+    }
+
+    /**
+     * Fetch all projects for merchant set in TheConfig
+     *
+     * @see https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-projects
+     *
+     * @return Project[]
+     */
+    public function getProjects()
+    {
+        $url = $this->config->getApiUrl() . 'projects?merchant_id=' . $this->config->getMerchantId();
+        $response = $this->httpService->get($url);
+
+        if ($response->getCode() !== 200) {
+            throw $this->buildException($url, $response);
+        }
+
+        $projects = array();
+        foreach (json_decode($response->getBody(), true) as $item) {
+            $projects[] = new Project(
+                $item['project_id'],
+                $item['project_url'],
+                $item['account_iban']
+            );
+        }
+
+        return $projects;
     }
 
     /**
@@ -91,6 +120,28 @@ class ApiService implements ApiServiceInterface
         }
 
         return new Payment($response->getBody());
+    }
+
+    /**
+     * Invalidates the specified payment.
+     *
+     * @see https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/invalidate-payment
+     *
+     * @param Identifier $paymentUid
+     *
+     * @return void
+     * @throws ApiException
+     */
+    public function invalidatePayment(Identifier $paymentUid)
+    {
+        $url = $this->url(array('payments', $paymentUid, 'invalidate'));
+        $response = $this
+            ->httpService
+            ->put($url);
+
+        if ($response->getCode() !== 200) {
+            throw $this->buildException($url, $response);
+        }
     }
 
     /**

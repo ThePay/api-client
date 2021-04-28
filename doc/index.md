@@ -6,6 +6,7 @@
 
 | SDK method | API/GATE call | Description |
 | --- | --- | --- |
+| getProjects | https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-projects | |
 | getActivePaymentMethods | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/get-payment-methods |
 | getPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/get-payment-detail |
 | getPayments | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/get-payments |
@@ -41,6 +42,14 @@
 [Handling notification about changes](notifications.md)
 
 ## Methods
+
+### getProjects
+
+Return array of project instances created by merchant in thepay system.
+
+| return type | |
+| --- | --- |
+| [Project](../src/Model/Project.php)[] | not null |
 
 ### getActivePaymentMethods
 

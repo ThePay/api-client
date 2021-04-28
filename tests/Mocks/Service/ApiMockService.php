@@ -12,6 +12,7 @@ use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\Payment;
 use ThePay\ApiClient\Model\PaymentRefund;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
+use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheConfig;
@@ -37,6 +38,14 @@ class ApiMockService implements ApiServiceInterface
     {
         $this->config = $config;
         $this->httpService = $httpService;
+    }
+
+    /**
+     * @return Project[]
+     */
+    public function getProjects()
+    {
+        return array(new Project(1, 'https://somedomain.cz', 'TP5911113021710162319866'));
     }
 
     /**
@@ -446,6 +455,10 @@ class ApiMockService implements ApiServiceInterface
     public function changePaymentMethod(Identifier $uid, PaymentMethodCode $paymentMethodCode)
     {
         return true;
+    }
+
+    public function invalidatePayment(Identifier $paymentUid)
+    {
     }
 
     /**
