@@ -63,6 +63,8 @@ You can create payment (link) via REST API and redirect user to that link - this
 
 No matter what method you will choose, you have two more options. The payment method could be preselected or not (the customer will select payment method at payment gate). Even if you (or your customer) preselect payment method, it could be changed after redirect.
 
+For more examples see [create-payment.md](doc/create-payment.md)
+
 ```php
 use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\TheClient;

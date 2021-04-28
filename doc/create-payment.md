@@ -27,6 +27,14 @@ Let's prepare payment of 1 CZK:
     $button = $client->getPaymentButton($params);
 ```
 
+### Redirect user to gate with specific payment method and/or specify custom button attributes
+
+```php
+    $paymentMethodCode = 'mojeplatba';
+    $buttonAttributes = array('class' => 'btn btn-success');
+    $button = $client->getPaymentButton($params, 'Button text', true, $paymentMethodCode, $buttonAttributes);
+```
+
 ### Redirect user to gate with payment method selected
 
 Method **getPaymentButtons** returns HTML code with form sended by click on payment link button.
