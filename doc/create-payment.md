@@ -43,10 +43,17 @@ Method **getPaymentButtons** returns HTML code with form sended by click on paym
     /** @var string $paymentButtons */
     // used default rendering
     $paymentButtons = $client->getPaymentButtons($params);
+    // Filter payment methods by tag. If tags are empty, all available methods will be displayed.
+    $onlyMethodsWithTags = array(
+        \ThePay\ApiClient\ValueObject\PaymentMethodTag::ONLINE,
+    );
+    $onlyMethodsWithoutTags = array(
+        \ThePay\ApiClient\ValueObject\PaymentMethodTag::ALTERNATIVE_METHOD,
+    );
     // used filtered methods
     // only payment methods matched used filter will be rendered in HTML,
     // but be still available for user in payment process!
-    $filter = new \ThePay\ApiClient\Filter\PaymentMethodFilter(array(), array(), array());
+    $filter = new \ThePay\ApiClient\Filter\PaymentMethodFilter(array(), $onlyMethodsWithTags, $onlyMethodsWithoutTags);
     $paymentButtons = $client->getPaymentButtons($params, $filter);
     // used without css styles
     // third bool parameter disable default css styles and javascript for payment method buttons
