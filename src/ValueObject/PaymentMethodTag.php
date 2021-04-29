@@ -13,6 +13,7 @@ final class PaymentMethodTag extends EnumValueObject
     const ACCESS_ACCOUNT_OWNER = 'access_account_owner';
     const ONLINE = 'online';
     const CARD = 'card';
+    const BANK_TRANSFER = 'bank_transfer';
     const ALTERNATIVE_METHOD = 'alternative_method';
 
     /**
@@ -27,6 +28,7 @@ final class PaymentMethodTag extends EnumValueObject
             self::ACCESS_ACCOUNT_OWNER,
             self::ONLINE,
             self::CARD,
+            self::BANK_TRANSFER,
             self::ALTERNATIVE_METHOD,
         );
     }
