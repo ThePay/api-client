@@ -57,7 +57,7 @@ $config->setLanguage($language);
 There are three steps when creating a payment:
 - creating a link through which the customer will realize the payment
 - hadling the return of customer to your website
-- handling server to server notification, which are sent by us when the state of payment has been changed
+- handling server to server notification, which are sent by us everytime the payment state is changed
 
 All of these steps will need to be implemented by yourself, but fear not, we have prepared examples that you can take on your journey through our SDK.
 
