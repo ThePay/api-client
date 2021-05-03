@@ -36,15 +36,16 @@ class TheConfig
      * @param string $apiPassword - password for API, should not be the same as the password for logging into administration
      * @param string $apiUrl - base url for all API calls
      * @param string $gateUrl - gate application base url for user frontend
+     * @param string $language - You may override this parameter later in request parameters, but this one will be used as a default value. The component requires format ISO 639‑1. Default value is cs.
      */
-    public function __construct($merchantId, $projectId, $apiPassword, $apiUrl, $gateUrl)
+    public function __construct($merchantId, $projectId, $apiPassword, $apiUrl, $gateUrl, $language = 'cs')
     {
         $this->merchantId = (string) $merchantId;
         $this->projectId = (int) $projectId;
         $this->password = (string) $apiPassword;
         $this->apiUrl = new SecureUrl($apiUrl);
         $this->gateUrl = new SecureUrl($gateUrl);
-        $this->language = new LanguageCode('cs');
+        $this->language = new LanguageCode($language);
     }
 
     /**
