@@ -8,4 +8,5 @@ mix-manifest.json
 phpunit.phar
 phpunit.xml.dist
 .php_cs.cache
+.php-cs-fixer.cache
 /test-reports/

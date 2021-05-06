@@ -10,6 +10,7 @@ class PaymentMethodCode extends EnumValueObject
     const CSOB = 'csob';
     const POSTOVNI_SPORITELNA = 'postovni_sporitelna';
     const EKONTO = 'ekonto';
+    const UNI_CREDIT = 'uni_credit';
     const MBANK = 'mbank';
     const FIO_BANKA = 'fio_banka';
     const MONETA = 'moneta';
@@ -29,6 +30,7 @@ class PaymentMethodCode extends EnumValueObject
             self::CSOB,
             self::POSTOVNI_SPORITELNA,
             self::EKONTO,
+            self::UNI_CREDIT,
             self::MBANK,
             self::FIO_BANKA,
             self::MONETA,
