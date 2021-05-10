@@ -12,7 +12,6 @@ use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\PaginatedCollectionParams;
 use ThePay\ApiClient\Model\Payment;
-use ThePay\ApiClient\Model\PaymentMethod;
 use ThePay\ApiClient\Model\PaymentRefund;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\Project;
@@ -176,11 +175,11 @@ class ApiService implements ApiServiceInterface
      * @return CreatePaymentResponse
      * @throws ApiException
      */
-    public function createPayment(CreatePaymentParams $createPaymentParams, PaymentMethod $paymentMethod = null)
+    public function createPayment(CreatePaymentParams $createPaymentParams, PaymentMethodCode $paymentMethod = null)
     {
         $jsonParams = $createPaymentParams->toArray();
         if ($paymentMethod) {
-            $jsonParams['payment_method_code'] = $paymentMethod->getCode();
+            $jsonParams['payment_method_code'] = $paymentMethod->getValue();
         }
 
         $url = $this->url(array('payments'));

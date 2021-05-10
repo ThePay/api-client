@@ -434,7 +434,7 @@ class ApiMockService implements ApiServiceInterface
         return $paymentCollection;
     }
 
-    public function createPayment(CreatePaymentParams $createPaymentParams)
+    public function createPayment(CreatePaymentParams $createPaymentParams, PaymentMethodCode $paymentMethod = null)
     {
         return new CreatePaymentResponse('{
           "pay_url": "https://gate.thepay.cz/",
