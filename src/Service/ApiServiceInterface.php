@@ -68,7 +68,7 @@ interface ApiServiceInterface
      * @return CreatePaymentResponse
      * @throws ApiException
      */
-    public function createPayment(CreatePaymentParams $createPaymentParams);
+    public function createPayment(CreatePaymentParams $createPaymentParams, PaymentMethodCode $paymentMethod = null);
 
     /**
      * @param RealizePreauthorizedPaymentParams $params

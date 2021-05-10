@@ -188,19 +188,22 @@ class TheClient
 
     /**
      * @param CreatePaymentParams $params
+     * @param string|null $methodCode
      *
      * @return CreatePaymentResponse
      * @throws ApiException
      */
-    public function createPayment(CreatePaymentParams $params)
+    public function createPayment(CreatePaymentParams $params, $methodCode = null)
     {
         if ($params->getLanguageCode() === null) {
             $params->setLanguageCode($this->config->getLanguage()->getValue());
         }
 
+        $paymentMethod = $methodCode === null ? null : new PaymentMethodCode($methodCode);
+
         return $this
             ->api
-            ->createPayment($params);
+            ->createPayment($params, $paymentMethod);
     }
 
     /**
