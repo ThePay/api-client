@@ -136,9 +136,8 @@ The customer is returned from ThePay gate to the return url address.
 
 Return url is set in administration and customer gets redirected there with two query parameters added - payment_uid and project_id (needed if you have one endpoint for multiple projects).
 
-The state of payment should optimally be checked at the time of customer return, since the customer usually returns upon successful payment completion.
-That means the payment is possibly already in the paid state.
-Unless forbidden, the customer might have also changed the payment method, so in case this information is relevant, this should be also checked.
+The state of payment must be checked at the time of customer return, since the payment may not always be in the paid state at this time.
+For example the customer simply returns to the e-shop without paying.
 
 #### General example of handling the customer return
 ```php
