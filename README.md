@@ -157,11 +157,9 @@ $config = new TheConfig($merchantId, $projectId, $apiPassword, $apiUrl, $gateUrl
 $thePay = new TheClient($config);
 
 $payment = $thePay->getPayment($uid);
-// get the present payment state from ThePay API
-$state = $payment->getState();
 
 // check if the payment is paid
-if ($state === PaymentState::PAID) {
+if ($payment->wasPaid()) {
     // Check if the order isn't labeled as paid yet. If not, do so.
     // ...
 }
