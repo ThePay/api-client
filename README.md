@@ -132,10 +132,14 @@ echo $thePay->getPaymentButton($paymentParams);
 
 ### 2. Customer return
 
-That means customer has returned from payment gate. you should check the state of payment at this point: the payment can be paid. The customer could change payment method, so check that too if you need this information.
+The customer is returned from ThePay gate to the return url address.
 
-Return url is set in administration and customer will be redirected there with two query parameters added - payment_uid and project_id (needed if you have one endpoint for multiple projects).
+Return url is set in administration and customer gets redirected there with two query parameters added - payment_uid and project_id (needed if you have one endpoint for multiple projects).
 
+The state of payment must be checked at the time of customer return, since the payment may not always be in the paid state at this time.
+For example the customer simply returns to the e-shop without paying.
+
+#### General example of handling the customer return
 ```php
 use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\TheClient;
@@ -153,7 +157,12 @@ $config = new TheConfig($merchantId, $projectId, $apiPassword, $apiUrl, $gateUrl
 $thePay = new TheClient($config);
 
 $payment = $thePay->getPayment($uid);
-echo $payment->getState();
+
+// check if the payment is paid
+if ($payment->wasPaid()) {
+    // Check if the order isn't labeled as paid yet. If not, do so.
+    // ...
+}
 ```
 
 ### 3. Server to server notification
