@@ -109,6 +109,11 @@ class SimplePayment
     private $offsetAccountDeterminedAt;
 
     /**
+     * @var array<PaymentEvent>
+     */
+    private $paymentEvents;
+
+    /**
      * @param string|array $values Json in string or associative array
      * @throws Exception
      */
@@ -134,6 +139,14 @@ class SimplePayment
         $this->offsetAccountStatus = $data['offset_account_status'];
         $this->customer = $data['customer'] ? new Customer($data['customer']) : null;
         $this->offsetAccountDeterminedAt = $data['offset_account_determined_at'] !== null ? new \DateTime($data['offset_account_determined_at']) : null;
+
+        if (count($data['events']) > 0) {
+            foreach ($data['events'] as $eventData) {
+                $paymentEvents[] = new PaymentEvent($eventData);
+            }
+        } else {
+            $this->paymentEvents = array();
+        }
     }
 
     /**
@@ -281,6 +294,30 @@ class SimplePayment
     }
 
     /**
+     * @return array<PaymentEvent>
+     */
+    public function getEvents()
+    {
+        return $this->paymentEvents;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasErrorOnLastAttempt()
+    {
+        return $this->wasEventTypeOnLastAttempt(PaymentEvent::PAYMENT_ERROR);
+    }
+
+    /**
+     * @return bool
+     */
+    public function wasLastAttemptCancelledByUser()
+    {
+        return $this->wasEventTypeOnLastAttempt(PaymentEvent::PAYMENT_CANCELLED);
+    }
+
+    /**
      * @return array The associative array of all parameters
      */
     public function toArray()
@@ -304,6 +341,7 @@ class SimplePayment
             'bankAccount' => $this->offsetAccount ? $this->offsetAccount->toArray() : null,
             'offsetAccountStatus' => $this->offsetAccountStatus,
             'offsetAccountDeterminedAt' => $this->offsetAccountDeterminedAt,
+            'events' => $this->paymentEvents,
         );
     }
 
@@ -314,5 +352,25 @@ class SimplePayment
     {
         return in_array($this->getState(), array('paid', 'partially_refunded', 'refunded'))
             && $this->getFinishedAt() != null;
+    }
+
+    /**
+     * @param string $eventType
+     * @return bool
+     */
+    private function wasEventTypeOnLastAttempt($eventType)
+    {
+        $events = array_reverse($this->getEvents());
+        foreach ($events as $event) {
+            if ($event->getType() === PaymentEvent::METHOD_SELECTION) {
+                break;
+            }
+
+            if ($event->getType() === $eventType) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

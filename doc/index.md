@@ -31,6 +31,8 @@
 
 [Get payments](get-payments.md)
 
+[Payment events](payment-events.md)
+
 [Refund payment](refund-payment.md)
 
 [Disable change of payment method](payment-disable-payment-method-change.md)

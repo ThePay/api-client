@@ -374,6 +374,9 @@ class ApiMockService implements ApiServiceInterface
                 'fee' => 12.1,
                 'description' => 'Some sort of description',
                 'order_id' => 'CZ12131415',
+                'pay_url' => 'http://example.com',
+                'detail_url' => 'http://example.com',
+                'offset_account_determined_at' => null,
                 'payment_method' => 'card',
                 'offset_account_status' => 'loaded',
                 'offset_account' =>
@@ -388,6 +391,14 @@ class ApiMockService implements ApiServiceInterface
                         'name' => 'The Customer',
                         'ip' => '192.168.0.1',
                         'email' => '',
+                    ),
+                'events' =>
+                    array(
+                        array(
+                            'occured_at' => '2021-05-03T10:23:27.000000Z',
+                            'type' => 'payment_cancelled',
+                            'data' => null,
+                        ),
                     ),
             )
         );
@@ -408,8 +419,11 @@ class ApiMockService implements ApiServiceInterface
                     'valid_to' => '2019-01-01T12:00:00+00:00',
                     'fee' => 12.1,
                     'description' => 'Some sort of description',
+                    'pay_url' => 'http://example.com',
+                    'detail_url' => 'http://example.com',
                     'order_id' => 'CZ12131415',
                     'payment_method' => 'card',
+                    'offset_account_determined_at' => null,
                     'offset_account_status' => 'loaded',
                     'offset_account' =>
                         array(
@@ -423,6 +437,14 @@ class ApiMockService implements ApiServiceInterface
                             'name' => 'The Customer',
                             'ip' => '192.168.0.1',
                             'email' => '',
+                        ),
+                    'events' =>
+                        array(
+                            array(
+                                'occured_at' => '2021-05-03T10:23:27.000000Z',
+                                'type' => 'payment_cancelled',
+                                'data' => null,
+                            ),
                         ),
                 ),
             ),
