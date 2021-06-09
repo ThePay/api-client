@@ -111,7 +111,7 @@ class SimplePayment
     /**
      * @var array<PaymentEvent>
      */
-    private $paymentEvents;
+    private $paymentEvents = array();
 
     /**
      * @param string|array $values Json in string or associative array
@@ -144,8 +144,6 @@ class SimplePayment
             foreach ($data['events'] as $eventData) {
                 $this->paymentEvents[] = new PaymentEvent($eventData);
             }
-        } else {
-            $this->paymentEvents = array();
         }
     }
 
