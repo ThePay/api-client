@@ -142,7 +142,7 @@ class SimplePayment
 
         if (count($data['events']) > 0) {
             foreach ($data['events'] as $eventData) {
-                $paymentEvents[] = new PaymentEvent($eventData);
+                $this->paymentEvents[] = new PaymentEvent($eventData);
             }
         } else {
             $this->paymentEvents = array();
