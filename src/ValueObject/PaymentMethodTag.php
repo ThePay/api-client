@@ -15,6 +15,7 @@ final class PaymentMethodTag extends EnumValueObject
     const CARD = 'card';
     const BANK_TRANSFER = 'bank_transfer';
     const ALTERNATIVE_METHOD = 'alternative_method';
+    const DEFERRED_PAYMENT = 'deferred_payment';
 
     /**
      * @return string[]
@@ -30,6 +31,7 @@ final class PaymentMethodTag extends EnumValueObject
             self::CARD,
             self::BANK_TRANSFER,
             self::ALTERNATIVE_METHOD,
+            self::DEFERRED_PAYMENT,
         );
     }
 }

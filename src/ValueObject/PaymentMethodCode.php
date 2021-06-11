@@ -17,6 +17,7 @@ class PaymentMethodCode extends EnumValueObject
     const EQUA_BANK = 'equa_bank';
     const TRANSFER = 'transfer';
     const BITCOIN = 'bitcoin';
+    const PLATIMPAK = 'platimpak';
 
     /**
      * @return string[]
@@ -37,6 +38,7 @@ class PaymentMethodCode extends EnumValueObject
             self::EQUA_BANK,
             self::TRANSFER,
             self::BITCOIN,
+            self::PLATIMPAK,
         );
     }
 }
