@@ -4,9 +4,11 @@ namespace ThePay\ApiClient\Service;
 
 use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentsFilter;
+use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
+use ThePay\ApiClient\Model\Collection\TransactionCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\Payment;
@@ -62,6 +64,14 @@ interface ApiServiceInterface
      * @throws ApiException
      */
     public function getPayments(PaymentsFilter $filter, $page = 1, $limit = null);
+
+    /**
+     * @param TransactionFilter $filter
+     * @param int $page
+     * @param null|int $limit
+     * @return TransactionCollection
+     */
+    public function getAccountTransactionHistory(TransactionFilter $filter, $page = 1, $limit = null);
 
     /**
      * @param CreatePaymentParams $createPaymentParams
