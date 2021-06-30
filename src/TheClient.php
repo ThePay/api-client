@@ -5,6 +5,7 @@ namespace ThePay\ApiClient;
 use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Filter\PaymentsFilter;
+use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Http\HttpCurlService;
 use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
@@ -68,6 +69,20 @@ class TheClient
     public function getProjects()
     {
         return $this->api->getProjects();
+    }
+
+    /**
+     * @param TransactionFilter $filter
+     * @param int $page
+     * @param int $limit
+     * @return Model\Collection\TransactionCollection
+     * @throws \Exception
+     */
+    public function getAccountTransactionHistory(TransactionFilter $filter, $page = 1, $limit = 100)
+    {
+        return $this
+            ->api
+            ->getAccountTransactionHistory($filter, $page, $limit);
     }
 
     /**
