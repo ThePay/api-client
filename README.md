@@ -28,7 +28,7 @@ Make sure that you have all required credentials and that you've set up the API 
 
 You can find all the necessary credentials in "Implementation" section under your merchant profile:
 
-![](doc/img/the-admin-credentials.png)
+![](https://bitbucket.org/thepaygate/thepay-v2-php-sdk/raw/HEAD/doc/img/the-admin-credentials.png)
 
 ## Usage
 
@@ -38,7 +38,7 @@ You will work with only two classes when using this SDK.
 
 ## Configuration
 
-All constructor parameters are described in [php doc](src/TheConfig.php)
+All constructor parameters are described in [php doc](https://bitbucket.org/thepaygate/thepay-v2-php-sdk/src/HEAD/src/TheConfig.php)
 
 ```php
 $config = new ThePay\ApiClient\TheConfig(
@@ -73,7 +73,7 @@ No matter what method you choose, you have two more options, based on preselecti
 
 Even if you (or your customer) preselect the payment method, it can still be changed after redirection, unless specifically forbidden.
 
-![](doc/img/payment_flow.png)
+![](https://bitbucket.org/thepaygate/thepay-v2-php-sdk/raw/HEAD/doc/img/payment_flow.png)
 
 #### REST API
 You can create payment (link) via REST API and redirect user to that link. The payment itself is created through an API call.
@@ -100,7 +100,7 @@ These are the usual ways for payment creation:
 - Redirection with selection of payment method in ThePay gateway
 - Redirection with selection of payment method in the e-shop
 
-For more examples see [create-payment.md](doc/create-payment.md)
+For more examples see [create-payment.md](https://bitbucket.org/thepaygate/thepay-v2-php-sdk/src/HEAD/doc/create-payment.md)
 
 ```php
 use ThePay\ApiClient\TheConfig;
@@ -193,7 +193,7 @@ if ($payment->getState() === 'paid') {
 
 ## More and detailed usage examples
 
-You can find more usage examples at [folder /doc](doc/index.md).
+You can find more usage examples at [folder /doc](https://bitbucket.org/thepaygate/thepay-v2-php-sdk/src/HEAD/doc/index.md).
 
 ## Money calculations
 
