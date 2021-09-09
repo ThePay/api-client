@@ -6,6 +6,8 @@ use Mockery;
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Tests\Mocks\Service\ApiMockService;
 use ThePay\ApiClient\TheClient;
+use ThePay\ApiClient\ValueObject\PaymentMethodCode;
+use ThePay\ApiClient\ValueObject\PaymentMethodTag;
 
 class PaymentMethodsTest extends BaseTestCase
 {
@@ -36,6 +38,99 @@ class PaymentMethodsTest extends BaseTestCase
         static::assertSame(array('online', 'returnable'), $cardMethod->getTags());
         static::assertSame(array('CZK'), $cardMethod->getAvailableCurrencies());
         static::assertSame('https://neco.cz', $cardMethod->getImageUrl()->getValue());
+    }
+
+    /**
+     * This test verifies that doubling payment method tags in filters has no effect for filtered payment methods.
+     *
+     * @param string $expectedMethod
+     * @param array $usedTags
+     * @param bool $isRecurring This parameter causes adding of recurring_payments tag
+     * @param bool $isNotDeposit This parameter causes adding of pre_authorization tag
+     *
+     * @throws \ThePay\ApiClient\Exception\ApiException
+     *
+     * @dataProvider paymentMethodsFilterDoublingUsedTagsDataProvider
+     */
+    public function testPaymentMethodsFilterDoublingUsedTags($expectedMethod, array $usedTags, $isRecurring, $isNotDeposit)
+    {
+        $filter = new PaymentMethodFilter(array(), $usedTags, array());
+
+        $methods = $this->client->getActivePaymentMethods()
+            ->getFiltered($filter, $isRecurring, ! $isNotDeposit);
+
+        self::assertNotNull($methods->get($expectedMethod));
+    }
+
+    public function testPaymentMethodsFilterDoublingBannedTags()
+    {
+        $filter = new PaymentMethodFilter(array(), array(), array(PaymentMethodTag::PRE_AUTHORIZATION, PaymentMethodTag::PRE_AUTHORIZATION));
+
+        $methods = $this->client->getActivePaymentMethods()
+            ->getFiltered($filter);
+
+        self::assertNull($methods->get(PaymentMethodTag::CARD));
+    }
+
+    public function testPaymentMethodsFilterDoublingCurrencies()
+    {
+        $filter = new PaymentMethodFilter(array('CZK', 'CZK'), array(), array());
+
+        $methods = $this->client->getActivePaymentMethods()
+            ->getFiltered($filter);
+
+        self::assertNotNull($methods->get(PaymentMethodTag::CARD));
+    }
+
+    public function paymentMethodsFilterDoublingUsedTagsDataProvider()
+    {
+        return array(
+            array(
+                PaymentMethodCode::CARD,
+                array(
+                    PaymentMethodTag::PRE_AUTHORIZATION,
+                ),
+                false,
+                true,
+            ),
+            array(
+                PaymentMethodCode::CARD,
+                array(
+                    PaymentMethodTag::RECURRING_PAYMENTS,
+                ),
+                true,
+                false,
+            ),
+            array(
+                PaymentMethodCode::CARD,
+                array(
+                    PaymentMethodTag::PRE_AUTHORIZATION,
+                    PaymentMethodTag::PRE_AUTHORIZATION,
+                ),
+                false,
+                true,
+            ),
+            array(
+                PaymentMethodCode::CARD,
+                array(
+                    PaymentMethodTag::RECURRING_PAYMENTS,
+                    PaymentMethodTag::RECURRING_PAYMENTS,
+                ),
+                true,
+                false,
+            ),
+            array(
+                PaymentMethodCode::CARD,
+                array(
+                    PaymentMethodTag::PRE_AUTHORIZATION,
+                    PaymentMethodTag::RECURRING_PAYMENTS,
+                    PaymentMethodTag::PRE_AUTHORIZATION,
+                    PaymentMethodTag::RECURRING_PAYMENTS,
+                ),
+                true,
+                true,
+            ),
+        );
     }
 
     /**
