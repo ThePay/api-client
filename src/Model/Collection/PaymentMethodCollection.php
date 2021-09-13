@@ -66,6 +66,10 @@ class PaymentMethodCollection extends Collection
             $mustHaveTags[] = PaymentMethodTag::PRE_AUTHORIZATION;
         }
 
+        $requiredCurrencies = array_unique($requiredCurrencies);
+        $mustHaveTags = array_unique($mustHaveTags);
+        $canNotHaveTags = array_unique($canNotHaveTags);
+
         $result = $this->data;
 
         if ( ! empty($requiredCurrencies)) {
