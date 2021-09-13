@@ -4,9 +4,11 @@ namespace ThePay\ApiClient\Tests\Mocks\Service;
 
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Filter\PaymentsFilter;
+use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
+use ThePay\ApiClient\Model\Collection\TransactionCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\Payment;
@@ -493,5 +495,46 @@ class ApiMockService implements ApiServiceInterface
 
     public function createPaymentRefund(Identifier $uid, Amount $amount, StringValue $reason)
     {
+    }
+
+    /**
+     * @param TransactionFilter $filter
+     * @param int $page
+     * @param null|int $limit
+     * @return TransactionCollection
+     */
+    public function getAccountTransactionHistory(TransactionFilter $filter, $page = 1, $limit = null)
+    {
+        $transactionCollection = new TransactionCollection(
+            array(
+                array(
+                    'transaction_id' => '35',
+                    'amount' => 876.54,
+                    'currency_code' => 'CZK',
+                    'transaction_type' => 'payment',
+                    'note' => 'Poznamka',
+                    'realized_at' => '2021-05-01T12:00:00+00:00',
+                    'vs' => '12365',
+                    'ks' => '25',
+                    'ss' => '3',
+                    'offset_account' =>
+                        array(
+                            'iban' => 'CZ65 0800 0000 1920 0014 5399',
+                            'owner_name' => 'The Master',
+                        ),
+                    'payment_identificator' =>
+                        array(
+                            'project_id' => '1',
+                            'uid' => 'efd7d8e6-2fa3-3c46-b475-51762331bf56',
+                        ),
+                ),
+            ),
+            1,
+            1,
+            2
+        );
+
+        $transactionCollection->add($transactionCollection->offsetGet(0)); // Simulate 2 records
+        return $transactionCollection;
     }
 }

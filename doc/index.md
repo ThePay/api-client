@@ -17,6 +17,7 @@
 | cancelPreauthorizedPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/cancel-preauthorized-payment |
 | getPaymentRefund | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/payment-refund-info |
 | createPaymentRefund | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/payment-refund-request |
+| getAccountTransactionHistory | https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-account-transaction-history |
 
 ## Usage examples
 
@@ -42,6 +43,8 @@
 [Handling returns of customers](return-of-the-customer.md)
 
 [Handling notification about changes](notifications.md)
+
+[Get account transaction history](get-transactions-history.md)
 
 ## Methods
 
@@ -166,4 +169,16 @@ Will create request for automatic refund of payment
 | $uid | string | required |
 | $amount | int | required |
 | $reason | string | required |
+
+### getAccountTransactionHistory
+
+Return information about transactions history
+
+#### Parameters
+
+| name | type |  |
+| --- | --- | --- |
+| $filter | TransactionFilter | required |
+| $page | int | optional |
+| $limit | int | optional |
 

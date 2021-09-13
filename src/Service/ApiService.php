@@ -4,10 +4,12 @@ namespace ThePay\ApiClient\Service;
 
 use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentsFilter;
+use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Http\HttpResponse;
 use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
+use ThePay\ApiClient\Model\Collection\TransactionCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\PaginatedCollectionParams;
@@ -95,6 +97,38 @@ class ApiService implements ApiServiceInterface
         }
 
         return new PaymentMethodCollection($response->getBody());
+    }
+
+    /**
+     * @see https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-account-transaction-history
+     *
+     * @param TransactionFilter|null $filter
+     * @param int $page
+     * @param int $limit
+     * @return TransactionCollection
+     * @throws \Exception
+     */
+    public function getAccountTransactionHistory(TransactionFilter $filter = null, $page = 1, $limit = 100)
+    {
+        $paginatedCollectionParams = new PaginatedCollectionParams($filter, $page, $limit);
+        $argumentsArray = array(
+            'date_from' => $filter->getDateFrom()->format(DATE_ATOM),
+            'date_to' => $filter->getDateTo()->format(DATE_ATOM),
+            'limit' => $paginatedCollectionParams->getLimit(),
+            'page' => $paginatedCollectionParams->getPage(),
+        );
+        $url = $this->url(array('transactions', $filter->getAccountIban()), $argumentsArray, false);
+        $response = $this
+            ->httpService
+            ->get($url);
+
+        if ($response->getCode() !== 200) {
+            throw $this->buildException($url, $response);
+        }
+
+        $headers = $response->getHeaders();
+
+        return new TransactionCollection(Json::decode($response->getBody(), true), $page, $limit, $headers['X-Total-Count:']);
     }
 
     /**
@@ -304,9 +338,10 @@ class ApiService implements ApiServiceInterface
      *
      * @param array $path
      * @param array $arguments
+     * @param bool $includeProject
      * @return string
      */
-    private function url($path = array(), $arguments = array())
+    private function url($path = array(), $arguments = array(), $includeProject = true)
     {
         if ( ! isset($arguments['merchant_id'])) {
             ($arguments['merchant_id'] = $this->config->getMerchantId());
@@ -315,8 +350,10 @@ class ApiService implements ApiServiceInterface
             ($arguments['language'] = $this->config->getLanguage());
         }
 
-        // Specify project
-        array_unshift($path, 'projects', $this->config->getProjectId());
+        if ($includeProject) {
+            // Specify project
+            array_unshift($path, 'projects', $this->config->getProjectId());
+        }
 
         $pathImploded = implode('/', $path);
         if (strlen($pathImploded)) {
