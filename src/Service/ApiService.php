@@ -102,13 +102,13 @@ class ApiService implements ApiServiceInterface
     /**
      * @see https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-account-transaction-history
      *
-     * @param TransactionFilter|null $filter
+     * @param TransactionFilter $filter
      * @param int $page
      * @param int $limit
      * @return TransactionCollection
      * @throws \Exception
      */
-    public function getAccountTransactionHistory(TransactionFilter $filter = null, $page = 1, $limit = 100)
+    public function getAccountTransactionHistory(TransactionFilter $filter, $page = 1, $limit = 100)
     {
         $paginatedCollectionParams = new PaginatedCollectionParams($filter, $page, $limit);
         $argumentsArray = array(

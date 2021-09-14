@@ -15,7 +15,7 @@ final class ApiServiceTest extends BaseTestCase
     /** @var ApiService */
     private $service;
 
-    /** @var \Mockery\MockInterface|\ThePay\ApiClient\Http\HttpServiceInterface */
+    /** @var \Mockery\LegacyMockInterface|\ThePay\ApiClient\Http\HttpServiceInterface */
     private $httpService;
 
     /**
