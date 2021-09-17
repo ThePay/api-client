@@ -10,7 +10,7 @@ use ThePay\ApiClient\TheClient;
 
 class RealizePreauthorizationPaymentTest extends BaseTestCase
 {
-    /** @var \ThePay\ApiClient\Http\HttpServiceInterface|Mockery\MockInterface */
+    /** @var \Mockery\LegacyMockInterface|\ThePay\ApiClient\Http\HttpServiceInterface */
     private $httpService;
 
     /** @var TheClient */
