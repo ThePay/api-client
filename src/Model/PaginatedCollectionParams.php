@@ -2,6 +2,8 @@
 
 namespace ThePay\ApiClient\Model;
 
+use DateTime;
+
 class PaginatedCollectionParams implements SignableRequest
 {
     /** @var int */
@@ -59,9 +61,17 @@ class PaginatedCollectionParams implements SignableRequest
      */
     public function toArray()
     {
+        // we convert all dates to string
+        $baseParams = array_map(function ($param) {
+            if ($param instanceof DateTime) {
+                return $param->format(DATE_ATOM);
+            }
+            return $param;
+        }, $this->baseParams->toArray());
+
         return array_merge(array(
             'limit' => $this->limit,
             'page' => $this->page,
-        ), $this->baseParams->toArray());
+        ), $baseParams);
     }
 }
