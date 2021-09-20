@@ -111,13 +111,8 @@ class ApiService implements ApiServiceInterface
     public function getAccountTransactionHistory(TransactionFilter $filter, $page = 1, $limit = 100)
     {
         $paginatedCollectionParams = new PaginatedCollectionParams($filter, $page, $limit);
-        $argumentsArray = array(
-            'date_from' => $filter->getDateFrom()->format(DATE_ATOM),
-            'date_to' => $filter->getDateTo()->format(DATE_ATOM),
-            'limit' => $paginatedCollectionParams->getLimit(),
-            'page' => $paginatedCollectionParams->getPage(),
-        );
-        $url = $this->url(array('transactions', $filter->getAccountIban()), $argumentsArray, false);
+
+        $url = $this->url(array('transactions', $filter->getAccountIban()), $paginatedCollectionParams->toArray(), false);
         $response = $this
             ->httpService
             ->get($url);

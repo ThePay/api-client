@@ -50,7 +50,7 @@ class PaymentsFilter implements SignableRequest
      */
     public function __construct(
         \DateTime $createdFrom = null,
-        \DateTime$createdTo = null,
+        \DateTime $createdTo = null,
         \DateTime $finishedFrom = null,
         \DateTime $finishedTo = null,
         PaymentMethodCode $paymentMethod = null,
