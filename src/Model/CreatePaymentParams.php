@@ -43,8 +43,14 @@ final class CreatePaymentParams
     /** @var CreatePaymentCustomer|null */
     private $customer;
 
+    /** @var Subscription|null */
+    private $subscription;
+
     /** @var CreatePaymentItem[] */
     private $items;
+
+    /** @var bool if set to true, then it will remember customer card information for following child payments */
+    private $saveAuthorization = false;
 
     /** @var bool */
     private $isRecurring;
@@ -146,6 +152,26 @@ final class CreatePaymentParams
     }
 
     /**
+     * @return Subscription|null
+     */
+    public function getSubscription()
+    {
+        return $this->subscription;
+    }
+
+    /**
+     * @param Subscription|null $subscription
+     *
+     * @return CreatePaymentParams
+     */
+    public function setSubscription(Subscription $subscription = null)
+    {
+        $this->subscription = $subscription;
+
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getDescriptionForCustomer()
@@ -237,6 +263,25 @@ final class CreatePaymentParams
     public function setValidTo(\DateTime $validTo)
     {
         $this->validTo = $validTo;
+        return $this;
+    }
+
+    /**
+    * @return bool
+    */
+    public function getSaveAuthorization()
+    {
+        return $this->saveAuthorization;
+    }
+
+    /**
+     * @param bool $saveAuthorization
+     *
+     * @return CreatePaymentParams
+     */
+    public function setSaveAuthorization($saveAuthorization)
+    {
+        $this->saveAuthorization = $saveAuthorization;
         return $this;
     }
 
@@ -375,9 +420,14 @@ final class CreatePaymentParams
         } else {
             $result['customer'] = null;
         }
+        if ($this->subscription) {
+            $result['subscription'] = $this->subscription->toArray();
+        }
 
         $result['is_recurring'] = $this->isRecurring();
         $result['is_deposit'] = $this->isDeposit();
+
+        $result['save_authorization'] = $this->getSaveAuthorization();
 
         $result['can_customer_change_method'] = $this->canCustomerChangeMethod();
 

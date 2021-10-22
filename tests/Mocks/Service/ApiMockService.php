@@ -6,6 +6,7 @@ use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Http\HttpServiceInterface;
+use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\Collection\TransactionCollection;
@@ -15,7 +16,11 @@ use ThePay\ApiClient\Model\Payment;
 use ThePay\ApiClient\Model\PaymentRefund;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\Project;
+use ThePay\ApiClient\Model\RealizeIrregularSubscriptionPaymentParams;
+use ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
+use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
+use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
 use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\ValueObject\Amount;
@@ -483,6 +488,38 @@ class ApiMockService implements ApiServiceInterface
 
     public function invalidatePayment(Identifier $paymentUid)
     {
+    }
+
+    public function realizeRegularSubscriptionPayment(Identifier $parentPaymentUid, RealizeRegularSubscriptionPaymentParams $params)
+    {
+        return new ApiResponse('{
+          "state": "success",
+          "message": "Ok"
+        }', 200);
+    }
+
+    public function realizeIrregularSubscriptionPayment(Identifier $parentPaymentUid, RealizeIrregularSubscriptionPaymentParams $params)
+    {
+        return new ApiResponse('{
+          "state": "success",
+          "message": "Ok"
+        }', 200);
+    }
+
+    public function realizeUsageBasedSubscriptionPayment(Identifier $parentPaymentUid, RealizeUsageBasedSubscriptionPaymentParams $params)
+    {
+        return new ApiResponse('{
+          "state": "success",
+          "message": "Ok"
+        }', 200);
+    }
+
+    public function realizePaymentBySavedAuthorization(Identifier $parentPaymentUid, RealizePaymentBySavedAuthorizationParams $params)
+    {
+        return new ApiResponse('{
+          "state": "success",
+          "message": "Ok"
+        }', 200);
     }
 
     /**

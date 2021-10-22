@@ -18,6 +18,10 @@
 | getPaymentRefund | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/payment-refund-info |
 | createPaymentRefund | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/payment-refund-request |
 | getAccountTransactionHistory | https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-account-transaction-history |
+| realizeRegularSubscriptionPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-regular-subscription-payment |
+| realizeIrregularSubscriptionPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-irregular-subscription-payment |
+| realizeUsageBasedSubscriptionPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-usage-based-subscription-payment |
+| realizePaymentBySavedAuthorization | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-payment-by-saved-authorization |
 
 ## Usage examples
 
@@ -45,6 +49,10 @@
 [Handling notification about changes](notifications.md)
 
 [Get account transaction history](get-transactions-history.md)
+
+[Creating subscription](subscription.md)
+
+[Saving authorization](saving-authorization.md)
 
 ## Methods
 
@@ -182,3 +190,47 @@ Return information about transactions history
 | $page | int | optional |
 | $limit | int | optional |
 
+### realizeRegularSubscriptionPayment
+
+Realize subscription payment.
+
+#### Parameters
+
+| name | type |  | description |
+| --- | --- | --- | --- |
+| $uid | string | required | UID of parent payment |
+| $params | RealizeRegularSubscriptionPaymentParams | required | |
+
+### realizeIrregularSubscriptionPayment
+
+Realize subscription payment.
+
+#### Parameters
+
+| name | type |  | description |
+| --- | --- | --- | --- |
+| $uid | string | required | UID of parent payment |
+| $params | RealizeIrregularSubscriptionPaymentParams | required | |
+
+### realizeUsageBasedSubscriptionPayment
+
+Realize subscription payment.
+
+#### Parameters
+
+| name | type |  | description |
+| --- | --- | --- | --- |
+| $uid | string | required | UID of parent payment |
+| $params | RealizeUsageBasedSubscriptionPaymentParams | required | |
+
+
+### realizePaymentBySavedAuthorization
+
+Create new payment using saved authorization.
+
+#### Parameters
+
+| name | type |  | description |
+| --- | --- | --- | --- |
+| $uid | string | required | UID of parent payment |
+| $params | RealizePaymentBySavedAuthorizationParams | required | |

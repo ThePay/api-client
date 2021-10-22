@@ -8,13 +8,18 @@ use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Http\HttpCurlService;
 use ThePay\ApiClient\Http\HttpServiceInterface;
+use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\Project;
+use ThePay\ApiClient\Model\RealizeIrregularSubscriptionPaymentParams;
+use ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
+use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
+use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
 use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\Service\GateService;
@@ -127,6 +132,51 @@ class TheClient
     {
         $this->api->invalidatePayment(Identifier::create($paymentUid));
     }
+
+    /**
+     * @param string $parentPaymentUid UID of payment which initialized this subscription.
+     * @param RealizeRegularSubscriptionPaymentParams $params
+     * @return ApiResponse
+     * @throws ApiException
+     */
+    public function realizeRegularSubscriptionPayment($parentPaymentUid, RealizeRegularSubscriptionPaymentParams $params)
+    {
+        return $this->api->realizeRegularSubscriptionPayment(Identifier::create($parentPaymentUid), $params);
+    }
+
+    /**
+     * @param string $parentPaymentUid UID of payment which initialized this subscription.
+     * @param RealizeIrregularSubscriptionPaymentParams $params
+     * @return ApiResponse
+     * @throws ApiException
+     */
+    public function realizeIrregularSubscriptionPayment($parentPaymentUid, RealizeIrregularSubscriptionPaymentParams $params)
+    {
+        return $this->api->realizeIrregularSubscriptionPayment(Identifier::create($parentPaymentUid), $params);
+    }
+
+    /**
+     * @param string $parentPaymentUid UID of payment which initialized this subscription.
+     * @param RealizeUsageBasedSubscriptionPaymentParams $params
+     * @return ApiResponse
+     * @throws ApiException
+     */
+    public function realizeUsageBasedSubscriptionPayment($parentPaymentUid, RealizeUsageBasedSubscriptionPaymentParams $params)
+    {
+        return $this->api->realizeUsageBasedSubscriptionPayment(Identifier::create($parentPaymentUid), $params);
+    }
+
+    /**
+     * @param string $parentPaymentUid UID of first payment created with save_authorization=true.
+     * @param RealizePaymentBySavedAuthorizationParams $params
+     * @return ApiResponse
+     * @throws ApiException
+     */
+    public function realizePaymentBySavedAuthorization($parentPaymentUid, RealizePaymentBySavedAuthorizationParams $params)
+    {
+        return $this->api->realizePaymentBySavedAuthorization(Identifier::create($parentPaymentUid), $params);
+    }
+
 
     /**
      * @param PaymentsFilter $filter Associative array of filters
