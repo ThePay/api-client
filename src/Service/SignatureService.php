@@ -116,17 +116,6 @@ final class SignatureService
     }
 
     /**
-     * @param array $parameters
-     * @return string
-     */
-    private function getSignatureHash(array $parameters)
-    {
-        $query = $this->getStringFromParameters($parameters);
-
-        return $this->getSignatureHashForQuery($query);
-    }
-
-    /**
      * @param string $query
      * @return string
      */
@@ -135,47 +124,5 @@ final class SignatureService
         $query .= '&password=' . $this->config->getPassword();
 
         return hash('sha256', $query);
-    }
-
-    /**
-     * @param array $parameters
-     * @return string
-     */
-    private function getStringFromParameters(array $parameters)
-    {
-        $result = '?';
-
-        foreach ($parameters as $k => $v) {
-            $result .= $k . '=' . $this->sanitizeValues($v);
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param string[]|string $value
-     * @return string
-     */
-    private function sanitizeValues($value)
-    {
-        if (is_array($value)) {
-            return implode('|', $value);
-        }
-
-        // todo: objects
-
-        return $value;
-    }
-
-    /**
-     * @param array $parameters
-     * @return string
-     */
-    private function getUrlParams(array $parameters)
-    {
-        $parameters['merchant_id'] = $this->config->getMerchantId();
-        $parameters['signature'] = $this->getSignatureHash($parameters);
-
-        return http_build_query($parameters, null, '&');
     }
 }

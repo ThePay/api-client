@@ -34,10 +34,12 @@ class ApiMockService implements ApiServiceInterface
 {
     /**
      * @var TheConfig
+     * @phpstan-ignore-next-line -- never used (never mind)
      */
     private $config;
     /**
      * @var HttpServiceInterface
+     * @phpstan-ignore-next-line -- never used (never mind)
      */
     private $httpService;
 
