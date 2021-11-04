@@ -19,7 +19,11 @@ class GateService implements GateServiceInterface
     /** @var SignatureService */
     private $signatureService;
 
-    /** @var ApiServiceInterface */
+    /**
+     * @var ApiServiceInterface
+     *
+     * @phpstan-ignore-next-line never read (never mind, backward compatibility is more important)
+     */
     private $api;
 
     /**
