@@ -6,8 +6,7 @@ use ThePay\ApiClient\Model\SimplePayment;
 use ThePay\ApiClient\Utils\Json;
 
 /**
- * @method add(SimplePayment $item)
- * @method SimplePayment[] all()
+ * @extends Collection<SimplePayment>
  */
 final class PaymentCollection extends Collection implements Paginated
 {
@@ -20,6 +19,12 @@ final class PaymentCollection extends Collection implements Paginated
     /** @var int */
     private $totalCount;
 
+    /**
+     * @param string|array<array<string, mixed>> $json
+     * @param int $page
+     * @param int $recordsPerPage
+     * @param int $totalCount
+     */
     public function __construct($json, $page, $recordsPerPage, $totalCount)
     {
         $data = is_array($json) ? $json : Json::decode($json, true);

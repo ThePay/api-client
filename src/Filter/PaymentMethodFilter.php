@@ -53,6 +53,7 @@ class PaymentMethodFilter
 
     /**
      * @param string $currencyCode
+     * @return void
      */
     public function setCurrency($currencyCode)
     {

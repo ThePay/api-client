@@ -40,7 +40,7 @@ class RealizePreauthorizedPaymentParams implements SignableRequest
     }
 
     /**
-     * @return array The associative array of all parameters for signing the request (interface SignableRequest)
+     * @return array<string, mixed>
      */
     public function toArray()
     {

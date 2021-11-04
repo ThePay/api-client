@@ -12,17 +12,17 @@ class CurlWrapper
     const METHOD_PUT = 'PUT';
     const HEADER_HOST = 'Host';
 
-    /** @var resource */
+    /** @var \CurlHandle */
     private $curl;
 
     /**
-     * @var array
+     * @var array<string>
      */
     private $defaultHeaders;
 
     /**
-     * @param resource $curl
-     * @param array $defaultHeaders
+     * @param \CurlHandle $curl
+     * @param array<string> $defaultHeaders
      */
     public function __construct($curl, array $defaultHeaders = array())
     {
@@ -35,7 +35,7 @@ class CurlWrapper
      * @param string $method
      * @param string $url
      * @param string $data
-     * @param array $headers
+     * @param array<string> $headers
      * @return HttpResponse
      */
     public function request($method, $url, $data = '', array $headers = array())

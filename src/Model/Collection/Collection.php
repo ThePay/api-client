@@ -2,16 +2,21 @@
 
 namespace ThePay\ApiClient\Model\Collection;
 
+/**
+ * @template TValue
+ * @implements \ArrayAccess<string|int, TValue>
+ * @implements \Iterator<TValue>
+ */
 abstract class Collection implements \ArrayAccess, \Iterator
 {
-    /** @var array */
+    /** @var array<TValue> */
     protected $data = array();
 
     /** @var int */
     private $iteratorPosition = 0;
 
     /**
-     * @return array
+     * @return array<TValue>
      */
     public function all()
     {
@@ -19,7 +24,8 @@ abstract class Collection implements \ArrayAccess, \Iterator
     }
 
     /**
-     * @param mixed $item
+     * @param TValue $item
+     * @return void
      */
     public function add($item)
     {
@@ -32,6 +38,11 @@ abstract class Collection implements \ArrayAccess, \Iterator
         return count($this->data);
     }
 
+    /**
+     * @param string|int|null $offset
+     * @param TValue $value
+     * @return void
+     */
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -41,41 +52,67 @@ abstract class Collection implements \ArrayAccess, \Iterator
         }
     }
 
+    /**
+     * @param string|int $offset
+     * @return bool
+     */
     public function offsetExists($offset)
     {
         return isset($this->data[$offset]);
     }
 
+    /**
+     * @param string|int $offset
+     */
     public function offsetUnset($offset)
     {
         unset($this->data[$offset]);
     }
 
+    /**
+     * @param string|int $offset
+     * @return TValue|null
+     */
     public function offsetGet($offset)
     {
         return isset($this->data[$offset]) ? $this->data[$offset] : null;
     }
 
+    /**
+     * @return void
+     */
     public function rewind()
     {
         $this->iteratorPosition = 0;
     }
 
+    /**
+     * @return TValue
+     */
     public function current()
     {
         return $this->data[$this->iteratorPosition];
     }
 
+    /**
+     * @return int
+     */
     public function key()
     {
         return $this->iteratorPosition;
     }
 
+    /**
+     * @return void
+     */
     public function next()
     {
         ++$this->iteratorPosition;
     }
 
+    /**
+     * @return bool
+     */
     public function valid()
     {
         return isset($this->data[$this->iteratorPosition]);

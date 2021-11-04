@@ -4,6 +4,8 @@ namespace ThePay\ApiClient\Model;
 
 interface SignableRequest
 {
-    /** @return array The associative array of all parameters */
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray();
 }

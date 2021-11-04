@@ -70,6 +70,9 @@ class PaymentsFilter implements SignableRequest
         $this->amountTo = $amountTo;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getQueryParams()
     {
         return $this->toArray();
@@ -77,7 +80,7 @@ class PaymentsFilter implements SignableRequest
 
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray()
     {

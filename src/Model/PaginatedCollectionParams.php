@@ -17,6 +17,10 @@ class PaginatedCollectionParams implements SignableRequest
      */
     private $baseParams;
 
+    /**
+     * @param int $page
+     * @param int $limit
+     */
     public function __construct(SignableRequest $baseParams, $page = 1, $limit = 25)
     {
         $this->baseParams = $baseParams;
@@ -34,6 +38,7 @@ class PaginatedCollectionParams implements SignableRequest
 
     /**
      * @param int $limit
+     * @return void
      */
     public function setLimit($limit)
     {
@@ -50,6 +55,7 @@ class PaginatedCollectionParams implements SignableRequest
 
     /**
      * @param int $page
+     * @return void
      */
     public function setPage($page)
     {
@@ -57,7 +63,7 @@ class PaginatedCollectionParams implements SignableRequest
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray()
     {

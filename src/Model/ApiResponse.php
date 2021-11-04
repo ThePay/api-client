@@ -18,7 +18,7 @@ class ApiResponse
     /**
      * ApiResponse constructor.
      *
-     * @param string|array $values
+     * @param string|array<string, mixed> $values
      * @param int $statusCode
      */
     public function __construct($values, $statusCode)

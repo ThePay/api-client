@@ -21,7 +21,7 @@ class PaymentMethod
     /** @var string */
     private $title;
 
-    /** @var array */
+    /** @var array<string> */
     private $tags;
 
     /** @var string[] */
@@ -31,7 +31,7 @@ class PaymentMethod
     private $imageUrl;
 
     /**
-     * @param string|array $values Json in string or associative array
+     * @param string|array<string, mixed> $values Json in string or associative array
      */
     public function __construct($values)
     {
@@ -65,7 +65,7 @@ class PaymentMethod
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getAvailableCurrencies()
     {
@@ -73,7 +73,7 @@ class PaymentMethod
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getTags()
     {
@@ -81,7 +81,7 @@ class PaymentMethod
     }
 
     /**
-     * @return array The associative array of all parameters
+     * @return array<string, mixed>
      */
     public function toArray()
     {

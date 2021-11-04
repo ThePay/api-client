@@ -5,7 +5,7 @@ namespace ThePay\ApiClient\Model;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
 
-abstract class RealizeSubscriptionPaymentParams
+abstract class RealizeSubscriptionPaymentParams implements SignableRequest
 {
     /** @var Amount|null */
     protected $amount;
@@ -33,7 +33,7 @@ abstract class RealizeSubscriptionPaymentParams
     }
 
     /**
-     * @return array
+     * @return array<CreatePaymentItem>
      */
     public function getItems()
     {
@@ -54,7 +54,7 @@ abstract class RealizeSubscriptionPaymentParams
     }
 
     /**
-     * @return array The associative array of all parameters for signing the request (interface SignableRequest)
+     * @return array<string, mixed>
      */
     public function toArray()
     {

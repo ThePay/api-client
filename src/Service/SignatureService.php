@@ -24,10 +24,6 @@ final class SignatureService
         $this->config = $config;
     }
 
-    public function getRequestHeaders()
-    {
-    }
-
     /**
      * @param string $query
      * @return string
@@ -55,6 +51,7 @@ final class SignatureService
     }
 
     /**
+     * @param array<string, mixed> $data
      * @return string
      */
     public function getBase64FromParameters(array $data)

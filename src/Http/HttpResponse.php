@@ -20,7 +20,7 @@ class HttpResponse
     private $codeMessage;
 
     /**
-     * @var array|null
+     * @var array<string, string>|null
      */
     private $headers;
 
@@ -34,7 +34,7 @@ class HttpResponse
      * @param string|null $response
      * @param int|null $code
      * @param string $codeMessage
-     * @param array|null $headers
+     * @param array<string, string>|null $headers
      * @param string|null $body
      */
     public function __construct($response = null, $code = null, $codeMessage = '', array $headers = null, $body = null)
@@ -91,7 +91,7 @@ class HttpResponse
     }
 
     /**
-     * @return array|null
+     * @return array<string, string>|null
      */
     public function getHeaders()
     {

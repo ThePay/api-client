@@ -5,8 +5,7 @@ namespace ThePay\ApiClient\Model\Collection;
 use ThePay\ApiClient\Model\SimpleTransaction;
 
 /**
- * @method add(SimpleTransaction $item)
- * @method SimpleTransaction[] all()
+ * @extends Collection<SimpleTransaction>
  */
 final class TransactionCollection extends Collection implements Paginated
 {
@@ -21,7 +20,7 @@ final class TransactionCollection extends Collection implements Paginated
 
     /**
      * TransactionCollection constructor.
-     * @param array $data
+     * @param array<array<string, mixed>> $data
      * @param int $page
      * @param int $recordsPerPage
      * @param int $totalCount

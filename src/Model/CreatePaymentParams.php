@@ -8,7 +8,7 @@ use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
 use ThePay\ApiClient\ValueObject\Url;
 
-final class CreatePaymentParams
+final class CreatePaymentParams implements SignableRequest
 {
     /** @var Amount */
     private $amount;
@@ -124,7 +124,7 @@ final class CreatePaymentParams
     }
 
     /**
-     * @return array
+     * @return array<CreatePaymentItem>
      */
     public function getItems()
     {
@@ -312,6 +312,9 @@ final class CreatePaymentParams
         return http_build_query($this->toArray());
     }
 
+    /**
+     * @return void
+     */
     public function addItem(CreatePaymentItem $item)
     {
         $this->items[] = $item;
@@ -327,6 +330,7 @@ final class CreatePaymentParams
 
     /**
      * @param bool $isRecurring
+     * @return void
      */
     public function setIsRecurring($isRecurring)
     {
@@ -343,6 +347,7 @@ final class CreatePaymentParams
 
     /**
      * @param bool $isDeposit
+     * @return void
      */
     public function setIsDeposit($isDeposit)
     {
@@ -359,6 +364,7 @@ final class CreatePaymentParams
 
     /**
      * @param bool $canCustomerChangeMethod
+     * @return void
      */
     public function setCanCustomerChangeMethod($canCustomerChangeMethod)
     {
@@ -366,7 +372,7 @@ final class CreatePaymentParams
     }
 
     /**
-     * @return array The associative array of all parameters for signing the request (interface SignableRequest)
+     * @return array<string, mixed>
      */
     public function toArray()
     {

@@ -7,7 +7,7 @@ use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\CurrencyCode;
 use ThePay\ApiClient\ValueObject\Identifier;
 
-final class RealizePaymentBySavedAuthorizationParams
+final class RealizePaymentBySavedAuthorizationParams implements SignableRequest
 {
     /** @var Amount|null */
     private $amount;
@@ -55,7 +55,7 @@ final class RealizePaymentBySavedAuthorizationParams
     }
 
     /**
-     * @return array
+     * @return array<CreatePaymentItem>
      */
     public function getItems()
     {
@@ -84,7 +84,7 @@ final class RealizePaymentBySavedAuthorizationParams
     }
 
     /**
-     * @return array The associative array of all parameters for signing the request (interface SignableRequest)
+     * @return array<string, mixed>
      */
     public function toArray()
     {

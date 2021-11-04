@@ -39,6 +39,9 @@ class CreatePaymentItem
         $this->count = $count;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray()
     {
         return array(
