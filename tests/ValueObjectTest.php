@@ -7,6 +7,7 @@ use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\CurrencyCode;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
+use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 use ThePay\ApiClient\ValueObject\Url;
 
 class ValueObjectTest extends TestCase
@@ -146,6 +147,23 @@ class ValueObjectTest extends TestCase
         Url::create($url);
     }
 
+    /**
+     * @param string|null $expectedException Exception class name if is expected.
+     * @param string $code
+     *
+     * @dataProvider paymentMethodCodeProvider
+     */
+    public function testPaymentMethodCode($expectedException, $code)
+    {
+        if ($expectedException) {
+            self::setExpectedException($expectedException);
+        }
+
+        $value = new PaymentMethodCode($code);
+
+        self::assertSame($code, $value->getValue());
+    }
+
     public function amountProvider()
     {
         return array(
@@ -235,6 +253,15 @@ class ValueObjectTest extends TestCase
             array('hello'),
             array('test.com'),
             array('www.test.com'),
+        );
+    }
+
+    public function paymentMethodCodeProvider()
+    {
+        // [$expectedException, $code]
+        return array(
+            array(null, PaymentMethodCode::CARD),
+            array('InvalidArgumentException', 'not-existing-payment-method'),
         );
     }
 
