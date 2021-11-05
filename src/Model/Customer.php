@@ -19,7 +19,7 @@ class Customer
     private $email;
 
     /**
-     * @param string|array $values Json in string or associative array
+     * @param string|array<string, mixed> $values Json in string or associative array
      */
     public function __construct($values)
     {
@@ -64,7 +64,7 @@ class Customer
     }
 
     /**
-     * @return array The associative array of all parameters
+     * @return array<string, mixed>
      */
     public function toArray()
     {

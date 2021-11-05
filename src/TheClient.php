@@ -20,6 +20,8 @@ use ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
+use ThePay\ApiClient\Model\SimplePayment;
+use ThePay\ApiClient\Model\SimpleTransaction;
 use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\Service\GateService;
@@ -80,7 +82,7 @@ class TheClient
      * @param TransactionFilter $filter
      * @param int $page
      * @param int $limit
-     * @return Model\Collection\TransactionCollection
+     * @return Model\Collection\TransactionCollection<SimpleTransaction>
      * @throws \Exception
      */
     public function getAccountTransactionHistory(TransactionFilter $filter, $page = 1, $limit = 100)
@@ -182,7 +184,7 @@ class TheClient
      * @param PaymentsFilter $filter Associative array of filters
      * @param int $page
      * @param null|int $limit
-     * @return PaymentCollection
+     * @return PaymentCollection<SimplePayment>
      * @throws ApiException
      */
     public function getPayments(PaymentsFilter $filter = null, $page = 1, $limit = 25)
@@ -235,7 +237,7 @@ class TheClient
      * @param string $title
      * @param bool $useInlineAssets false value disable generation default style & scripts
      * @param string|null $methodCode
-     * @param array $attributes
+     * @param array<string, string> $attributes
      * @param bool $usePostMethod
      * @return string This is HTML snippet with link redirection to payment gate. To payment method selection page.
      */

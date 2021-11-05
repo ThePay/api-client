@@ -20,6 +20,8 @@ use ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
+use ThePay\ApiClient\Model\SimplePayment;
+use ThePay\ApiClient\Model\SimpleTransaction;
 use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
@@ -97,7 +99,7 @@ interface ApiServiceInterface
      * @param PaymentsFilter $filter
      * @param int $page
      * @param null|int $limit
-     * @return PaymentCollection
+     * @return PaymentCollection<SimplePayment>
      * @throws ApiException
      */
     public function getPayments(PaymentsFilter $filter, $page = 1, $limit = null);
@@ -106,7 +108,7 @@ interface ApiServiceInterface
      * @param TransactionFilter $filter
      * @param int $page
      * @param null|int $limit
-     * @return TransactionCollection
+     * @return TransactionCollection<SimpleTransaction>
      */
     public function getAccountTransactionHistory(TransactionFilter $filter, $page = 1, $limit = null);
 

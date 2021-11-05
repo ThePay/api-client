@@ -40,8 +40,11 @@
         "test": [
             "vendor/bin/phpunit tests --log-junit ./test-reports/junit.xml"
         ],
+        "stan7": [
+            "vendor/bin/phpstan analyse -c phpstan7.neon --memory-limit=1G"
+        ],
         "stan": [
-            "vendor/bin/phpstan analyse src tests --level=4 --memory-limit=1G"
+            "vendor/bin/phpstan analyse --memory-limit=1G"
         ]
     }
 }

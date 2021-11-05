@@ -66,7 +66,7 @@ pipelines:
                             - composer require phpstan/phpstan --dev --no-interaction
 
                             # stan
-                            - composer stan
+                            - composer stan7
 
                             # tests
                             - composer test
@@ -82,7 +82,7 @@ pipelines:
                             - composer require phpstan/phpstan --dev --no-interaction
 
                             # stan
-                            - composer stan
+                            - composer stan7
 
                             # tests
                             - composer test
@@ -98,7 +98,7 @@ pipelines:
                             - composer require phpstan/phpstan --dev --no-interaction
 
                             # stan
-                            - composer stan
+                            - composer stan7
 
                             # tests
                             - composer test
@@ -115,7 +115,7 @@ pipelines:
                             - composer require phpstan/phpstan --dev --no-interaction
 
                             # stan
-                            - composer stan
+                            - composer stan7
 
                             # tests
                             - composer test

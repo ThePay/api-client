@@ -4,6 +4,9 @@ namespace ThePay\ApiClient\ValueObject;
 
 interface ValueObject
 {
+    /**
+     * @param mixed $value
+     */
     public function __construct($value);
 
     /**
@@ -11,6 +14,9 @@ interface ValueObject
      */
     public function __toString();
 
+    /**
+     * @return mixed
+     */
     public function getValue();
 
     /**
@@ -20,7 +26,7 @@ interface ValueObject
 
     /**
      * @param mixed $value
-     * @return ValueObject
+     * @return static
      */
     public static function create($value);
 }

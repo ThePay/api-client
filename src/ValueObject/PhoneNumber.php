@@ -9,6 +9,9 @@ final class PhoneNumber extends BaseValueObject
     /** @var string */
     private $phone;
 
+    /**
+     * @param string $phone
+     */
     public function __construct($phone)
     {
         $phone = str_replace(array('+', ' '), '', $phone);

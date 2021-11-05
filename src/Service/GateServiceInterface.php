@@ -14,13 +14,32 @@ interface GateServiceInterface
      */
     public function __construct(TheConfig $config, ApiServiceInterface $api);
 
+    /**
+     * @return string HTML
+     */
     public function getPaymentButtons(CreatePaymentParams $params, PaymentMethodCollection $methods);
 
+    /**
+     * @param string $content HTML content of button
+     * @param string|null $methodCode
+     * @param array<string, string> $attributes
+     * @param bool $usePostMethod
+     * @return string HTML
+     */
     public function getPaymentButton($content, CreatePaymentParams $params, $methodCode = null, array $attributes = array(), $usePostMethod = true);
 
+    /**
+     * @return string HTML
+     */
     public function getInlineAssets();
 
+    /**
+     * @return string HTML
+     */
     public function getInlineStyles();
 
+    /**
+     * @return string HTML
+     */
     public function getInlineScripts();
 }

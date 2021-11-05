@@ -18,7 +18,7 @@ class CreatePaymentResponse
     /**
      * CreatePaymentResponse constructor.
      *
-     * @param string|array $values
+     * @param string|array<string, mixed> $values
      * @param bool $wasCreated
      */
     public function __construct($values, $wasCreated = true)

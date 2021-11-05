@@ -8,15 +8,14 @@ use ThePay\ApiClient\Utils\Json;
 use ThePay\ApiClient\ValueObject\PaymentMethodTag;
 
 /**
- * @method PaymentMethod[] all()
- * @method add(PaymentMethod $method)
+ * @extends Collection<PaymentMethod>
  */
 class PaymentMethodCollection extends Collection
 {
     /**
      * PaymentMethodCollection constructor.
      *
-     * @param string|array $json Valid json string or decoded array
+     * @param string|array<array<string, mixed>|PaymentMethod> $json Valid json string or decoded array
      */
     public function __construct($json)
     {

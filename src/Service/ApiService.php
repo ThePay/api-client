@@ -23,6 +23,8 @@ use ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
+use ThePay\ApiClient\Model\SimplePayment;
+use ThePay\ApiClient\Model\SimpleTransaction;
 use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\Utils\Json;
 use ThePay\ApiClient\ValueObject\Amount;
@@ -111,7 +113,7 @@ class ApiService implements ApiServiceInterface
      * @param TransactionFilter $filter
      * @param int $page
      * @param int $limit
-     * @return TransactionCollection
+     * @return TransactionCollection<SimpleTransaction>
      * @throws \Exception
      */
     public function getAccountTransactionHistory(TransactionFilter $filter, $page = 1, $limit = 100)
@@ -129,7 +131,7 @@ class ApiService implements ApiServiceInterface
 
         $headers = $response->getHeaders();
 
-        return new TransactionCollection(Json::decode($response->getBody(), true), $page, $limit, $headers['X-Total-Count:']);
+        return new TransactionCollection(Json::decode($response->getBody(), true), $page, $limit, (int) $headers['X-Total-Count:']);
     }
 
     /**
@@ -185,7 +187,7 @@ class ApiService implements ApiServiceInterface
      * @param PaymentsFilter $filter
      * @param int $page
      * @param null|int $limit
-     * @return PaymentCollection
+     * @return PaymentCollection<SimplePayment>
      * @throws ApiException
      */
     public function getPayments(PaymentsFilter $filter, $page = 1, $limit = 25)
@@ -203,7 +205,7 @@ class ApiService implements ApiServiceInterface
 
         $headers = $response->getHeaders();
 
-        return new PaymentCollection($response->getBody(), $page, $limit, $headers['X-Total-Count:']);
+        return new PaymentCollection($response->getBody(), $page, $limit, (int) $headers['X-Total-Count:']);
     }
 
     /**
@@ -426,8 +428,8 @@ class ApiService implements ApiServiceInterface
     /**
      * Build URL for API requests
      *
-     * @param array $path
-     * @param array $arguments
+     * @param array<string> $path
+     * @param array<string, mixed> $arguments
      * @param bool $includeProject
      * @return string
      */

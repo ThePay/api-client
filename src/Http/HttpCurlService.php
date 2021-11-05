@@ -73,6 +73,9 @@ class HttpCurlService implements HttpServiceInterface
         return $curl->request(CurlWrapper::METHOD_DELETE, $url);
     }
 
+    /**
+     * @return array<string>
+     */
     private function getSignatureAndVersionHeaders()
     {
         $signature = $this->signatureService->getSignatureForApi();

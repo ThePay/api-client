@@ -98,6 +98,7 @@ class TheConfig
 
     /**
      * @param string $language ISO 6391 format
+     * @return void
      */
     public function setLanguage($language)
     {

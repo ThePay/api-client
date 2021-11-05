@@ -43,7 +43,7 @@ class GateService implements GateServiceInterface
      * @param string $content HTML content of button
      * @param CreatePaymentParams $params
      * @param string|PaymentMethod|null $methodCode
-     * @param array $attributes
+     * @param array<string, string> $attributes
      * @param bool $usePostMethod
      * @return string HTML
      */
@@ -125,7 +125,7 @@ class GateService implements GateServiceInterface
 
     /**
      * Returns link for payment
-     * @param array $paymentData
+     * @param array<string, mixed> $paymentData
      * @param string|null $methodCode
      * @return string
      */
@@ -139,7 +139,7 @@ class GateService implements GateServiceInterface
 
     /**
      * @param CreatePaymentParams $params
-     * @return array
+     * @return array<string, string>
      */
     private function getPaymentData(CreatePaymentParams $params)
     {
@@ -159,7 +159,7 @@ class GateService implements GateServiceInterface
      * Builds and returns HTML button link to payment
      * @param string $link
      * @param string $content
-     * @param array $attributes
+     * @param array<string, string> $attributes
      * @return string HTML
      */
     private function buildButton($link, $content, array $attributes = array())
@@ -171,6 +171,9 @@ class GateService implements GateServiceInterface
         return '<a ' . $this->htmlAttributes($attributes) . '>' . $content . '</a>';
     }
 
+    /**
+     * @return string
+     */
     private function generateFormId()
     {
         return str_replace('.', '-', uniqid('thepay-payment-form-', true));
@@ -178,8 +181,8 @@ class GateService implements GateServiceInterface
 
     /**
      * Builds and returns HTML button link to payment
-     * @param array $paymentData
-     * @param array $attributes
+     * @param array<string, mixed> $paymentData
+     * @param array<string, string> $attributes
      * @return string HTML
      */
     private function buildPaymentDataForm(array $paymentData, array $attributes = array())
@@ -212,6 +215,10 @@ class GateService implements GateServiceInterface
             . '</span>';
     }
 
+    /**
+     * @param array<string, string> $attributes
+     * @return string
+     */
     private function htmlAttributes($attributes)
     {
         $result = '';
