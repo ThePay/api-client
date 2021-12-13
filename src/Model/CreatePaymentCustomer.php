@@ -7,62 +7,62 @@ use ThePay\ApiClient\ValueObject\StringValue;
 
 final class CreatePaymentCustomer
 {
-    /** @var StringValue */
+    /** @var StringValue|null */
     private $name;
-    /** @var StringValue */
+    /** @var StringValue|null */
     private $surname;
-    /** @var StringValue */
+    /** @var StringValue|null */
     private $email;
-    /** @var PhoneNumber */
+    /** @var PhoneNumber|null */
     private $phone;
     /** @var Address|null */
     private $billingAddress;
 
     /**
-     * @param string $name
-     * @param string $surname
-     * @param string $email
-     * @param string $phone - customer phone in international format max 15 numeric chars https://en.wikipedia.org/wiki/MSISDN
+     * @param string|null $name
+     * @param string|null $surname
+     * @param string|null $email
+     * @param string|null $phone - customer phone in international format max 15 numeric chars https://en.wikipedia.org/wiki/MSISDN
      */
     public function __construct($name, $surname, $email, $phone, Address $billingAddress = null)
     {
-        $this->name = new StringValue($name);
-        $this->surname = new StringValue($surname);
-        $this->email = new StringValue($email);
-        $this->phone = new PhoneNumber($phone);
+        $this->name = $name === null ? null : new StringValue($name);
+        $this->surname = $surname === null ? null : new StringValue($surname);
+        $this->email = $email === null ? null : new StringValue($email);
+        $this->phone = $phone === null ? null : new PhoneNumber($phone);
         $this->billingAddress = $billingAddress;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getName()
     {
-        return $this->name->getValue();
+        return $this->name === null ? null : $this->name->getValue();
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getSurname()
     {
-        return $this->surname->getValue();
+        return $this->surname === null ? null : $this->surname->getValue();
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getEmail()
     {
-        return $this->email->getValue();
+        return $this->email === null ? null : $this->email->getValue();
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getPhone()
     {
-        return $this->phone->getValue();
+        return $this->phone === null ? null : $this->phone->getValue();
     }
 
     /**
