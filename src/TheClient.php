@@ -40,7 +40,7 @@ use ThePay\ApiClient\ValueObject\StringValue;
 class TheClient
 {
     /** @var string */
-    const VERSION = '1.3.2';
+    const VERSION = '1.3.3';
 
     /** @var TheConfig */
     private $config;
