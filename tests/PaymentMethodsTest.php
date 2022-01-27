@@ -24,23 +24,21 @@ class PaymentMethodsTest extends BaseTestCase
         $this->client = new TheClient($this->config, null, $httpService, $apiService);
     }
 
-    // @todo Fix this test & apiary connection issue: #3847
-//
-//    public function testGettingActivePaymentMethods()
-//    {
-//        $client = $this->getApiaryClient();
-//
-//        $methods = $client->getActivePaymentMethods();
-//        $cardMethod = $methods->get('card');
-//
-//        static::assertSame(1, $methods->size());
-//        static::assertNotNull($cardMethod);
-//        static::assertSame('card', $cardMethod->getCode());
-//        static::assertSame('Card Payment', $cardMethod->getTitle());
-//        static::assertSame(array('online', 'returnable'), $cardMethod->getTags());
-//        static::assertSame(array('CZK'), $cardMethod->getAvailableCurrencies());
-//        static::assertSame('https://neco.cz', $cardMethod->getImageUrl()->getValue());
-//    }
+    public function testGettingActivePaymentMethods()
+    {
+        $client = $this->getApiaryClient();
+
+        $methods = $client->getActivePaymentMethods();
+        $cardMethod = $methods->get('card');
+
+        static::assertSame(1, $methods->size());
+        static::assertNotNull($cardMethod);
+        static::assertSame('card', $cardMethod->getCode());
+        static::assertSame('Card Payment', $cardMethod->getTitle());
+        static::assertSame(array('online', 'returnable'), $cardMethod->getTags());
+        static::assertSame(array('CZK'), $cardMethod->getAvailableCurrencies());
+        static::assertSame('https://neco.cz', $cardMethod->getImageUrl()->getValue());
+    }
 
     /**
      * This test verifies that doubling payment method tags in filters has no effect for filtered payment methods.
