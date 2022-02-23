@@ -2,6 +2,8 @@
 
 namespace ThePay\ApiClient;
 
+use Exception;
+use InvalidArgumentException;
 use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Filter\PaymentsFilter;
@@ -72,6 +74,7 @@ class TheClient
      * @see https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-projects
      *
      * @return Project[]
+     * @throws ApiException
      */
     public function getProjects()
     {
@@ -83,7 +86,7 @@ class TheClient
      * @param int $page
      * @param int $limit
      * @return Model\Collection\TransactionCollection<SimpleTransaction>
-     * @throws \Exception
+     * @throws Exception
      */
     public function getAccountTransactionHistory(TransactionFilter $filter, $page = 1, $limit = 100)
     {
@@ -116,67 +119,73 @@ class TheClient
     /**
      * @param string $paymentUid
      * @return Model\Payment
-     * @throws ApiException
+     * @throws ApiException|InvalidArgumentException
      */
     public function getPayment($paymentUid)
     {
+        $this->validateUid($paymentUid);
         return $this
             ->api
-            ->getPayment(Identifier::create($paymentUid));
+            ->getPayment(new Identifier($paymentUid));
     }
 
     /**
      * @param string $paymentUid
      * @return void
-     * @throws ApiException
+     * @throws ApiException|InvalidArgumentException
      */
     public function invalidatePayment($paymentUid)
     {
-        $this->api->invalidatePayment(Identifier::create($paymentUid));
+        $this->validateUid($paymentUid);
+        $this->api->invalidatePayment(new Identifier($paymentUid));
     }
 
     /**
      * @param string $parentPaymentUid UID of payment which initialized this subscription.
      * @param RealizeRegularSubscriptionPaymentParams $params
      * @return ApiResponse
-     * @throws ApiException
+     * @throws ApiException|InvalidArgumentException
      */
     public function realizeRegularSubscriptionPayment($parentPaymentUid, RealizeRegularSubscriptionPaymentParams $params)
     {
-        return $this->api->realizeRegularSubscriptionPayment(Identifier::create($parentPaymentUid), $params);
+        $this->validateUid($parentPaymentUid);
+        return $this->api->realizeRegularSubscriptionPayment(new Identifier($parentPaymentUid), $params);
     }
 
     /**
      * @param string $parentPaymentUid UID of payment which initialized this subscription.
      * @param RealizeIrregularSubscriptionPaymentParams $params
      * @return ApiResponse
-     * @throws ApiException
+     * @throws ApiException|InvalidArgumentException
      */
     public function realizeIrregularSubscriptionPayment($parentPaymentUid, RealizeIrregularSubscriptionPaymentParams $params)
     {
-        return $this->api->realizeIrregularSubscriptionPayment(Identifier::create($parentPaymentUid), $params);
+        $this->validateUid($parentPaymentUid);
+        return $this->api->realizeIrregularSubscriptionPayment(new Identifier($parentPaymentUid), $params);
     }
 
     /**
      * @param string $parentPaymentUid UID of payment which initialized this subscription.
      * @param RealizeUsageBasedSubscriptionPaymentParams $params
      * @return ApiResponse
-     * @throws ApiException
+     * @throws ApiException|InvalidArgumentException
      */
     public function realizeUsageBasedSubscriptionPayment($parentPaymentUid, RealizeUsageBasedSubscriptionPaymentParams $params)
     {
-        return $this->api->realizeUsageBasedSubscriptionPayment(Identifier::create($parentPaymentUid), $params);
+        $this->validateUid($parentPaymentUid);
+        return $this->api->realizeUsageBasedSubscriptionPayment(new Identifier($parentPaymentUid), $params);
     }
 
     /**
      * @param string $parentPaymentUid UID of first payment created with save_authorization=true.
      * @param RealizePaymentBySavedAuthorizationParams $params
      * @return ApiResponse
-     * @throws ApiException
+     * @throws ApiException|InvalidArgumentException
      */
     public function realizePaymentBySavedAuthorization($parentPaymentUid, RealizePaymentBySavedAuthorizationParams $params)
     {
-        return $this->api->realizePaymentBySavedAuthorization(Identifier::create($parentPaymentUid), $params);
+        $this->validateUid($parentPaymentUid);
+        return $this->api->realizePaymentBySavedAuthorization(new Identifier($parentPaymentUid), $params);
     }
 
 
@@ -274,64 +283,71 @@ class TheClient
     }
 
     /**
-     * @param string $uid
+     * @param string $paymentUid
      * @param string $paymentMethodCode
-     * @throws ApiException
      * @return bool
+     * @throws ApiException|InvalidArgumentException
      */
-    public function changePaymentMethod($uid, $paymentMethodCode)
+    public function changePaymentMethod($paymentUid, $paymentMethodCode)
     {
+        $this->validateUid($paymentUid);
         return $this
             ->api
-            ->changePaymentMethod(new Identifier($uid), new PaymentMethodCode($paymentMethodCode));
+            ->changePaymentMethod(new Identifier($paymentUid), new PaymentMethodCode($paymentMethodCode));
     }
 
     /**
      * @param RealizePreauthorizedPaymentParams $params
-     * @throws ApiException
      * @return bool
+     * @throws ApiException|InvalidArgumentException
      */
     public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params)
     {
+        $this->validateUid($params->getUid()->getValue());
         return $this
             ->api
             ->realizePreauthorizedPayment($params);
     }
 
     /**
-     * @param string $uid
-     * @throws ApiException
+     * @param string $paymentUid
      * @return bool
+     * @throws ApiException|InvalidArgumentException
      */
-    public function cancelPreauthorizedPayment($uid)
+    public function cancelPreauthorizedPayment($paymentUid)
     {
+        $this->validateUid($paymentUid);
         return $this
             ->api
-            ->cancelPreauthorizedPayment(new Identifier($uid));
+            ->cancelPreauthorizedPayment(new Identifier($paymentUid));
     }
 
     /**
      * Returns information about payment refund.
      *
-     * @param string $uid
+     * @param string $paymentUid
      * @return PaymentRefundInfo
+     * @throws ApiException|InvalidArgumentException
      */
-    public function getPaymentRefund($uid)
+    public function getPaymentRefund($paymentUid)
     {
-        return $this->api->getPaymentRefund(new Identifier($uid));
+        $this->validateUid($paymentUid);
+        return $this->api->getPaymentRefund(new Identifier($paymentUid));
     }
 
     /**
      * Will create request for automatic refund of payment.
      *
-     * @param string $uid
+     * @param string $paymentUid
      * @param int $amount amount which should be refunded in cents (currency used for refunding is same as payment currency)
      * @param string $reason
      * @return void
+     * @throws ApiException|InvalidArgumentException
      */
-    public function createPaymentRefund($uid, $amount, $reason)
+    public function createPaymentRefund($paymentUid, $amount, $reason)
     {
-        $this->api->createPaymentRefund(new Identifier($uid), new Amount($amount), new StringValue($reason));
+        $this->validateUid($paymentUid);
+        $this->api->createPaymentRefund(new Identifier($paymentUid), new Amount($amount), new StringValue($reason));
     }
 
     /**
@@ -372,5 +388,21 @@ class TheClient
         }
 
         return $params;
+    }
+
+    /**
+     * Validate that $uid is not empty
+     * @param mixed $uid
+     * @return void
+     * @throws InvalidArgumentException if $uid is null or ''
+     */
+    private function validateUid($uid)
+    {
+        if ($uid === null) {
+            throw new InvalidArgumentException('Payment UID cannot be null.');
+        }
+        if ($uid === '') {
+            throw new InvalidArgumentException('Payment UID cannot be empty string.');
+        }
     }
 }
