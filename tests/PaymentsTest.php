@@ -58,4 +58,10 @@ class PaymentsTest extends BaseTestCase
         static::setExpectedException('InvalidArgumentException', 'Payment UID cannot be empty string.');
         $this->client->getPayment('');
     }
+
+    public function testGetPaymentUidNotStringable()
+    {
+        static::setExpectedException('InvalidArgumentException', 'Payment UID cannot be converted to string.');
+        $this->client->getPayment(new \stdClass());
+    }
 }

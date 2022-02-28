@@ -404,5 +404,8 @@ class TheClient
         if ($uid === '') {
             throw new InvalidArgumentException('Payment UID cannot be empty string.');
         }
+        if ( ! is_scalar($uid) && ( ! is_object($uid) || ! method_exists($uid, '__toString'))) {
+            throw new InvalidArgumentException('Payment UID cannot be converted to string.');
+        }
     }
 }
