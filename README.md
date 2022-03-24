@@ -1,3 +1,16 @@
+
+# SDK source moved to github
+
+We decided to change the git repository hosting, from Bitbucket to [Github](https://github.com/ThePay/api-client)
+mainly for better technical support, like reporting bugs and other problems,
+using [Github Issues](https://github.com/ThePay/api-client/issues).
+This repository will remain read only and any new changes or documentation updates will be done here:
+[https://github.com/ThePay/api-client](https://github.com/ThePay/api-client).
+
+<a href="https://github.com/ThePay/api-client">
+    <img src="doc/img/Octocat.jpg" alt="Octocat" />
+</a>
+
 #  PHP SDK for ThePay.cz
 
 This is the official highly compatible public package of The Pay SDK which
