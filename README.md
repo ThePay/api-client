@@ -1,10 +1,10 @@
 
 # SDK source moved to github
 
-We decided change git repository hosting, from Bitbucket to [Github](https://github.com/ThePay/api-client)
+We decided to change the git repository hosting, from Bitbucket to [Github](https://github.com/ThePay/api-client)
 mainly for better technical support, like reporting bugs and other problems,
 using [Github Issues](https://github.com/ThePay/api-client/issues).
-This repository will remain only read and any new changes or documentation will be done here:
+This repository will remain read only and any new changes or documentation updates will be done here:
 [https://github.com/ThePay/api-client](https://github.com/ThePay/api-client).
 
 <a href="https://github.com/ThePay/api-client">
