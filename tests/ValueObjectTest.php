@@ -16,6 +16,7 @@ class ValueObjectTest extends TestCase
      * @dataProvider amountProvider
      *
      * @param int $amount
+     * @return void
      */
     public function testAmount($amount)
     {
@@ -32,6 +33,7 @@ class ValueObjectTest extends TestCase
      * @dataProvider invalidAmountProvider
      *
      * @param mixed $amount
+     * @return void
      */
     public function testAmountInvalidValues($amount)
     {
@@ -43,6 +45,7 @@ class ValueObjectTest extends TestCase
      * @dataProvider currencyCodeProvider
      *
      * @param string $currency
+     * @return void
      */
     public function testCurrencyCode($currency)
     {
@@ -59,6 +62,7 @@ class ValueObjectTest extends TestCase
      * @dataProvider invalidCurrencyCodeProvider
      *
      * @param mixed $currency
+     * @return void
      */
     public function testCurrencyCodeInvalidValues($currency)
     {
@@ -70,6 +74,7 @@ class ValueObjectTest extends TestCase
      * @dataProvider identifierProvider
      *
      * @param string $id
+     * @return void
      */
     public function testIdentifier($id)
     {
@@ -86,6 +91,7 @@ class ValueObjectTest extends TestCase
      * @dataProvider invalidIdentifierProvider
      *
      * @param string $id
+     * @return void
      */
     public function testIdentifierInvalidValues($id)
     {
@@ -97,6 +103,7 @@ class ValueObjectTest extends TestCase
      * @dataProvider langCodeProvider
      *
      * @param string $code
+     * @return void
      */
     public function testLanguageCode($code)
     {
@@ -113,6 +120,7 @@ class ValueObjectTest extends TestCase
      * @dataProvider invalidLangCodeProvider
      *
      * @param mixed $code
+     * @return void
      */
     public function testLanguageCodeInvalidValues($code)
     {
@@ -124,6 +132,7 @@ class ValueObjectTest extends TestCase
      * @dataProvider urlProvider
      *
      * @param string $url
+     * @return void
      */
     public function testUrl($url)
     {
@@ -140,6 +149,7 @@ class ValueObjectTest extends TestCase
      * @dataProvider invalidUrlProvider
      *
      * @param mixed $url
+     * @return void
      */
     public function testUrlInvalidValues($url)
     {
@@ -150,6 +160,7 @@ class ValueObjectTest extends TestCase
     /**
      * @param string|null $expectedException Exception class name if is expected.
      * @param string $code
+     * @return void
      *
      * @dataProvider paymentMethodCodeProvider
      */
@@ -164,6 +175,9 @@ class ValueObjectTest extends TestCase
         self::assertSame($code, $value->getValue());
     }
 
+    /**
+     * @return array<array<int>>
+     */
     public function amountProvider()
     {
         return array(
@@ -174,6 +188,9 @@ class ValueObjectTest extends TestCase
         );
     }
 
+    /**
+     * @return array<array<mixed>>
+     */
     public function invalidAmountProvider()
     {
         return array(
@@ -185,6 +202,9 @@ class ValueObjectTest extends TestCase
         );
     }
 
+    /**
+     * @return array<array<non-empty-string>>
+     */
     public function currencyCodeProvider()
     {
         return array(
@@ -193,6 +213,9 @@ class ValueObjectTest extends TestCase
         );
     }
 
+    /**
+     * @return array<array<mixed>>
+     */
     public function invalidCurrencyCodeProvider()
     {
         return array(
@@ -202,6 +225,9 @@ class ValueObjectTest extends TestCase
         );
     }
 
+    /**
+     * @return array<array<mixed>>
+     */
     public function identifierProvider()
     {
         return array(
@@ -212,6 +238,9 @@ class ValueObjectTest extends TestCase
         );
     }
 
+    /**
+     * @return array<array<mixed>>
+     */
     public function invalidIdentifierProvider()
     {
         return array(
@@ -219,6 +248,9 @@ class ValueObjectTest extends TestCase
         );
     }
 
+    /**
+     * @return array<array<non-empty-string>>
+     */
     public function langCodeProvider()
     {
         return array(
@@ -227,6 +259,9 @@ class ValueObjectTest extends TestCase
         );
     }
 
+    /**
+     * @return array<array<mixed>>
+     */
     public function invalidLangCodeProvider()
     {
         return array(
@@ -235,6 +270,9 @@ class ValueObjectTest extends TestCase
         );
     }
 
+    /**
+     * @return array<array<non-empty-string>>
+     */
     public function urlProvider()
     {
         return array(
@@ -245,6 +283,9 @@ class ValueObjectTest extends TestCase
         );
     }
 
+    /**
+     * @return array<array<mixed>>
+     */
     public function invalidUrlProvider()
     {
         return array(
@@ -256,6 +297,9 @@ class ValueObjectTest extends TestCase
         );
     }
 
+    /**
+     * @return array<array<mixed>>
+     */
     public function paymentMethodCodeProvider()
     {
         // [$expectedException, $code]
@@ -265,8 +309,13 @@ class ValueObjectTest extends TestCase
         );
     }
 
+    /**
+     * @param positive-int $length
+     * @return non-empty-string
+     */
     private function randomChars($length)
     {
+        /** @var non-empty-string $result */
         $result = '';
         $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-';
 

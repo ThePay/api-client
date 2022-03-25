@@ -10,6 +10,9 @@ use ThePay\ApiClient\Model\Project;
  */
 final class ProjectTest extends TestCase
 {
+    /**
+     * @return void
+     */
     public function test()
     {
         $project = new Project(4, 'https://test.cz', 'TP6611111597120692744920');
