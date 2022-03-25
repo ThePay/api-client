@@ -2,7 +2,6 @@
 
 namespace ThePay\ApiClient\Tests\Mocks\Service;
 
-use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Http\HttpServiceInterface;
@@ -32,21 +31,9 @@ use ThePay\ApiClient\ValueObject\StringValue;
 
 class ApiMockService implements ApiServiceInterface
 {
-    /**
-     * @var TheConfig
-     * @phpstan-ignore-next-line -- never used (never mind)
-     */
-    private $config;
-    /**
-     * @var HttpServiceInterface
-     * @phpstan-ignore-next-line -- never used (never mind)
-     */
-    private $httpService;
-
+    /** @phpstan-ignore-next-line -- never used (never mind) */
     public function __construct(TheConfig $config, HttpServiceInterface $httpService)
     {
-        $this->config = $config;
-        $this->httpService = $httpService;
     }
 
     /**
@@ -60,16 +47,11 @@ class ApiMockService implements ApiServiceInterface
     /**
      * Fetch all active payment methods.
      *
-     * @param LanguageCode|null $languageCode
-     * @param array $requiredCurrencies
-     * @param array $mustHaveTags
-     * @param array $canNotHaveTags
-     *
      * @return PaymentMethodCollection
      */
-    public function getActivePaymentMethods(LanguageCode $languageCode = null, $requiredCurrencies = array(), $mustHaveTags = array(), $canNotHaveTags = array())
+    public function getActivePaymentMethods(LanguageCode $languageCode = null)
     {
-        $collection = new PaymentMethodCollection(
+        return new PaymentMethodCollection(
             array(
                 0 =>
                     array(
@@ -360,8 +342,6 @@ class ApiMockService implements ApiServiceInterface
                     ),
             )
         );
-
-        return $collection->getFiltered(new PaymentMethodFilter($requiredCurrencies, $mustHaveTags, $canNotHaveTags));
     }
 
     /**

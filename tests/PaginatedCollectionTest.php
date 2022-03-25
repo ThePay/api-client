@@ -13,6 +13,7 @@ class PaginatedCollectionTest extends TestCase
      * @param int $recordsPerPage
      * @param int $totalCount
      * @param bool $expected
+     * @return void
      */
     public function testHasNextPage($page, $recordsPerPage, $totalCount, $expected)
     {
@@ -22,7 +23,7 @@ class PaginatedCollectionTest extends TestCase
     }
 
     /**
-     * @return array[]
+     * @return array<array<mixed>>
      */
     public function getHasNextPageData()
     {

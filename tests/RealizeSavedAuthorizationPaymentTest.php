@@ -13,6 +13,9 @@ class RealizeSavedAuthorizationPaymentTest extends BaseTestCase
     /** @var TheClient */
     private $client;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         parent::setUp();
@@ -24,6 +27,9 @@ class RealizeSavedAuthorizationPaymentTest extends BaseTestCase
         $this->client = new TheClient($this->config, null, $httpService, $apiService);
     }
 
+    /**
+     * @return void
+     */
     public function testRealizePaymentBySavedAuthorization()
     {
         $params = new RealizePaymentBySavedAuthorizationParams('childPayment');
