@@ -147,9 +147,9 @@ Will cancel preauth payment
 
 #### Parameters
 
-| name | type |  | desc |
-| --- | --- | --- | --- |
-| $uid | string | required | UID of the recurring payment you want to cancel |
+| name | type   |          | desc                                                |
+|------|--------|----------|-----------------------------------------------------|
+| $uid | string | required | UID of the preauthorized payment you want to cancel |
 
 
 ### getPaymentRefund
