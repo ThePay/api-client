@@ -231,7 +231,7 @@ class TheClient
             $filter->setCurrency($params->getCurrencyCode()->getValue());
         }
 
-        $methods = $this->getActivePaymentMethods($filter, $params->getLanguageCode(), $params->isRecurring(), $params->isDeposit());
+        $methods = $this->getActivePaymentMethods($filter, $params->getLanguageCode(), $params->getSaveAuthorization(), $params->isDeposit());
 
         $result = '';
         if ($useInlineAssets) {
