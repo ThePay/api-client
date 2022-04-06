@@ -234,7 +234,7 @@ class SimplePayment
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDescription()
     {
@@ -242,16 +242,15 @@ class SimplePayment
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDescriptionForMerchant()
     {
         return $this->description_for_merchant;
     }
 
-
     /**
-     * @return string
+     * @return string|null
      */
     public function getOrderId()
     {
