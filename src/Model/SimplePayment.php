@@ -137,7 +137,7 @@ class SimplePayment
         $this->validTo = new DateTime($data['valid_to']);
         $this->fee = $data['fee'];
         $this->description = $data['description'];
-        $this->description_for_merchant = $data['description_for_merchant'];
+        $this->description_for_merchant = isset($data['description_for_merchant']) ? $data['description_for_merchant'] : null;
         $this->payUrl = $data['pay_url'];
         $this->detailUrl = $data['detail_url'];
         $this->orderId = $data['order_id'];
