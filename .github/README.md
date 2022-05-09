@@ -21,7 +21,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## Support & Contributions
 
-If you find any bug, please submit the [issue](https://github.com/ThePay/api-client/issues/new) in Github directly.
+If you find any bug, please submit the [issue](https://github.com/ThePay/api-client/issues/new/choose) in Github directly.
 
 Feel free to contribute via Github [issues](https://github.com/ThePay/api-client/issues) and
 [pull requests](https://github.com/ThePay/api-client/pulls). We will response as soon as possible.
