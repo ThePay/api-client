@@ -39,4 +39,29 @@ class PaymentsTest extends BaseTestCase
 
         static::assertSame(2, $collection->getTotalCount());
     }
+
+    public function testGetPayment()
+    {
+        $payment = $this->client->getPayment('test-UID');
+
+        static::assertSame('efd7d8e6-2fa3-3c46-b475-51762331bf56', $payment->getUid());
+    }
+
+    public function testGetPaymentNullUid()
+    {
+        static::setExpectedException('InvalidArgumentException', 'Payment UID cannot be null.');
+        $this->client->getPayment(null);
+    }
+
+    public function testGetPaymentEmptyUid()
+    {
+        static::setExpectedException('InvalidArgumentException', 'Payment UID cannot be empty string.');
+        $this->client->getPayment('');
+    }
+
+    public function testGetPaymentUidNotStringable()
+    {
+        static::setExpectedException('InvalidArgumentException', 'Payment UID cannot be converted to string.');
+        $this->client->getPayment(new \stdClass());
+    }
 }

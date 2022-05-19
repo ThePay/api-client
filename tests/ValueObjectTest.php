@@ -261,7 +261,7 @@ class ValueObjectTest extends TestCase
         // [$expectedException, $code]
         return array(
             array(null, PaymentMethodCode::CARD),
-            array('InvalidArgumentException', 'not-existing-payment-method'),
+            array(null, 'not-existing-payment-method'),
         );
     }
 

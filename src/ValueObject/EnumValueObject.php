@@ -5,7 +5,7 @@ namespace ThePay\ApiClient\ValueObject;
 abstract class EnumValueObject extends BaseValueObject
 {
     /** @var string */
-    private $value;
+    protected $value;
 
     /**
      * @param string $value
