@@ -12,10 +12,14 @@ class RealizeUsageBasedSubscriptionPaymentParams extends RealizeSubscriptionPaym
      *
      * @param string $uid
      * @param int $amount - payment amount in cents
+     * @param string|null $orderId
+     * @param string|null $descriptionForMerchant
      */
-    public function __construct($uid, $amount)
+    public function __construct($uid, $amount, $orderId = null, $descriptionForMerchant = null)
     {
         $this->uid = new Identifier($uid);
         $this->amount = new Amount($amount);
+        $this->orderId = $orderId;
+        $this->descriptionForMerchant = $descriptionForMerchant;
     }
 }
