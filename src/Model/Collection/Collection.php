@@ -43,6 +43,7 @@ abstract class Collection implements \ArrayAccess, \Iterator
      * @param TValue $value
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -56,6 +57,7 @@ abstract class Collection implements \ArrayAccess, \Iterator
      * @param string|int $offset
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->data[$offset]);
@@ -64,6 +66,7 @@ abstract class Collection implements \ArrayAccess, \Iterator
     /**
      * @param string|int $offset
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->data[$offset]);
@@ -81,6 +84,7 @@ abstract class Collection implements \ArrayAccess, \Iterator
     /**
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->iteratorPosition = 0;
@@ -105,6 +109,7 @@ abstract class Collection implements \ArrayAccess, \Iterator
     /**
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         ++$this->iteratorPosition;
@@ -113,6 +118,7 @@ abstract class Collection implements \ArrayAccess, \Iterator
     /**
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return isset($this->data[$this->iteratorPosition]);

@@ -13,6 +13,9 @@ abstract class BaseTestCase extends TestCase
     /** @var TheConfig */
     protected $config;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         parent::setUp();
