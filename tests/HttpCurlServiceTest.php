@@ -12,6 +12,9 @@ class HttpCurlServiceTest extends TestCase
     /** @var HttpCurlService */
     private $httpCurlService;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         parent::setUp();
@@ -21,6 +24,9 @@ class HttpCurlServiceTest extends TestCase
         $this->httpCurlService = new HttpCurlService($signatureService);
     }
 
+    /**
+     * @return void
+     */
     public function testGet()
     {
         $response = $this->httpCurlService->get('https://www.thepay.cz');

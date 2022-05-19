@@ -20,6 +20,14 @@ class PaymentMethodCode extends EnumValueObject
     const PLATIMPAK = 'platimpak';
 
     /**
+     * @param string $paymentMethodCode
+     */
+    public function __construct($paymentMethodCode)
+    {
+        $this->value = $paymentMethodCode;
+    }
+
+    /**
      * @return string[]
      */
     public static function getOptions()

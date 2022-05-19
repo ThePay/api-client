@@ -10,6 +10,8 @@ class SignatureServiceTest extends TestCase
 {
     /**
      * @dataProvider signatureForApiDataProvider
+     *
+     * @return void
      */
     public function testGetSignatureForApi(TheConfig $config)
     {
@@ -32,6 +34,9 @@ class SignatureServiceTest extends TestCase
         static::assertSame(64, strlen($signature->getHash())); // length of sha256 hash should always be 64 characters
     }
 
+    /**
+     * @return array<array<mixed>>
+     */
     public function signatureForApiDataProvider()
     {
         return array(

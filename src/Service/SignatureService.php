@@ -25,6 +25,8 @@ final class SignatureService
     }
 
     /**
+     * @deprecated this sign algorithm is not implemented in ThePay system anymore, will be removed
+     *
      * @param string $query
      * @return string
      */
@@ -51,6 +53,8 @@ final class SignatureService
     }
 
     /**
+     * @deprecated method is used only in this service, the method will be private or removed
+     *
      * @param array<string, mixed> $data
      * @return string
      */
@@ -73,6 +77,8 @@ final class SignatureService
     }
 
     /**
+     * @deprecated method is used only in this service, the method will be private or removed
+     *
      * @param string $base64
      *
      * @return string
