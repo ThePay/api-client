@@ -26,7 +26,19 @@ interacts with The Pay's REST API. To get started see examples below.
 
 To install the SDK we recommend to use [Composer](https://getcomposer.org/):
 
-    composer require thepay/api-client
+```console
+composer require thepay/api-client
+```
+
+This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## Support & Contributions
+
+If you find any bug, please submit the [issue](https://github.com/ThePay/api-client/issues/new/choose) in Github directly.
+
+Feel free to contribute via Github [issues](https://github.com/ThePay/api-client/issues) and
+[pull requests](https://github.com/ThePay/api-client/pulls). We will response as soon as possible.
+Please have on mind the backwards compatibility and do not change requirements without previous admin agreement.
 
 ## Preconditions
 
@@ -41,7 +53,7 @@ Make sure that you have all required credentials and that you've set up the API 
 
 You can find all the necessary credentials in "Implementation" section under your merchant profile:
 
-![](https://bitbucket.org/thepaygate/thepay-v2-php-sdk/raw/HEAD/doc/img/the-admin-credentials.png)
+![](../doc/img/the-admin-credentials.png)
 
 ## Usage
 
@@ -51,7 +63,7 @@ You will work with only two classes when using this SDK.
 
 ## Configuration
 
-All constructor parameters are described in [php doc](https://bitbucket.org/thepaygate/thepay-v2-php-sdk/src/HEAD/src/TheConfig.php)
+All constructor parameters are described in [php doc](../src/TheConfig.php)
 
 ```php
 $config = new ThePay\ApiClient\TheConfig(
@@ -86,7 +98,7 @@ No matter what method you choose, you have two more options, based on preselecti
 
 Even if you (or your customer) preselect the payment method, it can still be changed after redirection, unless specifically forbidden.
 
-![](https://bitbucket.org/thepaygate/thepay-v2-php-sdk/raw/HEAD/doc/img/payment_flow.png)
+![](../doc/img/payment_flow.png)
 
 #### REST API
 You can create payment (link) via REST API and redirect user to that link. The payment itself is created through an API call.
@@ -122,7 +134,7 @@ These are the usual ways for payment creation:
 
 Always create only one payment for your order for all payment creation options, unless you need to change the payment amount. In that case, consider it a whole new payment.
 
-For more examples see [create-payment.md](https://bitbucket.org/thepaygate/thepay-v2-php-sdk/src/HEAD/doc/create-payment.md)
+For more examples see [create-payment.md](../doc/create-payment.md)
 
 ```php
 use ThePay\ApiClient\TheConfig;
@@ -216,18 +228,13 @@ if ($payment->wasPaid()) {
 
 ## More and detailed usage examples
 
-You can find more usage examples at [folder /doc](https://bitbucket.org/thepaygate/thepay-v2-php-sdk/src/HEAD/doc/index.md).
+You can find more usage examples at [folder /doc](../doc/index.md).
 
 ## Money calculations
 
 For safe money calculations we recommend to use [moneyphp/money](https://github.com/moneyphp/money) package.
 Please, do not use float to save information about prices because of its inaccuracy.
 
-    composer require moneyphp/money
-
-## Support & Contributions
-
-If you find any bug, please submit the issue in Github directly or contact us on email: [it@thepay.cz](mailto:it@thepay.cz)
-
-Feel free to contribute via Github issues and pull requests. We will response as soon as possible.
-Please have on mind the backwards compatibility and do not change requirements without previous admin agreement.
+```console
+composer require moneyphp/money
+```

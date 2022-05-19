@@ -26,11 +26,6 @@
         }
     },
     "scripts": {
-        "ci": [
-            "@cs-check",
-            "@stan",
-            "@test"
-        ],
         "cs-fix": [
             "vendor/bin/php-cs-fixer fix"
         ],
@@ -39,6 +34,9 @@
         ],
         "test": [
             "vendor/bin/phpunit tests --log-junit ./test-reports/junit.xml"
+        ],
+        "test81": [
+            "php -d \"error_reporting=E_ALL&~E_DEPRECATED\" vendor/bin/phpunit tests --log-junit ./test-reports/junit.xml"
         ],
         "stan7": [
             "vendor/bin/phpstan analyse -c phpstan7.neon --memory-limit=1G"

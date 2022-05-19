@@ -42,7 +42,7 @@ use ThePay\ApiClient\ValueObject\StringValue;
 class TheClient
 {
     /** @var string */
-    const VERSION = '1.3.4';
+    const VERSION = '1.4.0';
 
     /** @var TheConfig */
     private $config;
@@ -231,7 +231,7 @@ class TheClient
             $filter->setCurrency($params->getCurrencyCode()->getValue());
         }
 
-        $methods = $this->getActivePaymentMethods($filter, $params->getLanguageCode(), $params->isRecurring(), $params->isDeposit());
+        $methods = $this->getActivePaymentMethods($filter, $params->getLanguageCode(), $params->getSaveAuthorization(), $params->isDeposit());
 
         $result = '';
         if ($useInlineAssets) {

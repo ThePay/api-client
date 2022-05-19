@@ -16,14 +16,22 @@ class RealizePreauthorizationPaymentTest extends BaseTestCase
     /** @var TheClient */
     private $client;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         parent::setUp();
         $this->httpService = Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
+        /** @phpstan-ignore-next-line */
         $apiService = new ApiService($this->config, $this->httpService);
+        /** @phpstan-ignore-next-line */
         $this->client = new TheClient($this->config, null, $this->httpService, $apiService);
     }
 
+    /**
+     * @return void
+     */
     public function testRequest()
     {
         call_user_func(array($this->httpService, 'shouldReceive'), 'post')->once()
@@ -35,7 +43,7 @@ class RealizePreauthorizationPaymentTest extends BaseTestCase
     }
 
     /**
-     * @throws \Exception
+     * @return void
      */
     public function testNotOkResponse()
     {
@@ -47,11 +55,17 @@ class RealizePreauthorizationPaymentTest extends BaseTestCase
         $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(100, 'abc'));
     }
 
+    /**
+     * @return HttpResponse
+     */
     private function getOkResponse()
     {
         return new HttpResponse(null, 204);
     }
 
+    /**
+     * @return HttpResponse
+     */
     private function getNotOkResponse()
     {
         return new HttpResponse(null, 401);

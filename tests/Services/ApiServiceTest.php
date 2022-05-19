@@ -26,6 +26,7 @@ final class ApiServiceTest extends BaseTestCase
         parent::setUp();
 
         $this->httpService = \Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
+        /** @phpstan-ignore-next-line */
         $this->service = new ApiService($this->config, $this->httpService);
     }
 
