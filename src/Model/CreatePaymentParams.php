@@ -425,6 +425,16 @@ final class CreatePaymentParams implements SignableRequest
                     'street' => $billingAddress->getStreet(),
                 );
             }
+
+            $shippingAddress = $this->customer->getShippingAddress();
+            if ($shippingAddress) {
+                $result['customer']['shipping_address'] = array(
+                    'country_code' => $shippingAddress->getCountryCode(),
+                    'city' => $shippingAddress->getCity(),
+                    'zip' => $shippingAddress->getZip(),
+                    'street' => $shippingAddress->getStreet(),
+                );
+            }
         } else {
             $result['customer'] = null;
         }
