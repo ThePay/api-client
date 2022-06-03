@@ -38,6 +38,9 @@ class TransactionFilter implements SignableRequest
         $this->currencyCode = $currencyCode !== null ? new CurrencyCode($currencyCode) : null;
     }
 
+    /**
+     * @return array<account_iban:string,date_from:\DateTime,date_to:\DateTime,currency_code?:string>
+     */
     public function toArray()
     {
         $data = array(
