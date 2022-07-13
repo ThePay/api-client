@@ -142,3 +142,17 @@ If even our HTML is not suitable for you we recommend create payment via API.
 - getPaymentDetailUrl() for url where are details about payment and user can make payment as well
 
 TODO: doplnit obrázky, kam se uživatel dostane kterou url
+
+### Changing payment's language
+
+In scenarios where you know the customer's preferred language, you can pass the language code in `CreatePaymentParams` constructor as the fourth argument. For example:
+
+```php
+$createPayment = new CreatePaymentParams(10520, 'EUR', 'uid123', 'en');
+```
+
+Possible values are described in ISO 639-1 standard. If you pass a language, that ThePay does not support, for example French (fr), then the English language will be used,
+as is the most likely best choice for the customer. However, if the customer changed their language in ThePay system, then this setting will not have any impact.
+
+You may wonder which language will be used if you do not enter any, then the language from TheConfig will be used, and if even here you did not select the default language,
+the default language will be Czech (cs).
