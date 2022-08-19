@@ -131,7 +131,7 @@ class ApiService implements ApiServiceInterface
 
         $headers = $response->getHeaders();
 
-        return new TransactionCollection(Json::decode($response->getBody(), true), $page, $limit, (int) $headers['X-Total-Count:']);
+        return new TransactionCollection(Json::decode($response->getBody(), true), $page, $limit, (int) $headers['X-Total-Count']);
     }
 
     /**
@@ -205,7 +205,7 @@ class ApiService implements ApiServiceInterface
 
         $headers = $response->getHeaders();
 
-        return new PaymentCollection($response->getBody(), $page, $limit, (int) $headers['X-Total-Count:']);
+        return new PaymentCollection($response->getBody(), $page, $limit, (int) $headers['X-Total-Count']);
     }
 
     /**
