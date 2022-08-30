@@ -76,6 +76,7 @@ abstract class Collection implements \ArrayAccess, \Iterator
      * @param string|int $offset
      * @return TValue|null
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->data[$offset]) ? $this->data[$offset] : null;
@@ -93,6 +94,7 @@ abstract class Collection implements \ArrayAccess, \Iterator
     /**
      * @return TValue
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->data[$this->iteratorPosition];
@@ -101,6 +103,7 @@ abstract class Collection implements \ArrayAccess, \Iterator
     /**
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->iteratorPosition;
