@@ -455,13 +455,8 @@ class ApiService implements ApiServiceInterface
         $apiUrl = $this->config->getApiUrl();
 
         $pathImploded = substr($pathImploded, 0, -1);
-        $argsPath = '';
 
-        if ($arguments) {
-            $argsPath .= '?' . http_build_query($arguments);
-        }
-
-        return $apiUrl . $pathImploded . $argsPath;
+        return $apiUrl . $pathImploded . '?' . http_build_query($arguments);
     }
 
     /**
