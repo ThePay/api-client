@@ -100,12 +100,4 @@ class PaymentMethodCollection extends Collection
 
         return new PaymentMethodCollection($result);
     }
-
-    /**
-     * @return PaymentMethod
-     */
-    public function current()
-    {
-        return parent::current();
-    }
 }
