@@ -99,6 +99,21 @@ class HttpResponse
     }
 
     /**
+     * @param non-empty-string $key
+     * @return string|null
+     */
+    public function getHeader($key)
+    {
+        foreach ((array) $this->headers as $headerKey => $header) {
+            if (strtolower($headerKey) === strtolower($key)) {
+                return $header;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return string|null
      */
     public function getBody()
