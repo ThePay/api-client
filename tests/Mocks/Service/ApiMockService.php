@@ -350,7 +350,7 @@ class ApiMockService implements ApiServiceInterface
      *
      * @return array<PaymentMethodWithPayUrl>
      */
-    public function getPaymentUrlsForPayment(Identifier $uid, ?LanguageCode $languageCode = null)
+    public function getPaymentUrlsForPayment(Identifier $uid, LanguageCode $languageCode = null)
     {
         return array(
             0 => new PaymentMethodWithPayUrl(
@@ -368,7 +368,7 @@ class ApiMockService implements ApiServiceInterface
                             'src' => 'http://localhost:8000/img/payment_methods/test_online.png',
                         ),
                     'url' => 'http://localhost:8000/' . $uid->__toString() . '/update?payment_method_code=test_online',
-                ),
+                )
             ),
             1 => new PaymentMethodWithPayUrl(
                 array(
@@ -384,7 +384,7 @@ class ApiMockService implements ApiServiceInterface
                             'src' => 'http://localhost:8000/img/payment_methods/test_offline.png',
                         ),
                     'url' => 'http://localhost:8000/' . $uid->__toString() . '/update?payment_method_code=test_offline',
-                ),
+                )
             ),
             2 => new PaymentMethodWithPayUrl(
                 array(
@@ -403,7 +403,7 @@ class ApiMockService implements ApiServiceInterface
                             'src' => 'http://localhost:8000/img/payment_methods/card.png',
                         ),
                     'url' => 'http://localhost:8000/' . $uid->__toString() . '/update?payment_method_code=card',
-                ),
+                )
             ),
         );
     }
