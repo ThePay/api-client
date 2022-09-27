@@ -13,6 +13,7 @@ use ThePay\ApiClient\Model\Collection\TransactionCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\Payment;
+use ThePay\ApiClient\Model\PaymentMethodWithPayUrl;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizeIrregularSubscriptionPaymentParams;
@@ -153,4 +154,11 @@ interface ApiServiceInterface
      * @return void
      */
     public function createPaymentRefund(Identifier $uid, Amount $amount, StringValue $reason);
+
+    /**
+     * Returns an array of available payment methods with pay URLs for certain payment.
+     *
+     * @return array<PaymentMethodWithPayUrl>
+     */
+    public function getPaymentUrlsForPayment(Identifier $uid, LanguageCode $languageCode = null);
 }

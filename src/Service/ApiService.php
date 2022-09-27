@@ -15,6 +15,7 @@ use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\PaginatedCollectionParams;
 use ThePay\ApiClient\Model\Payment;
+use ThePay\ApiClient\Model\PaymentMethodWithPayUrl;
 use ThePay\ApiClient\Model\PaymentRefund;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\Project;
@@ -95,7 +96,7 @@ class ApiService implements ApiServiceInterface
             $arguments['language'] = $languageCode->getValue();
         }
 
-        $url = $this->url(array('methods'));
+        $url = $this->url(array('methods'), $arguments);
         $response = $this
             ->httpService
             ->get($url);
@@ -419,6 +420,36 @@ class ApiService implements ApiServiceInterface
             throw $this->buildException($url, $response);
         }
     }
+
+    /**
+     * Returns an array of available payment methods with pay URLs for certain payment.
+     *
+     * @return array<PaymentMethodWithPayUrl>
+     */
+    public function getPaymentUrlsForPayment(Identifier $uid, LanguageCode $languageCode = null)
+    {
+        $arguments = array();
+        if ($languageCode) {
+            $arguments['language'] = $languageCode->getValue();
+        }
+
+        $url = $this->url(array('payments', $uid->getValue(), 'payment_urls'), $arguments);
+        $response = $this->httpService->get($url);
+
+        if ($response->getCode() !== 200) {
+            throw $this->buildException($url, $response);
+        }
+
+        $responseData = Json::decode($response->getBody(), true);
+
+        $paymentMethods = array();
+        foreach ($responseData as $paymentMethod) {
+            $paymentMethods[] = new PaymentMethodWithPayUrl($paymentMethod);
+        }
+
+        return $paymentMethods;
+    }
+
 
 
     /**

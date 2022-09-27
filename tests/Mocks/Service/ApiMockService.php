@@ -12,6 +12,7 @@ use ThePay\ApiClient\Model\Collection\TransactionCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\Payment;
+use ThePay\ApiClient\Model\PaymentMethodWithPayUrl;
 use ThePay\ApiClient\Model\PaymentRefund;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\Project;
@@ -341,6 +342,69 @@ class ApiMockService implements ApiServiceInterface
                             ),
                     ),
             )
+        );
+    }
+
+    /**
+     * Fetch all active payment methods.
+     *
+     * @return array<PaymentMethodWithPayUrl>
+     */
+    public function getPaymentUrlsForPayment(Identifier $uid, ?LanguageCode $languageCode = null)
+    {
+        return array(
+            0 => new PaymentMethodWithPayUrl(
+                array(
+                    'code' => 'test_online',
+                    'title' => 'shared::payment_methods.test_online',
+                    'tags' =>
+                        array(
+                            0 => 'access_account_owner',
+                            1 => 'online',
+                            2 => 'returnable',
+                        ),
+                    'image' =>
+                        array(
+                            'src' => 'http://localhost:8000/img/payment_methods/test_online.png',
+                        ),
+                    'url' => 'http://localhost:8000/' . $uid->__toString() . '/update?payment_method_code=test_online',
+                ),
+            ),
+            1 => new PaymentMethodWithPayUrl(
+                array(
+                    'code' => 'test_offline',
+                    'title' => 'shared::payment_methods.test_offline',
+                    'tags' =>
+                        array(
+                            0 => 'access_account_owner',
+                            1 => 'returnable',
+                        ),
+                    'image' =>
+                        array(
+                            'src' => 'http://localhost:8000/img/payment_methods/test_offline.png',
+                        ),
+                    'url' => 'http://localhost:8000/' . $uid->__toString() . '/update?payment_method_code=test_offline',
+                ),
+            ),
+            2 => new PaymentMethodWithPayUrl(
+                array(
+                    'code' => 'card',
+                    'title' => 'Platba kartou',
+                    'tags' =>
+                        array(
+                            0 => 'card',
+                            1 => 'online',
+                            2 => 'pre_authorization',
+                            3 => 'recurring_payments',
+                            4 => 'returnable',
+                        ),
+                    'image' =>
+                        array(
+                            'src' => 'http://localhost:8000/img/payment_methods/card.png',
+                        ),
+                    'url' => 'http://localhost:8000/' . $uid->__toString() . '/update?payment_method_code=card',
+                ),
+            ),
         );
     }
 

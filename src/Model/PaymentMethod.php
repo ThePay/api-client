@@ -5,7 +5,7 @@ namespace ThePay\ApiClient\Model;
 use ThePay\ApiClient\Utils\Json;
 use ThePay\ApiClient\ValueObject\Url;
 
-class PaymentMethod
+class PaymentMethod implements IPaymentMethod
 {
     /**
      * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::CARD
