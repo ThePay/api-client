@@ -67,6 +67,20 @@ Payment method buttons should look like this, second image is with hover.
 ![default](img/payment_method_button.png)
 ![hover](img/payment_method_button_hover.png)
 
+### Redirect user to gate with payment method selected for already created payment
+
+Method **getPaymentButtonsForPayment** returns HTML code.
+
+```php
+    // used default rendering
+    $paymentButtons = $client->getPaymentButtonsForPayment($paymentUid);
+```
+
+Payment method buttons should look like this, second image is with hover.
+
+![default](img/payment_method_button.png)
+![hover](img/payment_method_button_hover.png)
+
 #### Buttons css customization
 
 Example of rendered HTML for one button, values with **some** word can dynamically change in HTML rendering.
