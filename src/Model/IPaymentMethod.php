@@ -25,9 +25,4 @@ interface IPaymentMethod
      * @return array<string>
      */
     public function getTags();
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function toArray();
 }

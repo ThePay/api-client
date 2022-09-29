@@ -211,15 +211,22 @@ class TheClient
     /**
      * Returns an array of available payment methods with pay URLs for certain payment.
      *
+     * @param string $uid UID of payment,
+     * @param string|null $languageCode language code in ISO 6391 format
      * @return array<PaymentMethodWithPayUrl>
      */
-    public function getPaymentUrlsForPayment(string $uid)
+    public function getPaymentUrlsForPayment($uid, $languageCode = null)
     {
         $this->validateUid($uid);
 
+        $language = null;
+        if ($languageCode !== null) {
+            $language = new LanguageCode($languageCode);
+        }
+
         return $this
             ->api
-            ->getPaymentUrlsForPayment(new Identifier($uid));
+            ->getPaymentUrlsForPayment(new Identifier($uid), $language);
     }
 
     /**

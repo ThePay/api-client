@@ -12,7 +12,7 @@
 | getPayments | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/get-payments |
 | getPaymentButtons | |
 | getPaymentButton | |
-| getPaymentButtons | |
+| getPaymentButtonsForPayment | |
 | createPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/create-new-payment |
 | realizePreauthorizedPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-preauthorized-payment |
 | cancelPreauthorizedPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/cancel-preauthorized-payment |
@@ -23,7 +23,7 @@
 | realizeIrregularSubscriptionPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-irregular-subscription-payment |
 | realizeUsageBasedSubscriptionPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-usage-based-subscription-payment |
 | realizePaymentBySavedAuthorization | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-payment-by-saved-authorization |
-| getPaymentUrlsForPayment | https://dataapi21.docs.apiary.io/#reference/payment-creation/saved-card-authorization/change-method-for-payment/get-available-payment-methods |
+| getPaymentUrlsForPayment | https://dataapi21.docs.apiary.io/#reference/payment-management/general-payment-management/get-available-payment-methods |
 
 ## Usage examples
 
@@ -126,7 +126,7 @@ Returns HTML markup with list of payment buttons for already existing payment.
 | name | type |  | desc |
 | --- | --- | --- | --- |
 | $uid | string | required | Payment's UID |
-| $languageCode | PaymentMethodFilter | optional | Language code in ISO 6391 (2 chars) format |
+| $languageCode | string | optional | Language code in ISO 6391 (2 chars) format |
 | $useInlineAssets | bool | optional | will generate basic css & js |
 
 #### Parameters
