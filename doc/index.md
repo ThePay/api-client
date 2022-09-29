@@ -260,4 +260,4 @@ Returns an array of available payment methods with pay URLs for certain payment.
 | name | type |  | description |
 | --- | --- | --- | --- |
 | $uid | string | required | Payment's UID |
-| $languageCode | PaymentMethodFilter | optional | Language code in ISO 6391 (2 chars) format |
+| $languageCode | string | optional | Language code in ISO 6391 (2 chars) format |
