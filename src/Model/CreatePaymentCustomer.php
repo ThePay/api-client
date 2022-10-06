@@ -17,6 +17,8 @@ final class CreatePaymentCustomer
     private $phone;
     /** @var Address|null */
     private $billingAddress;
+    /** @var Address|null */
+    private $shippingAddress;
 
     /**
      * @param string|null $name
@@ -24,13 +26,14 @@ final class CreatePaymentCustomer
      * @param string|null $email
      * @param string|null $phone - customer phone in international format max 15 numeric chars https://en.wikipedia.org/wiki/MSISDN
      */
-    public function __construct($name, $surname, $email, $phone, Address $billingAddress = null)
+    public function __construct($name, $surname, $email, $phone, Address $billingAddress = null, Address $shippingAddress = null)
     {
         $this->name = $name === null ? null : new StringValue($name);
         $this->surname = $surname === null ? null : new StringValue($surname);
         $this->email = $email === null ? null : new StringValue($email);
         $this->phone = $phone === null ? null : new PhoneNumber($phone);
         $this->billingAddress = $billingAddress;
+        $this->shippingAddress = $shippingAddress;
     }
 
     /**
@@ -71,5 +74,13 @@ final class CreatePaymentCustomer
     public function getBillingAddress()
     {
         return $this->billingAddress;
+    }
+
+    /**
+     * @return Address|null
+     */
+    public function getShippingAddress()
+    {
+        return $this->shippingAddress;
     }
 }
