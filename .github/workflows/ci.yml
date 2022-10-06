@@ -154,6 +154,8 @@ jobs:
 
             -   name: Install dependencies
                 run: composer install --no-interaction
+                env:
+                    COMPOSER_MEMORY_LIMIT: -1
 
             -   name: Run tests
                 run: composer test
@@ -168,6 +170,8 @@ jobs:
 
             -   name: Install dependencies
                 run: composer install --no-interaction
+                env:
+                    COMPOSER_MEMORY_LIMIT: -1
 
             -   name: Run tests
                 run: composer test
