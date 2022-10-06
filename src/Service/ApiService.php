@@ -129,9 +129,7 @@ class ApiService implements ApiServiceInterface
             throw $this->buildException($url, $response);
         }
 
-        $headers = $response->getHeaders();
-
-        return new TransactionCollection(Json::decode($response->getBody(), true), $page, $limit, (int) $headers['X-Total-Count:']);
+        return new TransactionCollection(Json::decode($response->getBody(), true), $page, $limit, (int) $response->getHeader('X-Total-Count'));
     }
 
     /**
@@ -203,9 +201,7 @@ class ApiService implements ApiServiceInterface
             throw $this->buildException($url, $response);
         }
 
-        $headers = $response->getHeaders();
-
-        return new PaymentCollection($response->getBody(), $page, $limit, (int) $headers['X-Total-Count:']);
+        return new PaymentCollection($response->getBody(), $page, $limit, (int) $response->getHeader('X-Total-Count'));
     }
 
     /**
@@ -455,13 +451,8 @@ class ApiService implements ApiServiceInterface
         $apiUrl = $this->config->getApiUrl();
 
         $pathImploded = substr($pathImploded, 0, -1);
-        $argsPath = '';
 
-        if ($arguments) {
-            $argsPath .= '?' . http_build_query($arguments);
-        }
-
-        return $apiUrl . $pathImploded . $argsPath;
+        return $apiUrl . $pathImploded . '?' . http_build_query($arguments);
     }
 
     /**

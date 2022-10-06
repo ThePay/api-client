@@ -16,6 +16,12 @@ abstract class RealizeSubscriptionPaymentParams implements SignableRequest
     /** @var Identifier */
     protected $uid;
 
+    /** @var string|null */
+    protected $orderId = null;
+
+    /** @var string|null */
+    protected $descriptionForMerchant = null;
+
     /**
      * @return Amount
      */
@@ -41,6 +47,22 @@ abstract class RealizeSubscriptionPaymentParams implements SignableRequest
     }
 
     /**
+     * @return string|null
+     */
+    public function getOrderId()
+    {
+        return $this->orderId;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescriptionForMerchant()
+    {
+        return $this->descriptionForMerchant;
+    }
+
+    /**
      * If no items will be set, the items from parent payment will be used.
      *
      * @param CreatePaymentItem $item
@@ -61,6 +83,8 @@ abstract class RealizeSubscriptionPaymentParams implements SignableRequest
         $result = array(
             'payment_uid' => $this->uid->getValue(),
             'items' => null,
+            'order_id' => $this->orderId,
+            'description_for_merchant' => $this->descriptionForMerchant,
         );
 
         if ($this->items) {
