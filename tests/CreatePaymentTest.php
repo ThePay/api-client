@@ -101,28 +101,6 @@ class CreatePaymentTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testGetInlineStyles()
-    {
-        $result = $this->client->getInlineStyles();
-        $lines = count(explode("\n", $result));
-        // Minified style does not have more than 5 lines.
-        static::assertLessThanOrEqual(5, $lines, 'TheClient::getInlineStyles() has more than 5 lines. Fix this bug with "npm run production"');
-    }
-
-    /**
-     * @return void
-     */
-    public function testGetInlineScripts()
-    {
-        $result = $this->client->getInlineScripts();
-        $lines = count(explode("\n", $result));
-        // Minified javascript does not have more than 5 lines.
-        static::assertLessThanOrEqual(5, $lines, 'TheClient::getInlineScript() has more than 5 lines. Fix this bug with "npm run production"');
-    }
-
-    /**
-     * @return void
-     */
     public function testCreateApiPayment()
     {
         // Create entity with information about customer

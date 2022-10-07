@@ -189,3 +189,17 @@ jobs:
 
             -   name: Run tests
                 run: composer test
+
+    npm:
+        name: "npm"
+        runs-on: ubuntu-latest
+        container: "node"
+        steps:
+            -   name: Checkout repository
+                uses: actions/checkout@v2
+
+            -   name: Install dependencies
+                run: npm install
+
+            -   name: Run tests
+                run: npm test
