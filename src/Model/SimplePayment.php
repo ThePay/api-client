@@ -78,6 +78,11 @@ class SimplePayment
     private $description;
 
     /**
+     * @var string|null
+     */
+    private $description_for_merchant;
+
+    /**
      * @var string
      */
     private $payUrl;
@@ -132,6 +137,7 @@ class SimplePayment
         $this->validTo = new DateTime($data['valid_to']);
         $this->fee = $data['fee'];
         $this->description = $data['description'];
+        $this->description_for_merchant = isset($data['description_for_merchant']) ? $data['description_for_merchant'] : null;
         $this->payUrl = $data['pay_url'];
         $this->detailUrl = $data['detail_url'];
         $this->orderId = $data['order_id'];
@@ -228,7 +234,7 @@ class SimplePayment
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDescription()
     {
@@ -236,7 +242,15 @@ class SimplePayment
     }
 
     /**
-     * @return string
+     * @return string|null
+     */
+    public function getDescriptionForMerchant()
+    {
+        return $this->description_for_merchant;
+    }
+
+    /**
+     * @return string|null
      */
     public function getOrderId()
     {
@@ -332,6 +346,7 @@ class SimplePayment
             'validTo' => $this->validTo,
             'fee' => $this->fee,
             'description' => $this->description,
+            'description_for_merchant' => $this->description_for_merchant,
             'paymentMethod' => $this->getPaymentMethod(),
             'payUrl' => $this->payUrl,
             'detailUrl' => $this->detailUrl,

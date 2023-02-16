@@ -130,7 +130,7 @@ class ApiService implements ApiServiceInterface
             throw $this->buildException($url, $response);
         }
 
-        return new TransactionCollection(Json::decode($response->getBody(), true), $page, $limit, (int) $response->getHeader('X-Total-Count'));
+        return new TransactionCollection(Json::decode($response->getBody(), true), $page, $limit, (int) $response->getHeader('X-Total-Count:'));
     }
 
     /**
@@ -202,7 +202,7 @@ class ApiService implements ApiServiceInterface
             throw $this->buildException($url, $response);
         }
 
-        return new PaymentCollection($response->getBody(), $page, $limit, (int) $response->getHeader('X-Total-Count'));
+        return new PaymentCollection($response->getBody(), $page, $limit, (int) $response->getHeader('X-Total-Count:'));
     }
 
     /**

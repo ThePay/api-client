@@ -1,3 +1,4 @@
+@use 'sass:math';
 
 // THEPAY COLOR VARIABLES
 $tp-white:      #ffffff !default;
@@ -63,7 +64,7 @@ $tp-icon-bg:                $tp-white !default;
 $tp-icon-border:            $tp-border !default;
 $tp-icon-border-color:      $tp-border-color !default;
 $tp-icon-shadow:            none !default;
-$tp-icon-margin:            0 0 $tp-spacing / 2 !default;
+$tp-icon-margin:            0 0 math.div($tp-spacing, 2) !default;
 $tp-icon-transition:        .3s !default;
 $tp-icon-hover-border-color: $tp-main-color !default;
 $tp-icon-hover-shadow:      0 4px 5px transparentize($tp-icon-hover-border-color, .31) !default;
