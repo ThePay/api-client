@@ -141,8 +141,6 @@ If even our HTML is not suitable for you we recommend create payment via API.
 - getPayUrl() for url where user can make payment
 - getPaymentDetailUrl() for url where are details about payment and user can make payment as well
 
-TODO: doplnit obrázky, kam se uživatel dostane kterou url
-
 ### Changing payment's language
 
 In scenarios where you know the customer's preferred language, you can pass the language code in `CreatePaymentParams` constructor as the fourth argument. For example:
