@@ -15,6 +15,7 @@ use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
+use ThePay\ApiClient\Model\PaymentMethodWithPayUrl;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizeIrregularSubscriptionPaymentParams;
@@ -208,6 +209,27 @@ class TheClient
     }
 
     /**
+     * Returns an array of available payment methods with pay URLs for certain payment.
+     *
+     * @param string $uid UID of payment,
+     * @param string|null $languageCode language code in ISO 6391 format
+     * @return array<PaymentMethodWithPayUrl>
+     */
+    public function getPaymentUrlsForPayment($uid, $languageCode = null)
+    {
+        $this->validateUid($uid);
+
+        $language = null;
+        if ($languageCode !== null) {
+            $language = new LanguageCode($languageCode);
+        }
+
+        return $this
+            ->api
+            ->getPaymentUrlsForPayment(new Identifier($uid), $language);
+    }
+
+    /**
      * Returns HTML code with payment buttons for each available payment method.
      * Every button is a link with click event handler to post the user to the payment process.
      *
@@ -238,6 +260,26 @@ class TheClient
             $result .= $this->getInlineAssets();
         }
         $result .= $this->gate->getPaymentButtons($params, $methods);
+        return $result;
+    }
+
+    /**
+     * Returns HTML code with payment buttons for each available payment method.
+     * Every button contains direct link to pay with certain method.
+     *
+     * @param string $uid UID of payment
+     * @param string|null $languageCode
+     * @param bool $useInlineAssets false value disable generation default style & scripts
+     *
+     * @return string HTML
+     */
+    public function getPaymentButtonsForPayment($uid, $languageCode = null, $useInlineAssets = true)
+    {
+        $result = '';
+        if ($useInlineAssets) {
+            $result .= $this->getInlineAssets();
+        }
+        $result .= $this->gate->getPaymentButtonsForPayment(new Identifier($uid), $languageCode ? new LanguageCode($languageCode) : $languageCode);
         return $result;
     }
 

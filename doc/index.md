@@ -11,6 +11,7 @@
 | getPayments | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/get-payments |
 | getPaymentButtons | |
 | getPaymentButton | |
+| getPaymentButtonsForPayment | |
 | createPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/create-new-payment |
 | realizePreauthorizedPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-preauthorized-payment |
 | cancelPreauthorizedPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/cancel-preauthorized-payment |
@@ -21,6 +22,7 @@
 | realizeIrregularSubscriptionPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-irregular-subscription-payment |
 | realizeUsageBasedSubscriptionPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-usage-based-subscription-payment |
 | realizePaymentBySavedAuthorization | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-payment-by-saved-authorization |
+| getPaymentUrlsForPayment | https://dataapi21.docs.apiary.io/#reference/payment-management/general-payment-management/get-available-payment-methods |
 
 ## Usage examples
 
@@ -52,6 +54,8 @@
 [Creating subscription](subscription.md)
 
 [Saving authorization](saving-authorization.md)
+
+[Get pay URLs for existing payments](get-pay-urls-for-existing-payment.md)
 
 ## Methods
 
@@ -111,6 +115,18 @@ Returns HTML markup with list of payment buttons.
 ### getPaymentButton
 
 Returns HTML markup with "Pay!" button.
+
+### getPaymentButtonsForPayment
+
+Returns HTML markup with list of payment buttons for already existing payment.
+
+#### Parameters
+
+| name | type |  | desc |
+| --- | --- | --- | --- |
+| $uid | string | required | Payment's UID |
+| $languageCode | string | optional | Language code in ISO 6391 (2 chars) format |
+| $useInlineAssets | bool | optional | will generate basic css & js |
 
 #### Parameters
 
@@ -233,3 +249,14 @@ Create new payment using saved authorization.
 | --- | --- | --- | --- |
 | $uid | string | required | UID of parent payment |
 | $params | RealizePaymentBySavedAuthorizationParams | required | |
+
+### getPaymentUrlsForPayment
+
+Returns an array of available payment methods with pay URLs for certain payment.
+
+#### Parameters
+
+| name | type |  | description |
+| --- | --- | --- | --- |
+| $uid | string | required | Payment's UID |
+| $languageCode | string | optional | Language code in ISO 6391 (2 chars) format |
