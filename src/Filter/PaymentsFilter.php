@@ -37,6 +37,9 @@ class PaymentsFilter implements SignableRequest
     /** @var Amount|null */
     private $amountTo;
 
+    /** @var string|null */
+    private $orderId;
+
     /**
      * @param \DateTime         $createdFrom
      * @param \DateTime         $createdTo
@@ -47,6 +50,7 @@ class PaymentsFilter implements SignableRequest
      * @param CurrencyCode      $currency
      * @param Amount            $amountFrom
      * @param Amount            $amountTo
+     * @param string            $orderId
      */
     public function __construct(
         \DateTime $createdFrom = null,
@@ -57,7 +61,8 @@ class PaymentsFilter implements SignableRequest
         PaymentState $state = null,
         CurrencyCode $currency = null,
         Amount $amountFrom = null,
-        Amount $amountTo = null
+        Amount $amountTo = null,
+        $orderId = null
     ) {
         $this->createdFrom = $createdFrom;
         $this->createdTo = $createdTo;
@@ -68,6 +73,7 @@ class PaymentsFilter implements SignableRequest
         $this->currency = $currency;
         $this->amountFrom = $amountFrom;
         $this->amountTo = $amountTo;
+        $this->orderId = $orderId;
     }
 
     /**
@@ -94,6 +100,7 @@ class PaymentsFilter implements SignableRequest
             'currency' => (string) $this->currency,
             'amount_from' => $this->amountFrom,
             'amount_to' => $this->amountTo,
+            'order_id' => $this->orderId,
         );
 
         foreach ($res as $k => $v) {
