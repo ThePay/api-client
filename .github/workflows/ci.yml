@@ -79,6 +79,11 @@ jobs:
         runs-on: ubuntu-latest
         container: "nofutur3/php-tests:7.4"
         steps:
+            # Deprecation example for future support removal.
+            #
+            #-   name: Deprecation check (2023-01-01T00:00:00+01:00)
+            #    run: if [ "$(date +%s)" -gt "1672527600" ]; then echo "This PHP version support ended"; exit1; else echo "Deprecation OK"; fi
+
             -   name: Checkout repository
                 uses: actions/checkout@v3
 
@@ -136,7 +141,7 @@ jobs:
         container: "node"
         steps:
             -   name: Checkout repository
-                uses: actions/checkout@v2
+                uses: actions/checkout@v3
 
             -   name: Install dependencies
                 run: npm install
