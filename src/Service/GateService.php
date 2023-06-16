@@ -48,7 +48,7 @@ class GateService implements GateServiceInterface
      * @param bool $usePostMethod
      * @return string HTML
      */
-    public function getPaymentButton($content, CreatePaymentParams $params, $methodCode = null, array $attributes = array(), $usePostMethod = true)
+    public function getPaymentButton($content, CreatePaymentParams $params, $methodCode = null, array $attributes = [], $usePostMethod = true)
     {
         $result = '';
 
@@ -56,7 +56,7 @@ class GateService implements GateServiceInterface
 
         if ($usePostMethod) {
             $formId = $this->generateFormId();
-            $result .= $this->buildPaymentDataForm($paymentData, array('id' => $formId));
+            $result .= $this->buildPaymentDataForm($paymentData, ['id' => $formId]);
             // Add data-form-id attribute to send form on link click
             $attributes['data-form-id'] = $formId;
         }
@@ -86,11 +86,11 @@ class GateService implements GateServiceInterface
         $paymentData = $this->getPaymentData($params);
         $result = '';
 
-        $btnAttrs = array();
+        $btnAttrs = [];
 
         if ($usePostMethod) {
             $formId = $this->generateFormId();
-            $result .= $this->buildPaymentDataForm($paymentData, array('id' => $formId));
+            $result .= $this->buildPaymentDataForm($paymentData, ['id' => $formId]);
             // Add data-form-id attribute to send form on link click
             $btnAttrs['data-form-id'] = $formId;
         }
@@ -115,7 +115,7 @@ class GateService implements GateServiceInterface
         $paymentMethods = $this->api->getPaymentUrlsForPayment($uid, $languageCode);
         $result = '';
 
-        $btnAttrs = array();
+        $btnAttrs = [];
 
         $result .= '<div class="tp-btn-grid" >';
         foreach ($paymentMethods as $method) {
@@ -170,10 +170,10 @@ class GateService implements GateServiceInterface
             ->signatureService
             ->getSignedDataForGate($params);
 
-        $data = array(
+        $data = [
             'data' => $signed->getData(),
             'signature' => $signed->getSignature(),
-        );
+        ];
 
         return $data;
     }
@@ -185,7 +185,7 @@ class GateService implements GateServiceInterface
      * @param array<string, string> $attributes
      * @return string HTML
      */
-    private function buildButton($link, $content, array $attributes = array())
+    private function buildButton($link, $content, array $attributes = [])
     {
         $attributes['href'] = $link;
         $attributes['data-thepay'] = 'payment-button';
@@ -208,12 +208,12 @@ class GateService implements GateServiceInterface
      * @param array<string, string> $attributes
      * @return string HTML
      */
-    private function buildPaymentDataForm(array $paymentData, array $attributes = array())
+    private function buildPaymentDataForm(array $paymentData, array $attributes = [])
     {
-        $attributes = array_merge(array(
+        $attributes = array_merge([
             'action' => $this->config->getGateUrl(),
             'method' => 'post',
-        ), $attributes);
+        ], $attributes);
         $result = '<form ' . $this->htmlAttributes($attributes) . ' >';
         foreach ($paymentData as $key => $value) {
             $result .= '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($value) . '" >';
@@ -231,7 +231,7 @@ class GateService implements GateServiceInterface
     private function getButtonMethodContent(IPaymentMethod $method)
     {
         return '<span class="tp-icon" >'
-            . '<img ' . $this->htmlAttributes(array('src' => $method->getImageUrl(), 'alt' => $method->getTitle())) . ' />'
+            . '<img ' . $this->htmlAttributes(['src' => $method->getImageUrl(), 'alt' => $method->getTitle()]) . ' />'
             . '</span>'
             . '<span class="tp-title" role="note" >'
             . htmlspecialchars($method->getTitle())

@@ -40,6 +40,6 @@ abstract class EnumValueObject extends BaseValueObject
      */
     public static function getOptions()
     {
-        return array();
+        return [];
     }
 }

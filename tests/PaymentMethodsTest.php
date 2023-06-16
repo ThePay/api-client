@@ -42,8 +42,8 @@ class PaymentMethodsTest extends BaseTestCase
         static::assertNotNull($cardMethod);
         static::assertSame('card', $cardMethod->getCode());
         static::assertSame('Card Payment', $cardMethod->getTitle());
-        static::assertSame(array('online', 'returnable'), $cardMethod->getTags());
-        static::assertSame(array('CZK'), $cardMethod->getAvailableCurrencies());
+        static::assertSame(['online', 'returnable'], $cardMethod->getTags());
+        static::assertSame(['CZK'], $cardMethod->getAvailableCurrencies());
         static::assertSame('https://neco.cz', $cardMethod->getImageUrl()->getValue());
     }
 
@@ -62,7 +62,7 @@ class PaymentMethodsTest extends BaseTestCase
      */
     public function testPaymentMethodsFilterDoublingUsedTags($expectedMethod, array $usedTags, $isRecurring, $isNotDeposit)
     {
-        $filter = new PaymentMethodFilter(array(), $usedTags, array());
+        $filter = new PaymentMethodFilter([], $usedTags, []);
 
         $methods = $this->client->getActivePaymentMethods()
             ->getFiltered($filter, $isRecurring, ! $isNotDeposit);
@@ -75,7 +75,7 @@ class PaymentMethodsTest extends BaseTestCase
      */
     public function testPaymentMethodsFilterDoublingBannedTags()
     {
-        $filter = new PaymentMethodFilter(array(), array(), array(PaymentMethodTag::PRE_AUTHORIZATION, PaymentMethodTag::PRE_AUTHORIZATION));
+        $filter = new PaymentMethodFilter([], [], [PaymentMethodTag::PRE_AUTHORIZATION, PaymentMethodTag::PRE_AUTHORIZATION]);
 
         $methods = $this->client->getActivePaymentMethods()
             ->getFiltered($filter);
@@ -88,7 +88,7 @@ class PaymentMethodsTest extends BaseTestCase
      */
     public function testPaymentMethodsFilterDoublingCurrencies()
     {
-        $filter = new PaymentMethodFilter(array('CZK', 'CZK'), array(), array());
+        $filter = new PaymentMethodFilter(['CZK', 'CZK'], [], []);
 
         $methods = $this->client->getActivePaymentMethods()
             ->getFiltered($filter);
@@ -101,53 +101,53 @@ class PaymentMethodsTest extends BaseTestCase
      */
     public function paymentMethodsFilterDoublingUsedTagsDataProvider()
     {
-        return array(
-            array(
+        return [
+            [
                 PaymentMethodCode::CARD,
-                array(
+                [
                     PaymentMethodTag::PRE_AUTHORIZATION,
-                ),
+                ],
                 false,
                 true,
-            ),
-            array(
+            ],
+            [
                 PaymentMethodCode::CARD,
-                array(
+                [
                     PaymentMethodTag::RECURRING_PAYMENTS,
-                ),
+                ],
                 true,
                 false,
-            ),
-            array(
+            ],
+            [
                 PaymentMethodCode::CARD,
-                array(
+                [
                     PaymentMethodTag::PRE_AUTHORIZATION,
                     PaymentMethodTag::PRE_AUTHORIZATION,
-                ),
+                ],
                 false,
                 true,
-            ),
-            array(
+            ],
+            [
                 PaymentMethodCode::CARD,
-                array(
+                [
                     PaymentMethodTag::RECURRING_PAYMENTS,
                     PaymentMethodTag::RECURRING_PAYMENTS,
-                ),
+                ],
                 true,
                 false,
-            ),
-            array(
+            ],
+            [
                 PaymentMethodCode::CARD,
-                array(
+                [
                     PaymentMethodTag::PRE_AUTHORIZATION,
                     PaymentMethodTag::RECURRING_PAYMENTS,
                     PaymentMethodTag::PRE_AUTHORIZATION,
                     PaymentMethodTag::RECURRING_PAYMENTS,
-                ),
+                ],
                 true,
                 true,
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -170,50 +170,50 @@ class PaymentMethodsTest extends BaseTestCase
      */
     public function filterDataProvider()
     {
-        return array(
-            array(
+        return [
+            [
                 new PaymentMethodFilter(
-                    array('GBP'),
-                    array(),
-                    array()
+                    ['GBP'],
+                    [],
+                    []
                 ),
                 1,
-            ),
-            array(
+            ],
+            [
                 new PaymentMethodFilter(
-                    array(),
-                    array('online'),
-                    array()
+                    [],
+                    ['online'],
+                    []
                 ),
                 7,
-            ),
-            array(
+            ],
+            [
                 new PaymentMethodFilter(
-                    array(),
-                    array('online'),
-                    array('access_account_owner')
+                    [],
+                    ['online'],
+                    ['access_account_owner']
                 ),
                 2,
-            ),
-            array(
+            ],
+            [
                 new PaymentMethodFilter(
-                    array(),
-                    array('online'),
-                    array('access_account_owner', 'alternative_method')
+                    [],
+                    ['online'],
+                    ['access_account_owner', 'alternative_method']
                 ),
                 1,
-            ),
-            array(
-                new PaymentMethodFilter(array(), array(), array()),
+            ],
+            [
+                new PaymentMethodFilter([], [], []),
                 1,
                 true,
-            ),
-            array(
-                new PaymentMethodFilter(array(), array(), array()),
+            ],
+            [
+                new PaymentMethodFilter([], [], []),
                 1,
                 false,
                 false,
-            ),
-        );
+            ],
+        ];
     }
 }

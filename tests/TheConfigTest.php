@@ -24,9 +24,9 @@ class TheConfigTest extends BaseTestCase
      */
     public function configDataProvider()
     {
-        return array(
-            array(new TheConfig(self::MERCHANT_ID, 1, 'pass', 'https://test.api.cz/', 'https://test.gate.cz/'), 'https://test.gate.cz/', 'https://test.api.cz/v1/'),
-        );
+        return [
+            [new TheConfig(self::MERCHANT_ID, 1, 'pass', 'https://test.api.cz/', 'https://test.gate.cz/'), 'https://test.gate.cz/', 'https://test.api.cz/v1/'],
+        ];
     }
 
     /**

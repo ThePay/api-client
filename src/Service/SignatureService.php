@@ -9,7 +9,7 @@ use ThePay\ApiClient\TheConfig;
 
 final class SignatureService
 {
-    const FORMAT_RFC7231 = 'D, d M Y H:i:s \G\M\T';
+    public const FORMAT_RFC7231 = 'D, d M Y H:i:s \G\M\T';
 
     /** @var TheConfig */
     private $config;

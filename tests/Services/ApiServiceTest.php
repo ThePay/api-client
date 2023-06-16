@@ -35,12 +35,12 @@ final class ApiServiceTest extends BaseTestCase
      */
     public function testGetProjects()
     {
-        $expectedProjects = array(new Project(5, 'https://some-url', 'TP7711112006468461625654'));
+        $expectedProjects = [new Project(5, 'https://some-url', 'TP7711112006468461625654')];
         $mockBody = '[{"project_id":5,"project_url":"https://some-url","account_iban":"TP7711112006468461625654"}]';
 
-        call_user_func(array($this->httpService, 'shouldReceive'), 'get')
+        call_user_func([$this->httpService, 'shouldReceive'], 'get')
             ->once()
-            ->andReturn(new HttpResponse(null, 200, 'OK', array(), $mockBody))
+            ->andReturn(new HttpResponse(null, 200, 'OK', [], $mockBody))
         ;
 
         $projects = $this->service->getProjects();

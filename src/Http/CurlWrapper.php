@@ -6,11 +6,11 @@ use ThePay\ApiClient\TheClient;
 
 class CurlWrapper
 {
-    const METHOD_GET = 'GET';
-    const METHOD_POST = 'POST';
-    const METHOD_DELETE = 'DELETE';
-    const METHOD_PUT = 'PUT';
-    const HEADER_HOST = 'Host';
+    public const METHOD_GET = 'GET';
+    public const METHOD_POST = 'POST';
+    public const METHOD_DELETE = 'DELETE';
+    public const METHOD_PUT = 'PUT';
+    public const HEADER_HOST = 'Host';
 
     /** @var \CurlHandle */
     private $curl;
@@ -24,7 +24,7 @@ class CurlWrapper
      * @param \CurlHandle $curl
      * @param array<string> $defaultHeaders
      */
-    public function __construct($curl, array $defaultHeaders = array())
+    public function __construct($curl, array $defaultHeaders = [])
     {
         $this->curl = $curl;
         $this->defaultHeaders = $defaultHeaders;
@@ -38,26 +38,26 @@ class CurlWrapper
      * @param array<string> $headers
      * @return HttpResponse
      */
-    public function request($method, $url, $data = '', array $headers = array())
+    public function request($method, $url, $data = '', array $headers = [])
     {
         switch ($method) {
             case self::METHOD_GET:
                 curl_setopt($this->curl, CURLOPT_HTTPGET, true);
                 break;
             case self::METHOD_POST:
-                curl_setopt_array($this->curl, array(
+                curl_setopt_array($this->curl, [
                     CURLOPT_POST => true,
                     CURLOPT_POSTFIELDS => $data,
                     CURLOPT_RETURNTRANSFER => true,
-                ));
+                ]);
                 break;
             case self::METHOD_PUT:
-                curl_setopt_array($this->curl, array(
+                curl_setopt_array($this->curl, [
                     CURLOPT_CUSTOMREQUEST => 'PUT',
                     CURLOPT_POSTFIELDS => $data,
                     CURLOPT_RETURNTRANSFER => true,
                     CURLINFO_HEADER_OUT => true,
-                ));
+                ]);
                 break;
             default:
                 curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, $method);
@@ -73,9 +73,9 @@ class CurlWrapper
 
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
 
-        curl_setopt_array($this->curl, array(
+        curl_setopt_array($this->curl, [
             CURLOPT_URL => $url,
-        ));
+        ]);
 
         return $this->resolveResponse(curl_exec($this->curl), curl_error($this->curl));
     }
@@ -85,13 +85,13 @@ class CurlWrapper
      */
     private function setDefaultOptions()
     {
-        curl_setopt_array($this->curl, array(
+        curl_setopt_array($this->curl, [
             CURLOPT_HEADER => true,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_USERAGENT => $this->getUserAgent(),
             CURLOPT_ENCODING => 'gzip, deflate, br',
             CURLINFO_HEADER_OUT => true,
-        ));
+        ]);
     }
 
     /**
@@ -109,8 +109,8 @@ class CurlWrapper
         $responseCode = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
         $headerSize = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
         $header = substr($response, 0, $headerSize);
-        $headers = array();
-        $matches = array();
+        $headers = [];
+        $matches = [];
         $body = substr($response, $headerSize);
         $responseCodeMessage = '';
 

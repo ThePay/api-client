@@ -180,12 +180,12 @@ class ValueObjectTest extends TestCase
      */
     public function amountProvider()
     {
-        return array(
-            array(0),
-            array(1),
-            array(256),
-            array(0xf),
-        );
+        return [
+            [0],
+            [1],
+            [256],
+            [0xf],
+        ];
     }
 
     /**
@@ -193,13 +193,13 @@ class ValueObjectTest extends TestCase
      */
     public function invalidAmountProvider()
     {
-        return array(
-            array(0.1),
-            array('0xf'),
-            array('hello'),
-            array(true),
-            array('256'),
-        );
+        return [
+            [0.1],
+            ['0xf'],
+            ['hello'],
+            [true],
+            ['256'],
+        ];
     }
 
     /**
@@ -207,10 +207,10 @@ class ValueObjectTest extends TestCase
      */
     public function currencyCodeProvider()
     {
-        return array(
-            array('CZK'),
-            array('USD'),
-        );
+        return [
+            ['CZK'],
+            ['USD'],
+        ];
     }
 
     /**
@@ -218,11 +218,11 @@ class ValueObjectTest extends TestCase
      */
     public function invalidCurrencyCodeProvider()
     {
-        return array(
-            array('cz'),
-            array(1),
-            array('HELLO'),
-        );
+        return [
+            ['cz'],
+            [1],
+            ['HELLO'],
+        ];
     }
 
     /**
@@ -230,12 +230,12 @@ class ValueObjectTest extends TestCase
      */
     public function identifierProvider()
     {
-        return array(
-            array('1'),
-            array(1),
-            array($this->randomChars(50)),
-            array($this->randomChars(100)),
-        );
+        return [
+            ['1'],
+            [1],
+            [$this->randomChars(50)],
+            [$this->randomChars(100)],
+        ];
     }
 
     /**
@@ -243,9 +243,9 @@ class ValueObjectTest extends TestCase
      */
     public function invalidIdentifierProvider()
     {
-        return array(
-            array($this->randomChars(101)),
-        );
+        return [
+            [$this->randomChars(101)],
+        ];
     }
 
     /**
@@ -253,10 +253,10 @@ class ValueObjectTest extends TestCase
      */
     public function langCodeProvider()
     {
-        return array(
-            array('cs'),
-            array('en'),
-        );
+        return [
+            ['cs'],
+            ['en'],
+        ];
     }
 
     /**
@@ -264,10 +264,10 @@ class ValueObjectTest extends TestCase
      */
     public function invalidLangCodeProvider()
     {
-        return array(
-            array('csc'),
-            array(1),
-        );
+        return [
+            ['csc'],
+            [1],
+        ];
     }
 
     /**
@@ -275,12 +275,12 @@ class ValueObjectTest extends TestCase
      */
     public function urlProvider()
     {
-        return array(
-            array('http://test.com'),
-            array('http://www.test.com'),
-            array('https://test.com'),
-            array('https://www.test.com'),
-        );
+        return [
+            ['http://test.com'],
+            ['http://www.test.com'],
+            ['https://test.com'],
+            ['https://www.test.com'],
+        ];
     }
 
     /**
@@ -288,13 +288,13 @@ class ValueObjectTest extends TestCase
      */
     public function invalidUrlProvider()
     {
-        return array(
-            array(1),
-            array(1.01),
-            array('hello'),
-            array('test.com'),
-            array('www.test.com'),
-        );
+        return [
+            [1],
+            [1.01],
+            ['hello'],
+            ['test.com'],
+            ['www.test.com'],
+        ];
     }
 
     /**
@@ -303,10 +303,10 @@ class ValueObjectTest extends TestCase
     public function paymentMethodCodeProvider()
     {
         // [$expectedException, $code]
-        return array(
-            array(null, PaymentMethodCode::CARD),
-            array(null, 'not-existing-payment-method'),
-        );
+        return [
+            [null, PaymentMethodCode::CARD],
+            [null, 'not-existing-payment-method'],
+        ];
     }
 
     /**

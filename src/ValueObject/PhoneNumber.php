@@ -14,7 +14,7 @@ final class PhoneNumber extends BaseValueObject
      */
     public function __construct($phone)
     {
-        $phone = str_replace(array('+', ' '), '', $phone);
+        $phone = str_replace(['+', ' '], '', $phone);
 
         if ( ! preg_match('@^\d{1,15}$@', $phone)) {
             throw new InvalidArgumentException('Phone number: "' . $phone . '" is not in correct MSISDN format.');

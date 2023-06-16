@@ -34,11 +34,11 @@ class ChangePaymentMethod extends BaseTestCase
      */
     public function testRequest()
     {
-        call_user_func(array($this->httpService, 'shouldReceive'), 'put')->once()
+        call_user_func([$this->httpService, 'shouldReceive'], 'put')->once()
             ->with($this->config->getApiUrl() . 'projects/1/payments/abc/method?merchant_id=' . self::MERCHANT_ID, json_encode(
-                array(
+                [
                     'payment_method_code' => new PaymentMethodCode(PaymentMethodCode::TRANSFER),
-                )
+                ]
             ))
             ->andReturn($this->getOkResponse());
 
@@ -52,7 +52,7 @@ class ChangePaymentMethod extends BaseTestCase
      */
     public function testNotOkResponse()
     {
-        call_user_func(array($this->httpService, 'shouldReceive'), 'delete')
+        call_user_func([$this->httpService, 'shouldReceive'], 'delete')
             ->andReturn($this->getNotOkResponse());
 
         $this->client->changePaymentMethod('abc', new PaymentMethodCode(PaymentMethodCode::TRANSFER));
