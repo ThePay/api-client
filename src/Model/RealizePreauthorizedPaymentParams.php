@@ -44,8 +44,8 @@ class RealizePreauthorizedPaymentParams implements SignableRequest
      */
     public function toArray()
     {
-        return array(
+        return [
             'amount' => $this->amount->getValue(),
-        );
+        ];
     }
 }

@@ -43,7 +43,7 @@ use ThePay\ApiClient\ValueObject\StringValue;
 class TheClient
 {
     /** @var string */
-    const VERSION = '1.6.0';
+    public const VERSION = '1.6.0';
 
     /** @var TheConfig */
     private $config;
@@ -245,9 +245,9 @@ class TheClient
 
         if ($filter === null) {
             $filter = new PaymentMethodFilter(
-                array($params->getCurrencyCode()->getValue()),
-                array(),
-                array()
+                [$params->getCurrencyCode()->getValue()],
+                [],
+                []
             );
         } else {
             $filter->setCurrency($params->getCurrencyCode()->getValue());
@@ -292,7 +292,7 @@ class TheClient
      * @param bool $usePostMethod
      * @return string This is HTML snippet with link redirection to payment gate. To payment method selection page.
      */
-    public function getPaymentButton(CreatePaymentParams $params, $title = 'Pay!', $useInlineAssets = true, $methodCode = null, array $attributes = array(), $usePostMethod = true)
+    public function getPaymentButton(CreatePaymentParams $params, $title = 'Pay!', $useInlineAssets = true, $methodCode = null, array $attributes = [], $usePostMethod = true)
     {
         $this->setLanguageCodeIfMissing($params);
 

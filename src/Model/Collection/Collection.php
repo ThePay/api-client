@@ -10,7 +10,7 @@ namespace ThePay\ApiClient\Model\Collection;
 abstract class Collection implements \ArrayAccess, \Iterator
 {
     /** @var array<TValue> */
-    protected $data = array();
+    protected $data = [];
 
     /** @var int */
     private $iteratorPosition = 0;

@@ -34,7 +34,7 @@ class RealizePreauthorizationPaymentTest extends BaseTestCase
      */
     public function testRequest()
     {
-        call_user_func(array($this->httpService, 'shouldReceive'), 'post')->once()
+        call_user_func([$this->httpService, 'shouldReceive'], 'post')->once()
             ->with($this->config->getApiUrl() . 'projects/1/payments/abc/preauthorized?merchant_id=' . self::MERCHANT_ID, '{"amount":100}')
             ->andReturn($this->getOkResponse());
 
@@ -49,7 +49,7 @@ class RealizePreauthorizationPaymentTest extends BaseTestCase
     {
         $this->setExpectedException('\Exception');
 
-        call_user_func(array($this->httpService, 'shouldReceive'), 'post')
+        call_user_func([$this->httpService, 'shouldReceive'], 'post')
             ->andReturn($this->getNotOkResponse());
 
         $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(100, 'abc'));

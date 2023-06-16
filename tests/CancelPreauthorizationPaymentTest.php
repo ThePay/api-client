@@ -34,7 +34,7 @@ class CancelPreauthorizationPaymentTest extends BaseTestCase
      */
     public function testRequest()
     {
-        call_user_func(array($this->httpService, 'shouldReceive'), 'delete')->once()
+        call_user_func([$this->httpService, 'shouldReceive'], 'delete')->once()
             ->with($this->config->getApiUrl() . 'projects/1/payments/abc/preauthorized?merchant_id=' . self::MERCHANT_ID)
             ->andReturn($this->getOkResponse());
 
@@ -48,7 +48,7 @@ class CancelPreauthorizationPaymentTest extends BaseTestCase
      */
     public function testNotOkResponse()
     {
-        call_user_func(array($this->httpService, 'shouldReceive'), 'delete')
+        call_user_func([$this->httpService, 'shouldReceive'], 'delete')
             ->andReturn($this->getNotOkResponse());
 
         $this->client->cancelPreauthorizedPayment(new Identifier('abc'));

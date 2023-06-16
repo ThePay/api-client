@@ -27,9 +27,9 @@ class PaginatedCollectionTest extends TestCase
      */
     public function getHasNextPageData()
     {
-        return array(
-            array(1, 10, 100, true),
-            array(10, 10, 100, false),
-        );
+        return [
+            [1, 10, 100, true],
+            [10, 10, 100, false],
+        ];
     }
 }

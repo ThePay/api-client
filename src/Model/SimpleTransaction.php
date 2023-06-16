@@ -141,7 +141,7 @@ class SimpleTransaction
      */
     public function toArray()
     {
-        return array(
+        return [
             'transactionId' => $this->transactionId,
             'amount' => $this->amount,
             'currencyCode' => $this->currencyCode,
@@ -153,6 +153,6 @@ class SimpleTransaction
             'vs' => $this->vs,
             'ss' => $this->ss,
             'ks' => $this->ks,
-        );
+        ];
     }
 }

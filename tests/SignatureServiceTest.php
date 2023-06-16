@@ -39,10 +39,10 @@ class SignatureServiceTest extends TestCase
      */
     public function signatureForApiDataProvider()
     {
-        return array(
-            array(new TheConfig(BaseTestCase::MERCHANT_ID, 1, 'password', 'https://test.api.cz/', 'https://test.gate.cz/')),
-            array(new TheConfig('86a3eed0-95a4-11ea-ac9f-371f3488e0f2', 1, 'anotherPassword', 'https://test.api.cz/', 'https://test.gate.cz/')),
-            array(new TheConfig('86a3eed0-95a4-11ea-ac9f-371f3488e0f3', 35, 'superLongAndDifficultToRememberPasswordThatWeDontUseOnProductionForOurAccounts', 'https://test.api.cz/', 'https://test.gate.cz/')),
-        );
+        return [
+            [new TheConfig(BaseTestCase::MERCHANT_ID, 1, 'password', 'https://test.api.cz/', 'https://test.gate.cz/')],
+            [new TheConfig('86a3eed0-95a4-11ea-ac9f-371f3488e0f2', 1, 'anotherPassword', 'https://test.api.cz/', 'https://test.gate.cz/')],
+            [new TheConfig('86a3eed0-95a4-11ea-ac9f-371f3488e0f3', 35, 'superLongAndDifficultToRememberPasswordThatWeDontUseOnProductionForOurAccounts', 'https://test.api.cz/', 'https://test.gate.cz/')],
+        ];
     }
 }

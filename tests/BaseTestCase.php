@@ -8,7 +8,7 @@ use ThePay\ApiClient\TheConfig;
 
 abstract class BaseTestCase extends TestCase
 {
-    const MERCHANT_ID = '86a3eed0-95a4-11ea-ac9f-371f3488e0fa';
+    public const MERCHANT_ID = '86a3eed0-95a4-11ea-ac9f-371f3488e0fa';
 
     /** @var TheConfig */
     protected $config;

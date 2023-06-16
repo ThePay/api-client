@@ -57,6 +57,6 @@ class PaymentMethodFilter
      */
     public function setCurrency($currencyCode)
     {
-        $this->currencies = array($currencyCode);
+        $this->currencies = [$currencyCode];
     }
 }

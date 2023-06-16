@@ -75,9 +75,9 @@ class PaginatedCollectionParams implements SignableRequest
             return $param;
         }, $this->baseParams->toArray());
 
-        return array_merge(array(
+        return array_merge([
             'limit' => $this->limit,
             'page' => $this->page,
-        ), $baseParams);
+        ], $baseParams);
     }
 }

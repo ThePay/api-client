@@ -10,59 +10,59 @@ class PaymentMethodCode extends EnumValueObject
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
      */
-    const CARD = 'card';
+    public const CARD = 'card';
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
      */
-    const PLATBA_24 = 'platba_24';
+    public const PLATBA_24 = 'platba_24';
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
      */
-    const MOJEPLATBA = 'mojeplatba';
+    public const MOJEPLATBA = 'mojeplatba';
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
      */
-    const CSOB = 'csob';
+    public const CSOB = 'csob';
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
      */
-    const POSTOVNI_SPORITELNA = 'postovni_sporitelna';
+    public const POSTOVNI_SPORITELNA = 'postovni_sporitelna';
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
      */
-    const EKONTO = 'ekonto';
+    public const EKONTO = 'ekonto';
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
      */
-    const UNI_CREDIT = 'uni_credit';
+    public const UNI_CREDIT = 'uni_credit';
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
      */
-    const MBANK = 'mbank';
+    public const MBANK = 'mbank';
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
      */
-    const FIO_BANKA = 'fio_banka';
+    public const FIO_BANKA = 'fio_banka';
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
      */
-    const MONETA = 'moneta';
+    public const MONETA = 'moneta';
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
      */
-    const EQUA_BANK = 'equa_bank';
+    public const EQUA_BANK = 'equa_bank';
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
      */
-    const TRANSFER = 'transfer';
+    public const TRANSFER = 'transfer';
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
      */
-    const BITCOIN = 'bitcoin';
+    public const BITCOIN = 'bitcoin';
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
      */
-    const PLATIMPAK = 'platimpak';
+    public const PLATIMPAK = 'platimpak';
 
     /**
      * @deprecated will be removed, for customer method selection in payment process use: ThePay\ApiClient\TheClient::getActivePaymentMethods
@@ -81,7 +81,7 @@ class PaymentMethodCode extends EnumValueObject
      */
     public static function getOptions()
     {
-        return array(
+        return [
             self::CARD,
             self::PLATBA_24,
             self::MOJEPLATBA,
@@ -96,6 +96,6 @@ class PaymentMethodCode extends EnumValueObject
             self::TRANSFER,
             self::BITCOIN,
             self::PLATIMPAK,
-        );
+        ];
     }
 }

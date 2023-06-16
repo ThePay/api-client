@@ -30,13 +30,13 @@ final class HttpResponseTest extends TestCase
      */
     public function dataProviderGetHeader()
     {
-        return array(
-            array(null, 'no-headers', null),
-            array(null, 'empty-headers', array()),
-            array(null, 'key-not-found', array('another-key' => 'another-value')),
-            array('value-for-lower-key', 'lower-key', array('Lower-Key' => 'value-for-lower-key')),
-            array('value-for-upper-key', 'UPPER-KEY', array('Upper-Key' => 'value-for-upper-key')),
-            array('value-for-same-key', 'same-key', array('same-key' => 'value-for-same-key')),
-        );
+        return [
+            [null, 'no-headers', null],
+            [null, 'empty-headers', []],
+            [null, 'key-not-found', ['another-key' => 'another-value']],
+            ['value-for-lower-key', 'lower-key', ['Lower-Key' => 'value-for-lower-key']],
+            ['value-for-upper-key', 'UPPER-KEY', ['Upper-Key' => 'value-for-upper-key']],
+            ['value-for-same-key', 'same-key', ['same-key' => 'value-for-same-key']],
+        ];
     }
 }

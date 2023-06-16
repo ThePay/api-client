@@ -90,7 +90,7 @@ class PaymentsFilter implements SignableRequest
      */
     public function toArray()
     {
-        $res = array(
+        $res = [
             'created_from' => $this->createdFrom,
             'created_to' => $this->createdTo,
             'finished_from' => $this->finishedFrom,
@@ -101,7 +101,7 @@ class PaymentsFilter implements SignableRequest
             'amount_from' => $this->amountFrom,
             'amount_to' => $this->amountTo,
             'order_id' => $this->orderId,
-        );
+        ];
 
         foreach ($res as $k => $v) {
             if ($v === '') {

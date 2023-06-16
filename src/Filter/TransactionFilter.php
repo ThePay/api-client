@@ -43,11 +43,11 @@ class TransactionFilter implements SignableRequest
      */
     public function toArray()
     {
-        $data = array(
+        $data = [
             'account_iban' => $this->accountIban,
             'date_from' => $this->dateFrom,
             'date_to' => $this->dateTo,
-        );
+        ];
 
         if ($this->currencyCode !== null) {
             $data['currency_code'] = (string) $this->currencyCode;
