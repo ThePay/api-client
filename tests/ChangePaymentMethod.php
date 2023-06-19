@@ -1,75 +1,60 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests;
 
-use Mockery;
+use PHPUnit\Framework\MockObject\MockObject;
 use ThePay\ApiClient\Http\HttpResponse;
+use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\TheClient;
-use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 
-class ChangePaymentMethod extends BaseTestCase
+final class ChangePaymentMethod extends BaseTestCase
 {
-    /** @var \Mockery\LegacyMockInterface|\ThePay\ApiClient\Http\HttpServiceInterface */
-    private $httpService;
+    /** @var MockObject&HttpServiceInterface */
+    private MockObject $httpService;
 
-    /** @var TheClient */
-    private $client;
+    private TheClient $client;
 
-    /**
-     * @return void
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->httpService = Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
-        /** @phpstan-ignore-next-line  */
+        $this->httpService = $this->createMock(HttpServiceInterface::class);
         $apiService = new ApiService($this->config, $this->httpService);
-        /** @phpstan-ignore-next-line  */
         $this->client = new TheClient($this->config, null, $this->httpService, $apiService);
     }
 
-    /**
-     * @return void
-     */
-    public function testRequest()
+    public function testRequest(): void
     {
-        call_user_func([$this->httpService, 'shouldReceive'], 'put')->once()
-            ->with($this->config->getApiUrl() . 'projects/1/payments/abc/method?merchant_id=' . self::MERCHANT_ID, json_encode(
-                [
-                    'payment_method_code' => new PaymentMethodCode(PaymentMethodCode::TRANSFER),
-                ]
-            ))
-            ->andReturn($this->getOkResponse());
+        $this->httpService
+            ->expects(self::once())
+            ->method('put')
+            ->with(
+                $this->config->getApiUrl() . 'projects/1/payments/abc/method?merchant_id=' . self::MERCHANT_ID,
+                '{"payment_method_code":"transfer"}',
+            )
+            ->willReturn($this->getOkResponse())
+        ;
 
-        $this->client->changePaymentMethod('abc', new PaymentMethodCode(PaymentMethodCode::TRANSFER));
-        \Mockery::close();
+        $this->client->changePaymentMethod('abc', 'transfer');
     }
 
-    /**
-     * @expectedException \Exception
-     * @return void
-     */
-    public function testNotOkResponse()
+    public function testNotOkResponse(): void
     {
-        call_user_func([$this->httpService, 'shouldReceive'], 'delete')
-            ->andReturn($this->getNotOkResponse());
+        $this->expectException(\Exception::class);
 
-        $this->client->changePaymentMethod('abc', new PaymentMethodCode(PaymentMethodCode::TRANSFER));
+        $this->httpService->method('delete')->willReturn($this->getNotOkResponse());
+
+        $this->client->changePaymentMethod('abc', 'transfer');
     }
 
-    /**
-     * @return HttpResponse
-     */
-    private function getOkResponse()
+    private function getOkResponse(): HttpResponse
     {
         return new HttpResponse(null, 204);
     }
 
-    /**
-     * @return HttpResponse
-     */
-    private function getNotOkResponse()
+    private function getNotOkResponse(): HttpResponse
     {
         return new HttpResponse(null, 404);
     }

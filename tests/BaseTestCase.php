@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests;
 
 use PHPUnit\Framework\TestCase;
@@ -10,13 +12,9 @@ abstract class BaseTestCase extends TestCase
 {
     public const MERCHANT_ID = '86a3eed0-95a4-11ea-ac9f-371f3488e0fa';
 
-    /** @var TheConfig */
-    protected $config;
+    protected TheConfig $config;
 
-    /**
-     * @return void
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -25,10 +23,8 @@ abstract class BaseTestCase extends TestCase
 
     /**
      * method return TheClient witch use apiary mock server
-     *
-     * @return TheClient
      */
-    protected function getApiaryClient()
+    protected function getApiaryClient(): TheClient
     {
         $config = new TheConfig(
             '6cdf1b24',

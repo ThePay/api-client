@@ -25,7 +25,7 @@ class PaginatedCollectionTest extends TestCase
     /**
      * @return array<array<mixed>>
      */
-    public function getHasNextPageData()
+    public static function getHasNextPageData(): array
     {
         return [
             [1, 10, 100, true],

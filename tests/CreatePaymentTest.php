@@ -1,53 +1,46 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests;
 
-use Mockery;
+use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\Address;
 use ThePay\ApiClient\Model\CreatePaymentCustomer;
 use ThePay\ApiClient\Model\CreatePaymentParams;
+use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Tests\Mocks\Service\ApiMockService;
 use ThePay\ApiClient\TheClient;
 
-class CreatePaymentTest extends BaseTestCase
+final class CreatePaymentTest extends BaseTestCase
 {
-    /** @var TheClient */
-    private $client;
+    private TheClient $client;
 
-    /**
-     * @return void
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $httpService = Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
-        /** @phpstan-ignore-next-line */
+        $httpService = $this->createMock(HttpServiceInterface::class);
         $apiService = new ApiMockService($this->config, $httpService);
-        /** @phpstan-ignore-next-line */
         $this->client = new TheClient($this->config, null, $httpService, $apiService);
     }
 
 
     /**
      * @dataProvider createButtonProvider
-     *
-     * @param string $data
-     * @param string $signature
-     * @return void
      */
-    public function testCreateButton(CreatePaymentParams $params, $data, $signature)
+    public function testCreateButton(CreatePaymentParams $params, string $data, string $signature): void
     {
         $r = $this->client->getPaymentButton($params);
 
-        static::assertContains($data, $r);
-        static::assertContains($signature, $r);
+        self::assertStringContainsString($data, $r);
+        self::assertStringContainsString($signature, $r);
     }
 
     /**
      * @return array<array<mixed>>
      */
-    public function createButtonProvider()
+    public static function createButtonProvider(): array
     {
         return [
             [
@@ -63,45 +56,36 @@ class CreatePaymentTest extends BaseTestCase
         ];
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateCustomButton()
+    public function testCreateCustomButton(): void
     {
         $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010003'));
-        static::assertContains('Pay!', $r);
-        static::assertContains('class="tp-btn"', $r);
-        static::assertNotContains('data-payment-method', $r);
+        self::assertStringContainsString('Pay!', $r);
+        self::assertStringContainsString('class="tp-btn"', $r);
+        self::assertStringNotContainsString('data-payment-method', $r);
         $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010004'), 'Zaplatit!', true, 'bitcoin', ['class' => 'btn btn-success']);
-        static::assertContains('Zaplatit!', $r);
-        static::assertContains('class="tp-btn btn btn-success"', $r);
-        static::assertContains('data-payment-method="bitcoin"', $r);
+        self::assertStringContainsString('Zaplatit!', $r);
+        self::assertStringContainsString('class="tp-btn btn btn-success"', $r);
+        self::assertStringContainsString('data-payment-method="bitcoin"', $r);
     }
 
-    /**
-     * @return void
-     */
-    public function testGetPaymentMethods()
+    public function testGetPaymentMethods(): void
     {
         $result = $this->client->getPaymentButtons(new CreatePaymentParams(100, 'CZK', '202001010005'));
 
-        static::assertTrue(is_string($result));
+        self::assertTrue(is_string($result));
 
         // In default we need to join assets
-        static::assertContains('<style', $result);
-        static::assertContains('<script', $result);
+        self::assertStringContainsString('<style', $result);
+        self::assertStringContainsString('<script', $result);
 
         // In default we want to send data through form post method, so we need form element
-        static::assertContains('<form ', $result);
+        self::assertStringContainsString('<form ', $result);
 
 
         // todo: complete test, implementation was not final at this moment
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateApiPayment()
+    public function testCreateApiPayment(): void
     {
         // Create entity with information about customer
         $customer = new CreatePaymentCustomer(
@@ -123,6 +107,6 @@ class CreatePaymentTest extends BaseTestCase
 
         $result = $this->client->createPayment($createPayment);
 
-        static::assertTrue(get_class($result) === 'ThePay\ApiClient\Model\CreatePaymentResponse');
+        self::assertSame(CreatePaymentResponse::class, get_class($result));
     }
 }

@@ -1,35 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests;
 
 use PHPUnit\Framework\TestCase;
 use ThePay\ApiClient\Http\HttpCurlService;
+use ThePay\ApiClient\Http\HttpResponse;
 use ThePay\ApiClient\Service\SignatureService;
 use ThePay\ApiClient\TheConfig;
 
-class HttpCurlServiceTest extends TestCase
+final class HttpCurlServiceTest extends TestCase
 {
-    /** @var HttpCurlService */
-    private $httpCurlService;
+    private HttpCurlService $httpCurlService;
 
-    /**
-     * @return void
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
-        /** @var TheConfig $config */
-        $config = \Mockery::mock('ThePay\ApiClient\TheConfig')->makePartial();
+        $config = $this->createPartialMock(TheConfig::class, []);
         $signatureService = new SignatureService($config);
         $this->httpCurlService = new HttpCurlService($signatureService);
     }
 
-    /**
-     * @return void
-     */
-    public function testGet()
+    public function testGet(): void
     {
         $response = $this->httpCurlService->get('https://www.thepay.cz');
-        static::assertEquals('ThePay\ApiClient\Http\HttpResponse', get_class($response));
+        self::assertEquals(HttpResponse::class, get_class($response));
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests\Http;
 
 use PHPUnit\Framework\TestCase;
@@ -13,13 +15,10 @@ final class HttpResponseTest extends TestCase
     /**
      * @dataProvider dataProviderGetHeader
      *
-     * @param string|null $expectedValue
      * @param non-empty-string $headerKey
      * @param array<string, string>|null $headers
-     *
-     * @return void
      */
-    public function testGetHeader($expectedValue, $headerKey, array $headers = null)
+    public function testGetHeader(?string $expectedValue, string $headerKey, array $headers = null): void
     {
         $response = new HttpResponse(null, null, '', $headers);
         self::assertSame($expectedValue, $response->getHeader($headerKey));
@@ -28,7 +27,7 @@ final class HttpResponseTest extends TestCase
     /**
      * @return non-empty-array<array{string|null, non-empty-string, array<string, string>|null}>
      */
-    public function dataProviderGetHeader()
+    public static function dataProviderGetHeader(): array
     {
         return [
             [null, 'no-headers', null],

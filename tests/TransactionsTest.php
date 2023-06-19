@@ -1,51 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests;
 
-use Mockery;
 use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Tests\Mocks\Service\ApiMockService;
 use ThePay\ApiClient\TheClient;
 
-class TransactionsTest extends BaseTestCase
+final class TransactionsTest extends BaseTestCase
 {
-    /** @var TheClient */
-    private $client;
+    private TheClient $client;
 
-    /**
-     * @return void
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        /** @var HttpServiceInterface $httpService */
-        $httpService = Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
+        $httpService = $this->createMock(HttpServiceInterface::class);
         $apiService = new ApiMockService($this->config, $httpService);
 
         $this->client = new TheClient($this->config, null, $httpService, $apiService);
     }
 
-    /**
-     * @return void
-     */
-    public function testGettingTransactions()
+    public function testGettingTransactions(): void
     {
         $filter = new TransactionFilter('TP7811112150822790787055', new \DateTime('2021-01-01T12:30:00+00:00'), new \DateTime('2021-06-01T12:30:00+00:00'));
         $collection = $this->client->getAccountTransactionHistory($filter);
 
-        static::assertSame(2, count($collection->all()));
+        self::assertSame(2, count($collection->all()));
     }
 
-    /**
-     * @return void
-     */
-    public function testGettingTransactionsPaginatedCollection()
+    public function testGettingTransactionsPaginatedCollection(): void
     {
         $filter = new TransactionFilter('TP7811112150822790787055', new \DateTime('2021-01-01T12:30:00+00:00'), new \DateTime('2021-06-01T12:30:00+00:00'));
         $collection = $this->client->getAccountTransactionHistory($filter);
 
-        static::assertSame(2, $collection->getTotalCount());
+        self::assertSame(2, $collection->getTotalCount());
     }
 }
