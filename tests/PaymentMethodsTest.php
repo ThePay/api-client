@@ -1,67 +1,59 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests;
 
-use Mockery;
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
+use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Tests\Mocks\Service\ApiMockService;
 use ThePay\ApiClient\TheClient;
-use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 use ThePay\ApiClient\ValueObject\PaymentMethodTag;
 
-class PaymentMethodsTest extends BaseTestCase
+final class PaymentMethodsTest extends BaseTestCase
 {
-    /** @var TheClient */
-    private $client;
+    private TheClient $client;
 
-    /**
-     * @return void
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $httpService = Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
-        /** @phpstan-ignore-next-line */
+        $httpService = $this->createMock(HttpServiceInterface::class);
         $apiService = new ApiMockService($this->config, $httpService);
-        /** @phpstan-ignore-next-line */
         $this->client = new TheClient($this->config, null, $httpService, $apiService);
     }
 
-    /**
-     * @return void
-     */
-    public function testGettingActivePaymentMethods()
+    public function testGettingActivePaymentMethods(): void
     {
         $client = $this->getApiaryClient();
 
         $methods = $client->getActivePaymentMethods();
         $cardMethod = $methods->get('card');
 
-        static::assertSame(1, $methods->size());
-        static::assertNotNull($cardMethod);
-        static::assertSame('card', $cardMethod->getCode());
-        static::assertSame('Card Payment', $cardMethod->getTitle());
-        static::assertSame(['online', 'returnable'], $cardMethod->getTags());
-        static::assertSame(['CZK'], $cardMethod->getAvailableCurrencies());
-        static::assertSame('https://neco.cz', $cardMethod->getImageUrl()->getValue());
+        self::assertSame(1, $methods->size());
+        self::assertNotNull($cardMethod);
+        self::assertSame('card', $cardMethod->getCode());
+        self::assertSame('Card Payment', $cardMethod->getTitle());
+        self::assertSame(['online', 'returnable'], $cardMethod->getTags());
+        self::assertSame(['CZK'], $cardMethod->getAvailableCurrencies());
+        self::assertSame('https://neco.cz', $cardMethod->getImageUrl()->getValue());
     }
 
     /**
      * This test verifies that doubling payment method tags in filters has no effect for filtered payment methods.
      *
-     * @param string $expectedMethod
      * @param array<string> $usedTags
      * @param bool $isRecurring This parameter causes adding of recurring_payments tag
      * @param bool $isNotDeposit This parameter causes adding of pre_authorization tag
-     * @return void
-     *
-     * @throws \ThePay\ApiClient\Exception\ApiException
      *
      * @dataProvider paymentMethodsFilterDoublingUsedTagsDataProvider
      */
-    public function testPaymentMethodsFilterDoublingUsedTags($expectedMethod, array $usedTags, $isRecurring, $isNotDeposit)
-    {
+    public function testPaymentMethodsFilterDoublingUsedTags(
+        string $expectedMethod,
+        array $usedTags,
+        bool $isRecurring,
+        bool $isNotDeposit
+    ): void {
         $filter = new PaymentMethodFilter([], $usedTags, []);
 
         $methods = $this->client->getActivePaymentMethods()
@@ -70,10 +62,7 @@ class PaymentMethodsTest extends BaseTestCase
         self::assertNotNull($methods->get($expectedMethod));
     }
 
-    /**
-     * @return void
-     */
-    public function testPaymentMethodsFilterDoublingBannedTags()
+    public function testPaymentMethodsFilterDoublingBannedTags(): void
     {
         $filter = new PaymentMethodFilter([], [], [PaymentMethodTag::PRE_AUTHORIZATION, PaymentMethodTag::PRE_AUTHORIZATION]);
 
@@ -83,10 +72,7 @@ class PaymentMethodsTest extends BaseTestCase
         self::assertNull($methods->get(PaymentMethodTag::CARD));
     }
 
-    /**
-     * @return void
-     */
-    public function testPaymentMethodsFilterDoublingCurrencies()
+    public function testPaymentMethodsFilterDoublingCurrencies(): void
     {
         $filter = new PaymentMethodFilter(['CZK', 'CZK'], [], []);
 
@@ -99,11 +85,11 @@ class PaymentMethodsTest extends BaseTestCase
     /**
      * @return array<array<mixed>>
      */
-    public function paymentMethodsFilterDoublingUsedTagsDataProvider()
+    public static function paymentMethodsFilterDoublingUsedTagsDataProvider(): array
     {
         return [
             [
-                PaymentMethodCode::CARD,
+                'card',
                 [
                     PaymentMethodTag::PRE_AUTHORIZATION,
                 ],
@@ -111,7 +97,7 @@ class PaymentMethodsTest extends BaseTestCase
                 true,
             ],
             [
-                PaymentMethodCode::CARD,
+                'card',
                 [
                     PaymentMethodTag::RECURRING_PAYMENTS,
                 ],
@@ -119,7 +105,7 @@ class PaymentMethodsTest extends BaseTestCase
                 false,
             ],
             [
-                PaymentMethodCode::CARD,
+                'card',
                 [
                     PaymentMethodTag::PRE_AUTHORIZATION,
                     PaymentMethodTag::PRE_AUTHORIZATION,
@@ -128,7 +114,7 @@ class PaymentMethodsTest extends BaseTestCase
                 true,
             ],
             [
-                PaymentMethodCode::CARD,
+                'card',
                 [
                     PaymentMethodTag::RECURRING_PAYMENTS,
                     PaymentMethodTag::RECURRING_PAYMENTS,
@@ -137,7 +123,7 @@ class PaymentMethodsTest extends BaseTestCase
                 false,
             ],
             [
-                PaymentMethodCode::CARD,
+                'card',
                 [
                     PaymentMethodTag::PRE_AUTHORIZATION,
                     PaymentMethodTag::RECURRING_PAYMENTS,
@@ -152,23 +138,22 @@ class PaymentMethodsTest extends BaseTestCase
 
     /**
      * @dataProvider filterDataProvider
-     *
-     * @param int $result
-     * @param bool $isRecurring
-     * @param bool $isDeposit
-     * @return void
      */
-    public function testFiltering(PaymentMethodFilter $filter, $result, $isRecurring = false, $isDeposit = true)
-    {
+    public function testFiltering(
+        PaymentMethodFilter $filter,
+        int $result,
+        bool $isRecurring = false,
+        bool $isDeposit = true
+    ): void {
         $methods = $this->client->getActivePaymentMethods($filter, null, $isRecurring, $isDeposit);
 
-        static::assertSame($result, $methods->size());
+        self::assertSame($result, $methods->size());
     }
 
     /**
      * @return array<array<mixed>>
      */
-    public function filterDataProvider()
+    public static function filterDataProvider(): array
     {
         return [
             [

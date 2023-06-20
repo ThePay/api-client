@@ -1,71 +1,56 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests;
 
-use Mockery;
+use PHPUnit\Framework\MockObject\MockObject;
 use ThePay\ApiClient\Http\HttpResponse;
+use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\TheClient;
-use ThePay\ApiClient\ValueObject\Identifier;
 
-class CancelPreauthorizationPaymentTest extends BaseTestCase
+final class CancelPreauthorizationPaymentTest extends BaseTestCase
 {
-    /** @var \Mockery\LegacyMockInterface|\ThePay\ApiClient\Http\HttpServiceInterface */
-    private $httpService;
+    /** @var MockObject&HttpServiceInterface */
+    private MockObject $httpService;
+    private TheClient $client;
 
-    /** @var TheClient */
-    private $client;
-
-    /**
-     * @return void
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->httpService = Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
-        /** @phpstan-ignore-next-line */
+        $this->httpService = $this->createMock(HttpServiceInterface::class);
         $apiService = new ApiService($this->config, $this->httpService);
-        /** @phpstan-ignore-next-line */
         $this->client = new TheClient($this->config, null, $this->httpService, $apiService);
     }
 
-    /**
-     * @return void
-     */
-    public function testRequest()
+    public function testRequest(): void
     {
-        call_user_func([$this->httpService, 'shouldReceive'], 'delete')->once()
+        $this->httpService
+            ->expects(self::once())
+            ->method('delete')
             ->with($this->config->getApiUrl() . 'projects/1/payments/abc/preauthorized?merchant_id=' . self::MERCHANT_ID)
-            ->andReturn($this->getOkResponse());
+            ->willReturn($this->getOkResponse())
+        ;
 
-        $this->client->cancelPreauthorizedPayment(new Identifier('abc'));
-        \Mockery::close();
+        $this->client->cancelPreauthorizedPayment('abc');
     }
 
-    /**
-     * @expectedException \Exception
-     * @return void
-     */
-    public function testNotOkResponse()
+    public function testNotOkResponse(): void
     {
-        call_user_func([$this->httpService, 'shouldReceive'], 'delete')
-            ->andReturn($this->getNotOkResponse());
+        $this->expectException(\Exception::class);
 
-        $this->client->cancelPreauthorizedPayment(new Identifier('abc'));
+        $this->httpService->method('delete')->willReturn($this->getNotOkResponse());
+
+        $this->client->cancelPreauthorizedPayment('abc');
     }
 
-    /**
-     * @return HttpResponse
-     */
-    private function getOkResponse()
+    private function getOkResponse(): HttpResponse
     {
         return new HttpResponse(null, 204);
     }
 
-    /**
-     * @return HttpResponse
-     */
-    private function getNotOkResponse()
+    private function getNotOkResponse(): HttpResponse
     {
         return new HttpResponse(null, 401);
     }

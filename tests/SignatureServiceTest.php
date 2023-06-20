@@ -3,6 +3,7 @@
 namespace ThePay\ApiClient\Tests;
 
 use PHPUnit\Framework\TestCase;
+use ThePay\ApiClient\Model\ApiSignature;
 use ThePay\ApiClient\Service\SignatureService;
 use ThePay\ApiClient\TheConfig;
 
@@ -19,12 +20,12 @@ class SignatureServiceTest extends TestCase
 
         $signature = $service->getSignatureForApi();
 
-        static::assertInstanceOf('ThePay\ApiClient\Model\ApiSignature', $signature);
+        static::assertInstanceOf(ApiSignature::class, $signature);
 
         static::assertNotNull($signature->getDate());
 
         $date = new \DateTime($signature->getDate());
-        static::assertInstanceOf('DateTime', $date);
+        static::assertInstanceOf(\DateTime::class, $date);
         static::assertSame($signature->getDate(), $date->format(SignatureService::FORMAT_RFC7231));
         static::assertNotNull($signature->getHash());
         static::assertSame(
@@ -37,7 +38,7 @@ class SignatureServiceTest extends TestCase
     /**
      * @return array<array<mixed>>
      */
-    public function signatureForApiDataProvider()
+    public static function signatureForApiDataProvider(): array
     {
         return [
             [new TheConfig(BaseTestCase::MERCHANT_ID, 1, 'password', 'https://test.api.cz/', 'https://test.gate.cz/')],
