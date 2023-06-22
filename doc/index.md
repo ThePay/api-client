@@ -26,8 +26,9 @@
 
 ## Usage examples
 
-[Creating payment](create-payment.md)
+[Payment method selection](method-selection.md)
 
+[Creating payment](create-payment.md)
 
 [Preauth payment](preauth-payments.md)
 

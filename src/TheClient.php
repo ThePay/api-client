@@ -33,12 +33,10 @@ use ThePay\ApiClient\Service\SignatureService;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
-use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 use ThePay\ApiClient\ValueObject\StringValue;
 
 /**
  * Class ThePay is base class for ThePay SDK
- * @package ThePay\ApiClient
  */
 class TheClient
 {
@@ -305,37 +303,33 @@ class TheClient
     }
 
     /**
-     * @param CreatePaymentParams $params
-     * @param string|null $methodCode
+     * @param non-empty-string|null $methodCode
      *
-     * @return CreatePaymentResponse
      * @throws ApiException
      */
-    public function createPayment(CreatePaymentParams $params, $methodCode = null)
+    public function createPayment(CreatePaymentParams $params, ?string $methodCode = null): CreatePaymentResponse
     {
         if ($params->getLanguageCode() === null) {
             $params->setLanguageCode($this->config->getLanguage()->getValue());
         }
 
-        $paymentMethod = $methodCode === null ? null : new PaymentMethodCode($methodCode);
-
         return $this
             ->api
-            ->createPayment($params, $paymentMethod);
+            ->createPayment($params, $methodCode);
     }
 
     /**
-     * @param string $paymentUid
-     * @param string $paymentMethodCode
-     * @return bool
+     * @param non-empty-string $paymentUid
+     * @param non-empty-string $methodCode
+     *
      * @throws ApiException|InvalidArgumentException
      */
-    public function changePaymentMethod($paymentUid, $paymentMethodCode)
+    public function changePaymentMethod(string $paymentUid, string $methodCode): bool
     {
         $this->validateUid($paymentUid);
         return $this
             ->api
-            ->changePaymentMethod(new Identifier($paymentUid), new PaymentMethodCode($paymentMethodCode));
+            ->changePaymentMethod(new Identifier($paymentUid), $methodCode);
     }
 
     /**

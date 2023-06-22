@@ -27,7 +27,6 @@ use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
-use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 use ThePay\ApiClient\ValueObject\StringValue;
 
 interface ApiServiceInterface
@@ -114,11 +113,11 @@ interface ApiServiceInterface
     public function getAccountTransactionHistory(TransactionFilter $filter, $page = 1, $limit = null);
 
     /**
-     * @param CreatePaymentParams $createPaymentParams
-     * @return CreatePaymentResponse
+     * @param non-empty-string|null $methodCode
+     *
      * @throws ApiException
      */
-    public function createPayment(CreatePaymentParams $createPaymentParams, PaymentMethodCode $paymentMethod = null);
+    public function createPayment(CreatePaymentParams $createPaymentParams, ?string $methodCode = null): CreatePaymentResponse;
 
     /**
      * @param RealizePreauthorizedPaymentParams $params
@@ -135,10 +134,11 @@ interface ApiServiceInterface
     public function cancelPreauthorizedPayment(Identifier $uid);
 
     /**
-     * @return bool
+     * @param non-empty-string $methodCode
+     *
      * @throws ApiException
      */
-    public function changePaymentMethod(Identifier $uid, PaymentMethodCode $paymentMethodCode);
+    public function changePaymentMethod(Identifier $uid, string $methodCode): bool;
 
     /**
      * Returns information about payment refund.

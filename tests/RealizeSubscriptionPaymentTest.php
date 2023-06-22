@@ -9,7 +9,7 @@ use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\RealizeIrregularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
-use ThePay\ApiClient\Tests\Mocks\Service\ApiMockService;
+use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheClient;
 
 final class RealizeSubscriptionPaymentTest extends BaseTestCase
@@ -22,7 +22,18 @@ final class RealizeSubscriptionPaymentTest extends BaseTestCase
 
         $httpService = $this->createMock(HttpServiceInterface::class);
 
-        $apiService = new ApiMockService($this->config, $httpService);
+        $okResponse = new ApiResponse(
+            '{
+                "state": "success",
+                "message": "Ok"
+            }',
+            200
+        );
+
+        $apiService = $this->createMock(ApiServiceInterface::class);
+        $apiService->method('realizeRegularSubscriptionPayment')->willReturn($okResponse);
+        $apiService->method('realizeIrregularSubscriptionPayment')->willReturn($okResponse);
+        $apiService->method('realizeUsageBasedSubscriptionPayment')->willReturn($okResponse);
 
         $this->client = new TheClient($this->config, null, $httpService, $apiService);
     }

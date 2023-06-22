@@ -31,7 +31,6 @@ use ThePay\ApiClient\Utils\Json;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
-use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 use ThePay\ApiClient\ValueObject\StringValue;
 use ThePay\ApiClient\ValueObject\SubscriptionType;
 
@@ -295,14 +294,15 @@ class ApiService implements ApiServiceInterface
 
 
     /**
-     * @return CreatePaymentResponse
+     * @param non-empty-string|null $methodCode
+     *
      * @throws ApiException
      */
-    public function createPayment(CreatePaymentParams $createPaymentParams, PaymentMethodCode $paymentMethod = null)
+    public function createPayment(CreatePaymentParams $createPaymentParams, ?string $methodCode = null): CreatePaymentResponse
     {
         $jsonParams = $createPaymentParams->toArray();
-        if ($paymentMethod) {
-            $jsonParams['payment_method_code'] = $paymentMethod->getValue();
+        if ($methodCode !== null) {
+            $jsonParams['payment_method_code'] = $methodCode;
         }
 
         $url = $this->url(['payments']);
@@ -318,16 +318,17 @@ class ApiService implements ApiServiceInterface
     }
 
     /**
+     * @param non-empty-string $methodCode
+     *
      * @throws ApiException
-     * @return bool
      */
-    public function changePaymentMethod(Identifier $uid, PaymentMethodCode $paymentMethodCode)
+    public function changePaymentMethod(Identifier $uid, string $methodCode): bool
     {
         $url = $this->url(['payments', $uid, 'method']);
         $response = $this
             ->httpService
             ->put($url, json_encode([
-                'payment_method_code' => $paymentMethodCode->getValue(),
+                'payment_method_code' => $methodCode,
             ]));
 
         if ($response->getCode() !== 204) {
