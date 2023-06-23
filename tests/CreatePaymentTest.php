@@ -4,25 +4,29 @@ declare(strict_types=1);
 
 namespace ThePay\ApiClient\Tests;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\Address;
+use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentCustomer;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
-use ThePay\ApiClient\Tests\Mocks\Service\ApiMockService;
+use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheClient;
 
 final class CreatePaymentTest extends BaseTestCase
 {
     private TheClient $client;
 
+    private MockObject $apiService;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $httpService = $this->createMock(HttpServiceInterface::class);
-        $apiService = new ApiMockService($this->config, $httpService);
-        $this->client = new TheClient($this->config, null, $httpService, $apiService);
+        $this->apiService = $this->createMock(ApiServiceInterface::class);
+        $this->client = new TheClient($this->config, null, $httpService, $this->apiService);
     }
 
 
@@ -70,9 +74,11 @@ final class CreatePaymentTest extends BaseTestCase
 
     public function testGetPaymentMethods(): void
     {
+        $this->apiService->method('getActivePaymentMethods')->willReturn(new PaymentMethodCollection([]));
+
         $result = $this->client->getPaymentButtons(new CreatePaymentParams(100, 'CZK', '202001010005'));
 
-        self::assertTrue(is_string($result));
+        self::assertIsString($result);
 
         // In default we need to join assets
         self::assertStringContainsString('<style', $result);
@@ -104,6 +110,15 @@ final class CreatePaymentTest extends BaseTestCase
         $createPayment->setDescriptionForCustomer('Payment for items on example.com');
         $createPayment->setDescriptionForMerchant('Payment from VIP customer XYZ');
         $createPayment->setCustomer($customer);
+
+        $this->apiService->method('createPayment')->willReturn(
+            new CreatePaymentResponse(
+                '{
+                    "pay_url": "https://gate.thepay.cz/",
+                    "detail_url": "https://gate.thepay.cz/"
+                }'
+            )
+        );
 
         $result = $this->client->createPayment($createPayment);
 

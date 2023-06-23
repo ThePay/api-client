@@ -3,7 +3,8 @@
 namespace ThePay\ApiClient\Tests;
 
 use ThePay\ApiClient\Http\HttpServiceInterface;
-use ThePay\ApiClient\Tests\Mocks\Service\ApiMockService;
+use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
+use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheClient;
 
 /**
@@ -11,19 +12,49 @@ use ThePay\ApiClient\TheClient;
  */
 class TheClientTest extends BaseTestCase
 {
-    /**
-     * @return void
-     */
-    public function testPaymentMethods()
+    public function testPaymentMethods(): void
     {
-        $thePay = $this->getExampleTheClient();
+        $httpService = $this->createMock(HttpServiceInterface::class);
+        $apiService = $this->createMock(ApiServiceInterface::class);
+        $apiService->method('getActivePaymentMethods')->willReturn(
+            new PaymentMethodCollection([
+                [
+                    'code' => 'test_online',
+                    'title' => 'shared::payment_methods.test_online',
+                    'tags' => ['access_account_owner', 'online', 'returnable'],
+                    'available_currencies' => [
+                        [
+                            'code' => 'CZK',
+                            'numeric_code' => '203',
+                        ],
+                    ],
+                    'image' => [
+                        'src' => 'http://localhost:8000/img/payment_methods/test_online.png',
+                    ],
+                ],
+                [
+                    'code' => 'test_offline',
+                    'title' => 'shared::payment_methods.test_offline',
+                    'tags' => ['access_account_owner', 'returnable'],
+                    'available_currencies' => [
+                        [
+                            'code' => 'CZK',
+                            'numeric_code' => '203',
+                        ],
+                    ],
+                    'image' => [
+                        'src' => 'http://localhost:8000/img/payment_methods/test_offline.png',
+                    ],
+                ],
+            ])
+        );
+
+        $thePay = new TheClient($this->config, null, $httpService, $apiService);
 
         $methods = $thePay->getActivePaymentMethods()->all();
 
         static::assertSame('test_online', $methods[0]->getCode());
-
-        $assert2 = $methods[1]->getAvailableCurrencies();
-        static::assertSame('CZK', $assert2[0]);
+        static::assertSame('CZK', $methods[1]->getAvailableCurrencies()[0]);
     }
 
     public function testRenderPaymentMethods(): void
@@ -36,13 +67,5 @@ class TheClientTest extends BaseTestCase
         $html = $thePay->renderPaymentMethods(new CreatePaymentParams('10', 'CZK', 'xxxxxx'));
         static::assertContains('img', 'test');
         */
-    }
-
-    private function getExampleTheClient(): TheClient
-    {
-        $httpService = $this->createMock(HttpServiceInterface::class);
-        $apiService = new ApiMockService($this->config, $httpService);
-
-        return new TheClient($this->config, null, $httpService, $apiService);
     }
 }

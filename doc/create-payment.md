@@ -29,8 +29,12 @@ Let's prepare payment of 1 CZK:
 
 ### Redirect user to gate with specific payment method and/or specify custom button attributes
 
+After [method selection](method-selection.md), you can create payment with payment method
+and method selection step is for user skipped in ThePay system.
+
 ```php
-    $paymentMethodCode = 'mojeplatba';
+    /** @var non-empty-string $paymentMethodCode one method selected by user */
+
     $buttonAttributes = array('class' => 'btn btn-success');
     $button = $client->getPaymentButton($params, 'Button text', true, $paymentMethodCode, $buttonAttributes);
 ```

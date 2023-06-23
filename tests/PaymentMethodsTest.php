@@ -6,7 +6,8 @@ namespace ThePay\ApiClient\Tests;
 
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Http\HttpServiceInterface;
-use ThePay\ApiClient\Tests\Mocks\Service\ApiMockService;
+use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
+use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheClient;
 use ThePay\ApiClient\ValueObject\PaymentMethodTag;
 
@@ -19,7 +20,178 @@ final class PaymentMethodsTest extends BaseTestCase
         parent::setUp();
 
         $httpService = $this->createMock(HttpServiceInterface::class);
-        $apiService = new ApiMockService($this->config, $httpService);
+        $apiService = $this->createMock(ApiServiceInterface::class);
+        $apiService->method('getActivePaymentMethods')->willReturn(
+            new PaymentMethodCollection([
+                [
+                    'code' => 'test_online',
+                    'title' => 'shared::payment_methods.test_online',
+                    'tags' => ['access_account_owner', 'online', 'returnable'],
+                    'available_currencies' => [
+                        [
+                            'code' => 'CZK',
+                            'numeric_code' => '203',
+                        ],
+                    ],
+                    'image' => [
+                        'src' => 'http://localhost:8000/img/payment_methods/test_online.png',
+                    ],
+                ],
+                [
+                    'code' => 'test_offline',
+                    'title' => 'shared::payment_methods.test_offline',
+                    'tags' => ['access_account_owner', 'returnable'],
+                    'available_currencies' => [
+                        [
+                            'code' => 'CZK',
+                            'numeric_code' => '203',
+                        ],
+                    ],
+                    'image' => [
+                        'src' => 'http://localhost:8000/img/payment_methods/test_offline.png',
+                    ],
+                ],
+                [
+                    'code' => 'card',
+                    'title' => 'Platba kartou',
+                    'tags' => ['card', 'online', 'pre_authorization', 'recurring_payments', 'returnable'],
+                    'available_currencies' => [
+                        [
+                            'code' => 'CZK',
+                            'numeric_code' => '203',
+                        ],
+                        [
+                            'code' => 'GBP',
+                            'numeric_code' => '826',
+                        ],
+                        [
+                            'code' => 'USD',
+                            'numeric_code' => '840',
+                        ],
+                        [
+                            'code' => 'EUR',
+                            'numeric_code' => '978',
+                        ],
+                    ],
+                    'image' => [
+                        'src' => 'http://localhost:8000/img/payment_methods/card.png',
+                    ],
+                ],
+                [
+                    'code' => 'platba_24',
+                    'title' => 'shared::payment_methods.platba_24',
+                    'tags' => ['access_account_owner', 'online', 'returnable'],
+                    'available_currencies' => [
+                        [
+                            'code' => 'CZK',
+                            'numeric_code' => '203',
+                        ],
+                    ],
+                    'image' => [
+                        'src' => 'http://localhost:8000/img/payment_methods/platba_24.png',
+                    ],
+                ],
+                [
+                    'code' => 'bitcoin',
+                    'title' => 'Platba Bitcoinem',
+                    'tags' => ['alternative_method', 'online', 'returnable'],
+                    'available_currencies' => [
+                        [
+                            'code' => 'CZK',
+                            'numeric_code' => '203',
+                        ],
+                    ],
+                    'image' => [
+                        'src' => 'http://localhost:8000/img/payment_methods/bitcoin.png',
+                    ],
+                ],
+                [
+                    'code' => 'csob',
+                    'title' => 'ČSOB',
+                    'tags' => ['access_account_owner', 'returnable'],
+                    'available_currencies' => [
+                        [
+                            'code' => 'CZK',
+                            'numeric_code' => '203',
+                        ],
+                    ],
+                    'image' => [
+                        'src' => 'http://localhost:8000/img/payment_methods/csob.png',
+                    ],
+                ],
+                [
+                    'code' => 'equa_bank',
+                    'title' => 'Equa Bank',
+                    'tags' => ['access_account_owner', 'returnable'],
+                    'available_currencies' => [
+                        [
+                            'code' => 'CZK',
+                            'numeric_code' => '203',
+                        ],
+                    ],
+                    'image' => [
+                        'src' => 'http://localhost:8000/img/payment_methods/equa_bank.png',
+                    ],
+                ],
+                [
+                    'code' => 'fio_banka',
+                    'title' => 'Fio Banka',
+                    'tags' => ['access_account_owner', 'online', 'returnable'],
+                    'available_currencies' => [
+                        [
+                            'code' => 'CZK',
+                            'numeric_code' => '203',
+                        ],
+                    ],
+                    'image' => [
+                        'src' => 'http://localhost:8000/img/payment_methods/fio_banka.png',
+                    ],
+                ],
+                [
+                    'code' => 'mojeplatba',
+                    'title' => 'MojePlatba',
+                    'tags' => ['access_account_owner', 'online', 'returnable'],
+                    'available_currencies' => [
+                        [
+                            'code' => 'CZK',
+                            'numeric_code' => '203',
+                        ],
+                    ],
+                    'image' => [
+                        'src' => 'http://localhost:8000/img/payment_methods/mojeplatba.png',
+                    ],
+                ],
+                [
+                    'code' => 'moneta',
+                    'title' => 'Moneta',
+                    'tags' => ['access_account_owner', 'returnable'],
+                    'available_currencies' => [
+                        [
+                            'code' => 'CZK',
+                            'numeric_code' => '203',
+                        ],
+                    ],
+                    'image' => [
+                        'src' => 'http://localhost:8000/img/payment_methods/moneta.png',
+                    ],
+                ],
+                [
+                    'code' => 'mtransfer',
+                    'title' => 'mTransfer',
+                    'tags' => ['access_account_owner', 'online', 'returnable'],
+                    'available_currencies' => [
+                        [
+                            'code' => 'CZK',
+                            'numeric_code' => '203',
+                        ],
+                    ],
+                    'image' => [
+                        'src' => 'http://localhost:8000/img/payment_methods/mtransfer.png',
+                    ],
+                ],
+            ])
+        );
+
         $this->client = new TheClient($this->config, null, $httpService, $apiService);
     }
 
