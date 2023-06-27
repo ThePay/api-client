@@ -4,12 +4,30 @@ namespace ThePay\ApiClient\Http;
 
 use ThePay\ApiClient\TheClient;
 
+/**
+ * @deprecated will be replaced by https://www.php-fig.org/psr/psr-18/ interface
+ */
 class CurlWrapper
 {
+    /**
+     * @deprecated will be private
+     */
     public const METHOD_GET = 'GET';
+    /**
+     * @deprecated will be private
+     */
     public const METHOD_POST = 'POST';
+    /**
+     * @deprecated will be private
+     */
     public const METHOD_DELETE = 'DELETE';
+    /**
+     * @deprecated will be private
+     */
     public const METHOD_PUT = 'PUT';
+    /**
+     * @deprecated will be removed
+     */
     public const HEADER_HOST = 'Host';
 
     /** @var \CurlHandle */
@@ -21,6 +39,8 @@ class CurlWrapper
     private $defaultHeaders;
 
     /**
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-18/ interface
+     *
      * @param \CurlHandle $curl
      * @param array<string> $defaultHeaders
      */
@@ -32,6 +52,8 @@ class CurlWrapper
     }
 
     /**
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-18/ interface
+     *
      * @param string $method
      * @param string $url
      * @param string $data
