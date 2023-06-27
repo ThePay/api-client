@@ -116,7 +116,7 @@ class SimplePayment
     /**
      * @var array<PaymentEvent>
      */
-    private $paymentEvents = array();
+    private $paymentEvents = [];
 
     /**
      * @param string|array<string, mixed> $values Json in string or associative array
@@ -334,7 +334,7 @@ class SimplePayment
      */
     public function toArray()
     {
-        return array(
+        return [
             'uid' => $this->getUid(),
             'projectId' => $this->getProjectId(),
             'orderId' => $this->orderId,
@@ -355,7 +355,7 @@ class SimplePayment
             'offsetAccountStatus' => $this->offsetAccountStatus,
             'offsetAccountDeterminedAt' => $this->offsetAccountDeterminedAt,
             'events' => $this->paymentEvents,
-        );
+        ];
     }
 
     /**
@@ -363,7 +363,7 @@ class SimplePayment
      */
     public function wasPaid()
     {
-        return in_array($this->getState(), array('paid', 'partially_refunded', 'refunded'))
+        return in_array($this->getState(), ['paid', 'partially_refunded', 'refunded'])
             && $this->getFinishedAt() != null;
     }
 

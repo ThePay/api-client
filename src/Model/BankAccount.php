@@ -64,9 +64,9 @@ class BankAccount
      */
     public function toArray()
     {
-        return array(
+        return [
             'iban' => $this->iban,
             'ownerName' => $this->ownerName,
-        );
+        ];
     }
 }

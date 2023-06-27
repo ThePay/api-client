@@ -16,19 +16,15 @@ jobs:
 
             -   name: Install dependencies
                 run: composer install --no-interaction
-            -   name: Old phpunit compatibility for php 8
-                run: composer require christiaanbye/polyfill-each --dev --no-interaction
 
-            # Disabled for now, fixer do not support PHP 8.2 yet.
-            #
-            #-   name: Check code style
-            #    run: composer cs-check
+            -   name: Check code style
+                run: composer cs-check
 
             -   name: Run static analysis
                 run: composer stan
 
             -   name: Run tests
-                run: composer test81
+                run: composer test
 
     php81:
         name: "php 8.1"
@@ -40,17 +36,12 @@ jobs:
 
             - name: Install dependencies
               run: composer install --no-interaction
-            - name: Old phpunit compatibility for php 8
-              run: composer require christiaanbye/polyfill-each --dev --no-interaction
-
-            - name: Check code style
-              run: composer cs-check
 
             - name: Run static analysis
               run: composer stan
 
             - name: Run tests
-              run: composer test81
+              run: composer test
 
     php80:
         name: "php 8.0"
@@ -62,11 +53,6 @@ jobs:
 
             - name: Install dependencies
               run: composer install --no-interaction
-            - name: Old phpunit compatibility for php 8
-              run: composer require christiaanbye/polyfill-each --dev --no-interaction
-
-            - name: Check code style
-              run: composer cs-check
 
             - name: Run static analysis
               run: composer stan
@@ -86,28 +72,6 @@ jobs:
 
             -   name: Checkout repository
                 uses: actions/checkout@v3
-
-            -   name: Install dependencies
-                run: composer install --no-interaction
-
-            -   name: Run static analysis
-                run: composer stan7
-
-            -   name: Run tests
-                run: composer test
-
-    php72:
-        name: "php 7.2"
-        runs-on: ubuntu-latest
-        container: "nofutur3/php-tests:7.2"
-        steps:
-            # Deprecation example for future support removal.
-            #
-            #-   name: Deprecation check (2023-01-01T00:00:00+01:00)
-            #    run: if [ "$(date +%s)" -gt "1672527600" ]; then echo "This PHP version support ended"; exit1; else echo "Deprecation OK"; fi
-
-            -   name: Checkout repository
-                uses: actions/checkout@v2
 
             -   name: Install dependencies
                 run: composer install --no-interaction

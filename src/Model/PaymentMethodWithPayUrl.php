@@ -73,12 +73,12 @@ class PaymentMethodWithPayUrl implements IPaymentMethod
      */
     public function toArray()
     {
-        return array(
+        return [
             'code' => $this->code,
             'title' => $this->title,
             'tags' => $this->tags,
             'imageUrl' => (string) $this->imageUrl,
             'payUrl' => (string) $this->payUrl,
-        );
+        ];
     }
 }

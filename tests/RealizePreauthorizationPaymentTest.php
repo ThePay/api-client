@@ -1,72 +1,63 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests;
 
-use Mockery;
+use PHPUnit\Framework\MockObject\MockObject;
 use ThePay\ApiClient\Http\HttpResponse;
+use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\TheClient;
 
-class RealizePreauthorizationPaymentTest extends BaseTestCase
+final class RealizePreauthorizationPaymentTest extends BaseTestCase
 {
-    /** @var \Mockery\LegacyMockInterface|\ThePay\ApiClient\Http\HttpServiceInterface */
-    private $httpService;
-
-    /** @var TheClient */
-    private $client;
+    /** @var MockObject&HttpServiceInterface */
+    private MockObject $httpService;
+    private TheClient $client;
 
     /**
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->httpService = Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
-        /** @phpstan-ignore-next-line */
+        $this->httpService = $this->createMock(HttpServiceInterface::class);
         $apiService = new ApiService($this->config, $this->httpService);
-        /** @phpstan-ignore-next-line */
         $this->client = new TheClient($this->config, null, $this->httpService, $apiService);
     }
 
-    /**
-     * @return void
-     */
-    public function testRequest()
+    public function testRequest(): void
     {
-        call_user_func(array($this->httpService, 'shouldReceive'), 'post')->once()
-            ->with($this->config->getApiUrl() . 'projects/1/payments/abc/preauthorized?merchant_id=' . self::MERCHANT_ID, '{"amount":100}')
-            ->andReturn($this->getOkResponse());
-
-        $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(100, 'abc'));
-        \Mockery::close();
-    }
-
-    /**
-     * @return void
-     */
-    public function testNotOkResponse()
-    {
-        $this->setExpectedException('\Exception');
-
-        call_user_func(array($this->httpService, 'shouldReceive'), 'post')
-            ->andReturn($this->getNotOkResponse());
+        $this->httpService
+            ->expects(self::once())
+            ->method('post')
+            ->with(
+                $this->config->getApiUrl() . 'projects/1/payments/abc/preauthorized?merchant_id=' . self::MERCHANT_ID,
+                '{"amount":100}',
+            )
+            ->willReturn($this->getOkResponse())
+        ;
 
         $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(100, 'abc'));
     }
 
-    /**
-     * @return HttpResponse
-     */
-    private function getOkResponse()
+    public function testNotOkResponse(): void
+    {
+        $this->expectException(\Exception::class);
+
+        $this->httpService->method('post')->willReturn($this->getNotOkResponse());
+
+        $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(100, 'abc'));
+    }
+
+    private function getOkResponse(): HttpResponse
     {
         return new HttpResponse(null, 204);
     }
 
-    /**
-     * @return HttpResponse
-     */
-    private function getNotOkResponse()
+    private function getNotOkResponse(): HttpResponse
     {
         return new HttpResponse(null, 401);
     }

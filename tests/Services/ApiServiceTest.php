@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests\Services;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use ThePay\ApiClient\Http\HttpResponse;
+use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\Tests\BaseTestCase;
@@ -12,36 +16,33 @@ use ThePay\ApiClient\Tests\BaseTestCase;
  */
 final class ApiServiceTest extends BaseTestCase
 {
-    /** @var ApiService */
-    private $service;
+    private ApiService $service;
 
-    /** @var \Mockery\LegacyMockInterface|\ThePay\ApiClient\Http\HttpServiceInterface */
-    private $httpService;
+    /** @var MockObject&HttpServiceInterface */
+    private MockObject $httpService;
 
-    /**
-     * @return void
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        $this->httpService = \Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
-        /** @phpstan-ignore-next-line */
+        $this->httpService = $this->createMock(HttpServiceInterface::class);
         $this->service = new ApiService($this->config, $this->httpService);
     }
 
-    /**
-     * @return void
-     */
-    public function testGetProjects()
+    public function testGetProjects(): void
     {
-        $expectedProjects = array(new Project(5, 'https://some-url', 'TP7711112006468461625654'));
+        $expectedProjects = [new Project(5, 'https://some-url', 'TP7711112006468461625654')];
         $mockBody = '[{"project_id":5,"project_url":"https://some-url","account_iban":"TP7711112006468461625654"}]';
 
-        call_user_func(array($this->httpService, 'shouldReceive'), 'get')
-            ->once()
-            ->andReturn(new HttpResponse(null, 200, 'OK', array(), $mockBody))
-        ;
+        $this->httpService->expects(self::once())->method('get')->willReturn(
+            new HttpResponse(
+                null,
+                200,
+                'OK',
+                [],
+                $mockBody,
+            )
+        );
 
         $projects = $this->service->getProjects();
 

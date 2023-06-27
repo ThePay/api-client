@@ -1,51 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests;
 
 use ThePay\ApiClient\TheConfig;
 
-class TheConfigTest extends BaseTestCase
+final class TheConfigTest extends BaseTestCase
 {
     /**
      * @dataProvider configDataProvider
-     *
-     * @param string $expectedGateUrl
-     * @param string $expectedApiUrl
-     * @return void
      */
-    public function testGetGateUrl(TheConfig $config, $expectedGateUrl, $expectedApiUrl)
+    public function testGetGateUrl(TheConfig $config, string $expectedGateUrl, string $expectedApiUrl): void
     {
-        static::assertSame($expectedGateUrl, $config->getGateUrl());
-        static::assertSame($expectedApiUrl, $config->getApiUrl());
+        self::assertSame($expectedGateUrl, $config->getGateUrl());
+        self::assertSame($expectedApiUrl, $config->getApiUrl());
     }
 
     /**
      * @return array<array<mixed>>
      */
-    public function configDataProvider()
+    public static function configDataProvider(): array
     {
-        return array(
-            array(new TheConfig(self::MERCHANT_ID, 1, 'pass', 'https://test.api.cz/', 'https://test.gate.cz/'), 'https://test.gate.cz/', 'https://test.api.cz/v1/'),
-        );
+        return [
+            [new TheConfig(self::MERCHANT_ID, 1, 'pass', 'https://test.api.cz/', 'https://test.gate.cz/'), 'https://test.gate.cz/', 'https://test.api.cz/v1/'],
+        ];
     }
 
-    /**
-     * @return void
-     */
-    public function testLanguageInConfig()
+    public function testLanguageInConfig(): void
     {
-        static::assertSame('cs', $this->config->getLanguage()->getValue());
+        self::assertSame('cs', $this->config->getLanguage()->getValue());
 
         $this->config->setLanguage('en');
-        static::assertSame('en', $this->config->getLanguage()->getValue());
+        self::assertSame('en', $this->config->getLanguage()->getValue());
     }
 
-    /**
-     * @return void
-     */
-    public function testInvalidLanguageCodeInConfig()
+    public function testInvalidLanguageCodeInConfig(): void
     {
-        $this->setExpectedException('InvalidArgumentException', 'Value `wtf` is not valid ISO 6391 language code');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value `wtf` is not valid ISO 6391 language code');
+
         $this->config->setLanguage('wtf');
     }
 }

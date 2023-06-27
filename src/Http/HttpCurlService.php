@@ -15,15 +15,15 @@ class HttpCurlService implements HttpServiceInterface
     /**
      * @deprecated will be private
      */
-    const HEADER_SIGNATURE = 'Signature';
+    public const HEADER_SIGNATURE = 'Signature';
     /**
      * @deprecated will be private
      */
-    const HEADER_SIGNATURE_DATE = 'SignatureDate';
+    public const HEADER_SIGNATURE_DATE = 'SignatureDate';
     /**
      * @deprecated will be private
      */
-    const HEADER_PLATFORM = 'Platform';
+    public const HEADER_PLATFORM = 'Platform';
 
     /** @var SignatureService */
     private $signatureService;
@@ -100,10 +100,10 @@ class HttpCurlService implements HttpServiceInterface
     private function getSignatureAndVersionHeaders()
     {
         $signature = $this->signatureService->getSignatureForApi();
-        return array(
+        return [
             static::HEADER_SIGNATURE . ': ' . $signature->getHash(),
             static::HEADER_SIGNATURE_DATE . ': ' . $signature->getDate(),
             static::HEADER_PLATFORM . ': ' . 'php_' . TheClient::VERSION,
-        );
+        ];
     }
 }

@@ -10,31 +10,31 @@ class PaymentMethod implements IPaymentMethod
     /**
      * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::CARD
      */
-    const TAG_CARD = 'card';
+    public const TAG_CARD = 'card';
     /**
      * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::ONLINE
      */
-    const TAG_ONLINE = 'online';
+    public const TAG_ONLINE = 'online';
     /**
      * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::PRE_AUTHORIZATION
      */
-    const TAG_PRE_AUTHORIZATION = 'pre_authorization';
+    public const TAG_PRE_AUTHORIZATION = 'pre_authorization';
     /**
      * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::RETURNABLE
      */
-    const TAG_RETURNABLE = 'returnable';
+    public const TAG_RETURNABLE = 'returnable';
     /**
      * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::ACCESS_ACCOUNT_OWNER
      */
-    const TAG_ACCESS_ACOUNT_OWNER = 'access_account_owner';
+    public const TAG_ACCESS_ACOUNT_OWNER = 'access_account_owner';
     /**
      * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::RECURRING_PAYMENTS
      */
-    const TAG_RECURRING_PAYMENTS = 'recurring_payments';
+    public const TAG_RECURRING_PAYMENTS = 'recurring_payments';
     /**
      * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::ALTERNATIVE_METHOD
      */
-    const TAG_ALTERNATIVE_METHOD = 'alternative_method';
+    public const TAG_ALTERNATIVE_METHOD = 'alternative_method';
 
     /** @var string */
     private $code;
@@ -46,7 +46,7 @@ class PaymentMethod implements IPaymentMethod
     private $tags;
 
     /** @var string[] */
-    private $availableCurrencies = array();
+    private $availableCurrencies = [];
 
     /** @var Url|null */
     private $imageUrl;
@@ -106,12 +106,12 @@ class PaymentMethod implements IPaymentMethod
      */
     public function toArray()
     {
-        return array(
+        return [
             'code' => $this->code,
             'title' => $this->title,
             'tags' => $this->tags,
             'availableCurrencies' => $this->availableCurrencies,
             'imageUrl' => (string) $this->imageUrl,
-        );
+        ];
     }
 }

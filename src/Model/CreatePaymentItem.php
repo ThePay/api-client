@@ -44,13 +44,13 @@ class CreatePaymentItem
      */
     public function toArray()
     {
-        return array(
+        return [
             'type' => $this->type,
             'name' => $this->name,
             'price' => $this->price->getValue(),
             'ean' => $this->ean,
             'count' => $this->count,
             'total_price' => $this->price->getValue(),
-        );
+        ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests;
 
 use PHPUnit\Framework\TestCase;
@@ -7,315 +9,260 @@ use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\CurrencyCode;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
-use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 use ThePay\ApiClient\ValueObject\Url;
 
-class ValueObjectTest extends TestCase
+final class ValueObjectTest extends TestCase
 {
     /**
      * @dataProvider amountProvider
-     *
-     * @param int $amount
-     * @return void
      */
-    public function testAmount($amount)
+    public function testAmount(int $amount): void
     {
         $a = Amount::create($amount);
         $b = new Amount($amount);
 
-        static::assertTrue($a->equals($b));
-        static::assertTrue($b->equals($a));
-        static::assertSame($amount, $a->getValue());
-        static::assertSame((string) $amount, (string) $a);
+        self::assertTrue($a->equals($b));
+        self::assertTrue($b->equals($a));
+        self::assertSame($amount, $a->getValue());
+        self::assertSame((string) $amount, (string) $a);
     }
 
     /**
      * @dataProvider invalidAmountProvider
      *
      * @param mixed $amount
-     * @return void
      */
-    public function testAmountInvalidValues($amount)
+    public function testAmountInvalidValues($amount): void
     {
-        $this->setExpectedException('InvalidArgumentException', 'Value has to be an integer.');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value has to be an integer.');
+
         Amount::create($amount);
     }
 
     /**
      * @dataProvider currencyCodeProvider
-     *
-     * @param string $currency
-     * @return void
      */
-    public function testCurrencyCode($currency)
+    public function testCurrencyCode(string $currency): void
     {
         $a = CurrencyCode::create($currency);
         $b = new CurrencyCode($currency);
 
-        static::assertTrue($a->equals($b));
-        static::assertTrue($b->equals($a));
-        static::assertSame($currency, $a->getValue());
-        static::assertSame((string) $currency, (string) $a);
+        self::assertTrue($a->equals($b));
+        self::assertTrue($b->equals($a));
+        self::assertSame($currency, $a->getValue());
+        self::assertSame($currency, (string) $a);
     }
 
     /**
      * @dataProvider invalidCurrencyCodeProvider
      *
      * @param mixed $currency
-     * @return void
      */
-    public function testCurrencyCodeInvalidValues($currency)
+    public function testCurrencyCodeInvalidValues($currency): void
     {
-        $this->setExpectedException('InvalidArgumentException', 'Value `' . $currency . '` is not valid ISO 4217 currency code');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value `' . $currency . '` is not valid ISO 4217 currency code');
+
         CurrencyCode::create($currency);
     }
 
     /**
      * @dataProvider identifierProvider
      *
-     * @param string $id
-     * @return void
+     * @param mixed $id
      */
-    public function testIdentifier($id)
+    public function testIdentifier($id): void
     {
         $a = Identifier::create($id);
         $b = new Identifier($id);
 
-        static::assertTrue($a->equals($b));
-        static::assertTrue($b->equals($a));
-        static::assertSame((string) $id, $a->getValue());
-        static::assertSame((string) $id, (string) $a);
+        self::assertTrue($a->equals($b));
+        self::assertTrue($b->equals($a));
+        self::assertSame((string) $id, $a->getValue());
+        self::assertSame((string) $id, (string) $a);
     }
 
-    /**
-     * @dataProvider invalidIdentifierProvider
-     *
-     * @param string $id
-     * @return void
-     */
-    public function testIdentifierInvalidValues($id)
+    public function testIdentifierInvalidValues(): void
     {
-        $this->setExpectedException('InvalidArgumentException', 'Value\'s length has to be up to 100 characters');
-        Identifier::create($id);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value\'s length has to be up to 100 characters');
+
+        Identifier::create(self::randomChars(101));
     }
 
     /**
      * @dataProvider langCodeProvider
-     *
-     * @param string $code
-     * @return void
      */
-    public function testLanguageCode($code)
+    public function testLanguageCode(string $code): void
     {
         $a = LanguageCode::create($code);
         $b = new LanguageCode($code);
 
-        static::assertTrue($a->equals($b));
-        static::assertTrue($b->equals($a));
-        static::assertSame($code, $a->getValue());
-        static::assertSame((string) $code, (string) $a);
+        self::assertTrue($a->equals($b));
+        self::assertTrue($b->equals($a));
+        self::assertSame($code, $a->getValue());
+        self::assertSame($code, (string) $a);
     }
 
     /**
      * @dataProvider invalidLangCodeProvider
      *
      * @param mixed $code
-     * @return void
      */
-    public function testLanguageCodeInvalidValues($code)
+    public function testLanguageCodeInvalidValues($code): void
     {
-        $this->setExpectedException('InvalidArgumentException', 'Value `' . $code . '` is not valid ISO 6391 language code');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value `' . $code . '` is not valid ISO 6391 language code');
+
         LanguageCode::create($code);
     }
 
     /**
      * @dataProvider urlProvider
-     *
-     * @param string $url
-     * @return void
      */
-    public function testUrl($url)
+    public function testUrl(string $url): void
     {
         $a = Url::create($url);
         $b = new Url($url);
 
-        static::assertTrue($a->equals($b));
-        static::assertTrue($b->equals($a));
-        static::assertSame($url, $a->getValue());
-        static::assertSame((string) $url, (string) $a);
+        self::assertTrue($a->equals($b));
+        self::assertTrue($b->equals($a));
+        self::assertSame($url, $a->getValue());
+        self::assertSame($url, (string) $a);
     }
 
     /**
      * @dataProvider invalidUrlProvider
      *
      * @param mixed $url
-     * @return void
      */
-    public function testUrlInvalidValues($url)
+    public function testUrlInvalidValues($url): void
     {
-        $this->setExpectedException('InvalidArgumentException', 'Url is in incorrect format');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Url is in incorrect format');
+
         Url::create($url);
-    }
-
-    /**
-     * @param string|null $expectedException Exception class name if is expected.
-     * @param string $code
-     * @return void
-     *
-     * @dataProvider paymentMethodCodeProvider
-     */
-    public function testPaymentMethodCode($expectedException, $code)
-    {
-        if ($expectedException) {
-            self::setExpectedException($expectedException);
-        }
-
-        $value = new PaymentMethodCode($code);
-
-        self::assertSame($code, $value->getValue());
     }
 
     /**
      * @return array<array<int>>
      */
-    public function amountProvider()
+    public static function amountProvider(): array
     {
-        return array(
-            array(0),
-            array(1),
-            array(256),
-            array(0xf),
-        );
+        return [
+            [0],
+            [1],
+            [256],
+            [0xf],
+        ];
     }
 
     /**
      * @return array<array<mixed>>
      */
-    public function invalidAmountProvider()
+    public static function invalidAmountProvider(): array
     {
-        return array(
-            array(0.1),
-            array('0xf'),
-            array('hello'),
-            array(true),
-            array('256'),
-        );
+        return [
+            [0.1],
+            ['0xf'],
+            ['hello'],
+            [true],
+            ['256'],
+        ];
     }
 
     /**
      * @return array<array<non-empty-string>>
      */
-    public function currencyCodeProvider()
+    public static function currencyCodeProvider(): array
     {
-        return array(
-            array('CZK'),
-            array('USD'),
-        );
+        return [
+            ['CZK'],
+            ['USD'],
+        ];
     }
 
     /**
      * @return array<array<mixed>>
      */
-    public function invalidCurrencyCodeProvider()
+    public static function invalidCurrencyCodeProvider(): array
     {
-        return array(
-            array('cz'),
-            array(1),
-            array('HELLO'),
-        );
+        return [
+            ['cz'],
+            [1],
+            ['HELLO'],
+        ];
     }
 
     /**
      * @return array<array<mixed>>
      */
-    public function identifierProvider()
+    public static function identifierProvider(): array
     {
-        return array(
-            array('1'),
-            array(1),
-            array($this->randomChars(50)),
-            array($this->randomChars(100)),
-        );
-    }
-
-    /**
-     * @return array<array<mixed>>
-     */
-    public function invalidIdentifierProvider()
-    {
-        return array(
-            array($this->randomChars(101)),
-        );
+        return [
+            ['1'],
+            [1],
+            [self::randomChars(50)],
+            [self::randomChars(100)],
+        ];
     }
 
     /**
      * @return array<array<non-empty-string>>
      */
-    public function langCodeProvider()
+    public static function langCodeProvider(): array
     {
-        return array(
-            array('cs'),
-            array('en'),
-        );
+        return [
+            ['cs'],
+            ['en'],
+        ];
     }
 
     /**
      * @return array<array<mixed>>
      */
-    public function invalidLangCodeProvider()
+    public static function invalidLangCodeProvider(): array
     {
-        return array(
-            array('csc'),
-            array(1),
-        );
+        return [
+            ['csc'],
+            [1],
+        ];
     }
 
     /**
      * @return array<array<non-empty-string>>
      */
-    public function urlProvider()
+    public static function urlProvider(): array
     {
-        return array(
-            array('http://test.com'),
-            array('http://www.test.com'),
-            array('https://test.com'),
-            array('https://www.test.com'),
-        );
+        return [
+            ['http://test.com'],
+            ['http://www.test.com'],
+            ['https://test.com'],
+            ['https://www.test.com'],
+        ];
     }
 
     /**
      * @return array<array<mixed>>
      */
-    public function invalidUrlProvider()
+    public static function invalidUrlProvider(): array
     {
-        return array(
-            array(1),
-            array(1.01),
-            array('hello'),
-            array('test.com'),
-            array('www.test.com'),
-        );
-    }
-
-    /**
-     * @return array<array<mixed>>
-     */
-    public function paymentMethodCodeProvider()
-    {
-        // [$expectedException, $code]
-        return array(
-            array(null, PaymentMethodCode::CARD),
-            array(null, 'not-existing-payment-method'),
-        );
+        return [
+            [1],
+            [1.01],
+            ['hello'],
+            ['test.com'],
+            ['www.test.com'],
+        ];
     }
 
     /**
      * @param positive-int $length
      * @return non-empty-string
      */
-    private function randomChars($length)
+    private static function randomChars(int $length): string
     {
-        /** @var non-empty-string $result */
         $result = '';
         $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-';
 

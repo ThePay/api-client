@@ -5,7 +5,6 @@ namespace ThePay\ApiClient\Filter;
 use ThePay\ApiClient\Model\SignableRequest;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\CurrencyCode;
-use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 use ThePay\ApiClient\ValueObject\PaymentState;
 
 class PaymentsFilter implements SignableRequest
@@ -22,8 +21,8 @@ class PaymentsFilter implements SignableRequest
     /** @var \DateTime|null */
     private $finishedTo;
 
-    /** @var PaymentMethodCode|null */
-    private $paymentMethod;
+    /** @var non-empty-string|null */
+    private ?string $methodCode;
 
     /** @var PaymentState|null */
     private $state;
@@ -41,23 +40,23 @@ class PaymentsFilter implements SignableRequest
     private $orderId;
 
     /**
-     * @param \DateTime         $createdFrom
-     * @param \DateTime         $createdTo
-     * @param \DateTime         $finishedFrom
-     * @param \DateTime         $finishedTo
-     * @param PaymentMethodCode $paymentMethod
-     * @param PaymentState      $state
-     * @param CurrencyCode      $currency
-     * @param Amount            $amountFrom
-     * @param Amount            $amountTo
-     * @param string            $orderId
+     * @param \DateTime|null $createdFrom
+     * @param \DateTime|null $createdTo
+     * @param \DateTime|null $finishedFrom
+     * @param \DateTime|null $finishedTo
+     * @param non-empty-string|null $methodCode
+     * @param PaymentState|null $state
+     * @param CurrencyCode|null $currency
+     * @param Amount|null $amountFrom
+     * @param Amount|null $amountTo
+     * @param string|null $orderId
      */
     public function __construct(
         \DateTime $createdFrom = null,
         \DateTime $createdTo = null,
         \DateTime $finishedFrom = null,
         \DateTime $finishedTo = null,
-        PaymentMethodCode $paymentMethod = null,
+        ?string $methodCode = null,
         PaymentState $state = null,
         CurrencyCode $currency = null,
         Amount $amountFrom = null,
@@ -68,7 +67,7 @@ class PaymentsFilter implements SignableRequest
         $this->createdTo = $createdTo;
         $this->finishedFrom = $finishedFrom;
         $this->finishedTo = $finishedTo;
-        $this->paymentMethod = $paymentMethod;
+        $this->methodCode = $methodCode;
         $this->state = $state;
         $this->currency = $currency;
         $this->amountFrom = $amountFrom;
@@ -90,18 +89,18 @@ class PaymentsFilter implements SignableRequest
      */
     public function toArray()
     {
-        $res = array(
+        $res = [
             'created_from' => $this->createdFrom,
             'created_to' => $this->createdTo,
             'finished_from' => $this->finishedFrom,
             'finished_to' => $this->finishedTo,
-            'payment_method' => (string) $this->paymentMethod,
+            'payment_method' => (string) $this->methodCode,
             'state' => (string) $this->state,
             'currency' => (string) $this->currency,
             'amount_from' => $this->amountFrom,
             'amount_to' => $this->amountTo,
             'order_id' => $this->orderId,
-        );
+        ];
 
         foreach ($res as $k => $v) {
             if ($v === '') {
