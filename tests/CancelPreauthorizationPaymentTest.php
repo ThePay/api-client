@@ -4,33 +4,50 @@ declare(strict_types=1);
 
 namespace ThePay\ApiClient\Tests;
 
+use GuzzleHttp\Psr7\HttpFactory;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use ThePay\ApiClient\Http\HttpResponse;
-use ThePay\ApiClient\Http\HttpServiceInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use ThePay\ApiClient\Service\ApiService;
+use ThePay\ApiClient\Service\SignatureService;
 use ThePay\ApiClient\TheClient;
 
 final class CancelPreauthorizationPaymentTest extends BaseTestCase
 {
-    /** @var MockObject&HttpServiceInterface */
-    private MockObject $httpService;
+    /** @var MockObject&ClientInterface */
+    private MockObject $httpClient;
     private TheClient $client;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->httpService = $this->createMock(HttpServiceInterface::class);
-        $apiService = new ApiService($this->config, $this->httpService);
-        $this->client = new TheClient($this->config, null, $this->httpService, $apiService);
+        $this->httpClient = $this->createMock(ClientInterface::class);
+        $httpFactory = new HttpFactory();
+        $apiService = new ApiService(
+            $this->config,
+            $this->createMock(SignatureService::class),
+            $this->httpClient,
+            $httpFactory,
+            $httpFactory
+        );
+        $this->client = new TheClient($this->config, $apiService);
     }
 
     public function testRequest(): void
     {
-        $this->httpService
+        $this->httpClient
             ->expects(self::once())
-            ->method('delete')
-            ->with($this->config->getApiUrl() . 'projects/1/payments/abc/preauthorized?merchant_id=' . self::MERCHANT_ID)
-            ->willReturn($this->getOkResponse())
+            ->method('sendRequest')
+            ->willReturnCallback(function (RequestInterface $request): ResponseInterface {
+                $expectedUrl = $this->config->getApiUrl() . 'projects/1/payments/abc/preauthorized?merchant_id=' . self::MERCHANT_ID;
+
+                self::assertSame('DELETE', $request->getMethod());
+                self::assertSame($expectedUrl, $request->getUri()->__toString());
+
+                return $this->getOkResponse();
+            })
         ;
 
         $this->client->cancelPreauthorizedPayment('abc');
@@ -40,18 +57,18 @@ final class CancelPreauthorizationPaymentTest extends BaseTestCase
     {
         $this->expectException(\Exception::class);
 
-        $this->httpService->method('delete')->willReturn($this->getNotOkResponse());
+        $this->httpClient->method('sendRequest')->willReturn($this->getNotOkResponse());
 
         $this->client->cancelPreauthorizedPayment('abc');
     }
 
-    private function getOkResponse(): HttpResponse
+    private function getOkResponse(): ResponseInterface
     {
-        return new HttpResponse(null, 204);
+        return new Response(204);
     }
 
-    private function getNotOkResponse(): HttpResponse
+    private function getNotOkResponse(): ResponseInterface
     {
-        return new HttpResponse(null, 401);
+        return new Response(401);
     }
 }

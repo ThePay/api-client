@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ThePay\ApiClient\Tests;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\Address;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentCustomer;
@@ -24,9 +23,8 @@ final class CreatePaymentTest extends BaseTestCase
     {
         parent::setUp();
 
-        $httpService = $this->createMock(HttpServiceInterface::class);
         $this->apiService = $this->createMock(ApiServiceInterface::class);
-        $this->client = new TheClient($this->config, null, $httpService, $this->apiService);
+        $this->client = new TheClient($this->config, $this->apiService);
     }
 
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ThePay\ApiClient\Tests;
 
-use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams;
 use ThePay\ApiClient\Service\ApiServiceInterface;
@@ -18,8 +17,6 @@ final class RealizeSavedAuthorizationPaymentTest extends BaseTestCase
     {
         parent::setUp();
 
-        $httpService = $this->createMock(HttpServiceInterface::class);
-
         $okResponse = new ApiResponse(
             '{
                 "state": "success",
@@ -31,7 +28,7 @@ final class RealizeSavedAuthorizationPaymentTest extends BaseTestCase
         $apiService = $this->createMock(ApiServiceInterface::class);
         $apiService->method('realizePaymentBySavedAuthorization')->willReturn($okResponse);
 
-        $this->client = new TheClient($this->config, null, $httpService, $apiService);
+        $this->client = new TheClient($this->config, $apiService);
     }
 
     public function testRealizePaymentBySavedAuthorization(): void

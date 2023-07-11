@@ -4,35 +4,50 @@ declare(strict_types=1);
 
 namespace ThePay\ApiClient\Tests;
 
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use ThePay\ApiClient\Http\HttpResponse;
-use ThePay\ApiClient\Http\HttpServiceInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use ThePay\ApiClient\Service\ApiService;
+use ThePay\ApiClient\Service\SignatureService;
 use ThePay\ApiClient\TheClient;
 
 final class ChangePaymentMethod extends BaseTestCase
 {
-    /** @var MockObject&HttpServiceInterface */
-    private MockObject $httpService;
+    /** @var MockObject&ClientInterface */
+    private MockObject $httpClient;
 
     private TheClient $client;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->httpService = $this->createMock(HttpServiceInterface::class);
-        $apiService = new ApiService($this->config, $this->httpService);
-        $this->client = new TheClient($this->config, null, $this->httpService, $apiService);
+        $this->httpClient = $this->createMock(ClientInterface::class);
+        $apiService = new ApiService(
+            $this->config,
+            $this->createMock(SignatureService::class),
+            $this->httpClient,
+            $this->createMock(RequestFactoryInterface::class),
+            $this->createMock(StreamFactoryInterface::class)
+        );
+        $this->client = new TheClient($this->config, $apiService);
     }
 
     public function testRequest(): void
     {
-        $this->httpService
+        $this->httpClient
             ->expects(self::once())
-            ->method('put')
+            ->method('sendRequest')
             ->with(
-                $this->config->getApiUrl() . 'projects/1/payments/abc/method?merchant_id=' . self::MERCHANT_ID,
-                '{"payment_method_code":"transfer"}',
+                new Request(
+                    'PUT',
+                    $this->config->getApiUrl() . 'projects/1/payments/abc/method?merchant_id=' . self::MERCHANT_ID,
+                    [],
+                    '{"payment_method_code":"transfer"}'
+                )
             )
             ->willReturn($this->getOkResponse())
         ;
@@ -44,18 +59,18 @@ final class ChangePaymentMethod extends BaseTestCase
     {
         $this->expectException(\Exception::class);
 
-        $this->httpService->method('delete')->willReturn($this->getNotOkResponse());
+        $this->httpClient->method('sendRequest')->willReturn($this->getNotOkResponse());
 
         $this->client->changePaymentMethod('abc', 'transfer');
     }
 
-    private function getOkResponse(): HttpResponse
+    private function getOkResponse(): ResponseInterface
     {
-        return new HttpResponse(null, 204);
+        return new Response(204);
     }
 
-    private function getNotOkResponse(): HttpResponse
+    private function getNotOkResponse(): ResponseInterface
     {
-        return new HttpResponse(null, 404);
+        return new Response(404);
     }
 }

@@ -3,24 +3,10 @@
 Example with optional detail information about customer.
 
 ```php
-use ThePay\ApiClient\Model\Address;
-use ThePay\ApiClient\Model\CreatePaymentCustomer;
-use ThePay\ApiClient\TheConfig;
-use ThePay\ApiClient\TheClient;
-use ThePay\ApiClient\Model\CreatePaymentParams;
-
-$merchantId = '86a3eed0-95a4-11ea-ac9f-371f3488e0fa';
-$projectId = 3;
-$apiPassword = 'secret';
-// Connection to demo for testing
-$apiUrl = 'https://demo.api.thepay.cz/';
-$gateUrl = 'https://demo.gate.thepay.cz/';
-
-$config = new TheConfig($merchantId, $projectId, $apiPassword, $apiUrl, $gateUrl);
-$thePay = new TheClient($config);
+/** @var \ThePay\ApiClient\TheClient $thePayClient */
 
 // Create entity with information about customer
-$customer = new CreatePaymentCustomer(
+$customer = new \ThePay\ApiClient\Model\CreatePaymentCustomer(
     'Mike',
     'Smith',
     'mike.smith@example.com',
@@ -31,13 +17,13 @@ $customer = new CreatePaymentCustomer(
 );
 
 // Create payment (105.20 € with unique id uid123)
-$createPayment = new CreatePaymentParams(10520, 'EUR', 'uid123');
+$createPayment = new \ThePay\ApiClient\Model\CreatePaymentParams(10520, 'EUR', 'uid123');
 $createPayment->setOrderId('15478');
 $createPayment->setDescriptionForCustomer('Payment for items on example.com');
 $createPayment->setDescriptionForMerchant('Payment from VIP customer XYZ');
 $createPayment->setCustomer($customer);
 
-$payment = $thePay->createPayment($createPayment);
+$payment = $thePayClient->createPayment($createPayment);
 
 // Get url where user can pay
 echo $payment->getPayUrl(); // https://demo.gate.thepay.cz/5aa4f4af546a74848/pay/
@@ -48,7 +34,7 @@ echo $payment->getPayUrl(); // https://demo.gate.thepay.cz/5aa4f4af546a74848/pay
 In scenarios where you know the customer's preferred language, you can pass the language code in `CreatePaymentParams` constructor as the fourth argument. For example:
 
 ```php
-$createPayment = new CreatePaymentParams(10520, 'EUR', 'uid123', 'en');
+$createPayment = new \ThePay\ApiClient\Model\CreatePaymentParams(10520, 'EUR', 'uid123', 'en');
 ```
 
 Possible values are described in ISO 639-1 standard. If you pass a language, that ThePay does not support, for example French (fr), then the English language will be used,
