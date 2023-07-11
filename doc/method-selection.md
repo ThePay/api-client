@@ -5,13 +5,13 @@ as [preselection before payment creation](create-payment.md) or as
 [method change after payment was created](change-payment-method-of-payment.md) in ThePay system.
 
 ```php
-/** @var \ThePay\ApiClient\TheClient $client */
+/** @var \ThePay\ApiClient\TheClient $thePayClient */
 
 /**
  * every time when you want select method, obtain an actual list of active methods,
  * because the list can change any time based on ThePay system or project settings!
  */
-$activeMethods = $client->getActivePaymentMethods();
+$activeMethods = $thePayClient->getActivePaymentMethods();
 
 if($activeMethods->size() === 0) {
     /**

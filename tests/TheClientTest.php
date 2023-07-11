@@ -2,7 +2,6 @@
 
 namespace ThePay\ApiClient\Tests;
 
-use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheClient;
@@ -14,7 +13,6 @@ class TheClientTest extends BaseTestCase
 {
     public function testPaymentMethods(): void
     {
-        $httpService = $this->createMock(HttpServiceInterface::class);
         $apiService = $this->createMock(ApiServiceInterface::class);
         $apiService->method('getActivePaymentMethods')->willReturn(
             new PaymentMethodCollection([
@@ -49,7 +47,7 @@ class TheClientTest extends BaseTestCase
             ])
         );
 
-        $thePay = new TheClient($this->config, null, $httpService, $apiService);
+        $thePay = new TheClient($this->config, $apiService);
 
         $methods = $thePay->getActivePaymentMethods()->all();
 

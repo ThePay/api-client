@@ -14,10 +14,9 @@ There are three query parameters added to notifications url:
 
 In most cases you want to check the state of payment after getting notification:
 
+[See how to make TheClient](../.github/README.md#theclient-instance)
+
 ```php
-use ThePay\ApiClient\TheConfig;
-use ThePay\ApiClient\TheClient;
-use ThePay\ApiClient\Model\CreatePaymentParams;
 
 $uid = $_GET["payment_uid"];
 $projectId = $_GET["project_id"];
@@ -27,10 +26,12 @@ $apiPassword = 'secret';
 $apiUrl = 'https://demo.api.thepay.cz/'; // production: 'https://api.thepay.cz/'
 $gateUrl = 'https://demo.gate.thepay.cz/'; // production: 'https://gate.thepay.cz/'
 
-$config = new TheConfig($merchantId, $projectId, $apiPassword, $apiUrl, $gateUrl);
-$thePay = new TheClient($config);
+$config = new \ThePay\ApiClient\TheConfig($merchantId, $projectId, $apiPassword, $apiUrl, $gateUrl);
 
-$payment = $thePay->getPayment($uid);
+/** @var \ThePay\ApiClient\Service\ApiService $apiService */
+$thePayClient = new \ThePay\ApiClient\TheClient($config, $apiService);
+
+$payment = $thePayClient->getPayment($uid);
 if ($payment->getState() === 'paid') {
     // send email to customer
 }
@@ -39,9 +40,6 @@ if ($payment->getState() === 'paid') {
 You can save server resources by filtering notification type to only certain types:
 
 ```php
-use ThePay\ApiClient\TheConfig;
-use ThePay\ApiClient\TheClient;
-use ThePay\ApiClient\Model\CreatePaymentParams;
 
 $uid = $_GET["payment_uid"];
 $projectId = $_GET["project_id"];
@@ -54,10 +52,12 @@ if ($type === "state_changed") {
     $apiUrl = 'https://demo.api.thepay.cz/'; // production: 'https://api.thepay.cz/'
     $gateUrl = 'https://demo.gate.thepay.cz/'; // production: 'https://gate.thepay.cz/'
 
-    $config = new TheConfig($merchantId, $projectId, $apiPassword, $apiUrl, $gateUrl);
-    $thePay = new TheClient($config);
+    $config = new \ThePay\ApiClient\TheConfig($merchantId, $projectId, $apiPassword, $apiUrl, $gateUrl);
 
-    $payment = $thePay->getPayment($uid);
+    /** @var \ThePay\ApiClient\Service\ApiService $apiService */
+    $thePayClient = new \ThePay\ApiClient\TheClient($config, $apiService);
+
+    $payment = $thePayClient->getPayment($uid);
     if ($payment->getState() === 'paid') {
         // send email to customer
     }

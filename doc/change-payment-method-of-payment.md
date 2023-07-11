@@ -6,10 +6,10 @@ This can be useful when you disallow to customer to change payment method in The
 
 
 ```php
-/** @var \ThePay\ApiClient\TheClient $client */
+/** @var \ThePay\ApiClient\TheClient $thePayClient */
 
 /** @var non-empty-string $paymentMethodCode one method selected by user */
 
-$client->changePaymentMethod('UID_OF_PAYMENT', $paymentMethodCode);
+$thePayClient->changePaymentMethod('UID_OF_PAYMENT', $paymentMethodCode);
 
 ```

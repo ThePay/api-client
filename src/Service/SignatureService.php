@@ -7,7 +7,7 @@ use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\SignedData;
 use ThePay\ApiClient\TheConfig;
 
-final class SignatureService
+class SignatureService
 {
     public const FORMAT_RFC7231 = 'D, d M Y H:i:s \G\M\T';
 
@@ -37,10 +37,9 @@ final class SignatureService
     }
 
     /**
-     * @return ApiSignature
      * @throws \Exception
      */
-    public function getSignatureForApi()
+    public function getSignatureForApi(): ApiSignature
     {
         $date = new \DateTime('now', new \DateTimeZone('GMT'));
 

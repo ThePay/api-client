@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ThePay\ApiClient\Tests;
 
 use ThePay\ApiClient\Filter\TransactionFilter;
-use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\Collection\TransactionCollection;
 use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheClient;
@@ -18,7 +17,6 @@ final class TransactionsTest extends BaseTestCase
     {
         parent::setUp();
 
-        $httpService = $this->createMock(HttpServiceInterface::class);
         $apiService = $this->createMock(ApiServiceInterface::class);
         $apiService->method('getAccountTransactionHistory')->willReturn(
             new TransactionCollection(
@@ -68,7 +66,7 @@ final class TransactionsTest extends BaseTestCase
             )
         );
 
-        $this->client = new TheClient($this->config, null, $httpService, $apiService);
+        $this->client = new TheClient($this->config, $apiService);
     }
 
     public function testGettingTransactions(): void

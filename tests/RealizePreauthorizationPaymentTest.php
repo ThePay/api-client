@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace ThePay\ApiClient\Tests;
 
+use GuzzleHttp\Psr7\HttpFactory;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use ThePay\ApiClient\Http\HttpResponse;
-use ThePay\ApiClient\Http\HttpServiceInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Service\ApiService;
+use ThePay\ApiClient\Service\SignatureService;
 use ThePay\ApiClient\TheClient;
 
 final class RealizePreauthorizationPaymentTest extends BaseTestCase
 {
-    /** @var MockObject&HttpServiceInterface */
-    private MockObject $httpService;
+    /** @var MockObject&ClientInterface */
+    private MockObject $httpClient;
     private TheClient $client;
 
     /**
@@ -23,21 +27,33 @@ final class RealizePreauthorizationPaymentTest extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->httpService = $this->createMock(HttpServiceInterface::class);
-        $apiService = new ApiService($this->config, $this->httpService);
-        $this->client = new TheClient($this->config, null, $this->httpService, $apiService);
+
+        $this->httpClient = $this->createMock(ClientInterface::class);
+        $httpFactory = new HttpFactory();
+        $apiService = new ApiService(
+            $this->config,
+            $this->createMock(SignatureService::class),
+            $this->httpClient,
+            $httpFactory,
+            $httpFactory
+        );
+        $this->client = new TheClient($this->config, $apiService);
     }
 
     public function testRequest(): void
     {
-        $this->httpService
+        $this->httpClient
             ->expects(self::once())
-            ->method('post')
-            ->with(
-                $this->config->getApiUrl() . 'projects/1/payments/abc/preauthorized?merchant_id=' . self::MERCHANT_ID,
-                '{"amount":100}',
-            )
-            ->willReturn($this->getOkResponse())
+            ->method('sendRequest')
+            ->willReturnCallback(function (RequestInterface $request): ResponseInterface {
+                $expectedUrl = $this->config->getApiUrl() . 'projects/1/payments/abc/preauthorized?merchant_id=' . self::MERCHANT_ID;
+
+                self::assertSame('POST', $request->getMethod());
+                self::assertSame($expectedUrl, $request->getUri()->__toString());
+                self::assertSame('{"amount":100}', $request->getBody()->getContents());
+
+                return $this->getOkResponse();
+            })
         ;
 
         $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(100, 'abc'));
@@ -47,18 +63,18 @@ final class RealizePreauthorizationPaymentTest extends BaseTestCase
     {
         $this->expectException(\Exception::class);
 
-        $this->httpService->method('post')->willReturn($this->getNotOkResponse());
+        $this->httpClient->method('sendRequest')->willReturn($this->getNotOkResponse());
 
         $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(100, 'abc'));
     }
 
-    private function getOkResponse(): HttpResponse
+    private function getOkResponse(): ResponseInterface
     {
-        return new HttpResponse(null, 204);
+        return new Response(204);
     }
 
-    private function getNotOkResponse(): HttpResponse
+    private function getNotOkResponse(): ResponseInterface
     {
-        return new HttpResponse(null, 401);
+        return new Response(401);
     }
 }

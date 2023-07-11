@@ -8,8 +8,6 @@ use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
-use ThePay\ApiClient\Http\HttpCurlService;
-use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
@@ -25,15 +23,12 @@ use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\SimplePayment;
 use ThePay\ApiClient\Model\SimpleTransaction;
-use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\Service\GateService;
 use ThePay\ApiClient\Service\GateServiceInterface;
-use ThePay\ApiClient\Service\SignatureService;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
-use ThePay\ApiClient\ValueObject\StringValue;
 
 /**
  * Class ThePay is base class for ThePay SDK
@@ -43,28 +38,18 @@ class TheClient
     /** @var string */
     public const VERSION = '1.6.0';
 
-    /** @var TheConfig */
-    private $config;
-
-    /** @var GateServiceInterface */
-    private $gate;
-
-    /** @var ApiServiceInterface */
-    private $api;
-
-    /** @var HttpServiceInterface */
-    private $http;
+    private TheConfig $config;
+    private GateServiceInterface $gate;
+    private ApiServiceInterface $api;
 
     public function __construct(
         TheConfig $config,
-        GateServiceInterface $gate = null,
-        HttpServiceInterface $http = null,
-        ApiServiceInterface $api = null
+        ApiServiceInterface $api,
+        ?GateServiceInterface $gate = null
     ) {
         $this->config = $config;
-        $this->http = $http ?: new HttpCurlService(new SignatureService($config));
-        $this->api = $api ?: new ApiService($config, $this->http);
-        $this->gate = $gate ?: new GateService($config, $this->api);
+        $this->api = $api;
+        $this->gate = $gate ?? new GateService($config, $api);
     }
 
     /**
@@ -324,36 +309,36 @@ class TheClient
      *
      * @throws ApiException|InvalidArgumentException
      */
-    public function changePaymentMethod(string $paymentUid, string $methodCode): bool
+    public function changePaymentMethod(string $paymentUid, string $methodCode): void
     {
         $this->validateUid($paymentUid);
-        return $this
+        $this
             ->api
             ->changePaymentMethod(new Identifier($paymentUid), $methodCode);
     }
 
     /**
      * @param RealizePreauthorizedPaymentParams $params
-     * @return bool
+     *
      * @throws ApiException|InvalidArgumentException
      */
-    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params)
+    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): void
     {
         $this->validateUid($params->getUid()->getValue());
-        return $this
+        $this
             ->api
             ->realizePreauthorizedPayment($params);
     }
 
     /**
-     * @param string $paymentUid
-     * @return bool
+     * @param non-empty-string $paymentUid
+     *
      * @throws ApiException|InvalidArgumentException
      */
-    public function cancelPreauthorizedPayment($paymentUid)
+    public function cancelPreauthorizedPayment(string $paymentUid): void
     {
         $this->validateUid($paymentUid);
-        return $this
+        $this
             ->api
             ->cancelPreauthorizedPayment(new Identifier($paymentUid));
     }
@@ -383,7 +368,7 @@ class TheClient
     public function createPaymentRefund($paymentUid, $amount, $reason)
     {
         $this->validateUid($paymentUid);
-        $this->api->createPaymentRefund(new Identifier($paymentUid), new Amount($amount), new StringValue($reason));
+        $this->api->createPaymentRefund(new Identifier($paymentUid), new Amount($amount), $reason);
     }
 
     /**

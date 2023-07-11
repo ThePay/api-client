@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ThePay\ApiClient\Tests;
 
 use ThePay\ApiClient\Filter\PaymentsFilter;
-use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Payment;
 use ThePay\ApiClient\Service\ApiServiceInterface;
@@ -19,7 +18,6 @@ final class PaymentsTest extends BaseTestCase
     {
         parent::setUp();
 
-        $httpService = $this->createMock(HttpServiceInterface::class);
         $apiService = $this->createMock(ApiServiceInterface::class);
         $apiService->method('getPayment')->willReturn(
             new Payment(
@@ -112,7 +110,7 @@ final class PaymentsTest extends BaseTestCase
             )
         );
 
-        $this->client = new TheClient($this->config, null, $httpService, $apiService);
+        $this->client = new TheClient($this->config, $apiService);
     }
 
     public function testGettingPayments(): void
