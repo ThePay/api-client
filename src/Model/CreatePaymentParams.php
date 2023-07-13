@@ -317,27 +317,6 @@ final class CreatePaymentParams implements SignableRequest
     }
 
     /**
-     * @deprecated use $this->getSaveAuthorization()
-     *
-     * @return bool
-     */
-    public function isRecurring()
-    {
-        return $this->getSaveAuthorization();
-    }
-
-    /**
-     * @deprecated use $this->setSaveAuthorization()
-     *
-     * @param bool $isRecurring
-     * @return void
-     */
-    public function setIsRecurring($isRecurring)
-    {
-        $this->setSaveAuthorization($isRecurring);
-    }
-
-    /**
      * @return bool
      */
     public function isDeposit()
@@ -372,8 +351,6 @@ final class CreatePaymentParams implements SignableRequest
     }
 
     /**
-     * @deprecated 'is_recurring' key will be removed use 'save_authorization'
-     *
      * @return array<string, mixed>
      */
     public function toArray()
@@ -442,7 +419,6 @@ final class CreatePaymentParams implements SignableRequest
             $result['subscription'] = $this->subscription->toArray();
         }
 
-        $result['is_recurring'] = $this->getSaveAuthorization();
         $result['is_deposit'] = $this->isDeposit();
 
         $result['save_authorization'] = $this->getSaveAuthorization();
