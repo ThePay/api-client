@@ -7,35 +7,6 @@ use ThePay\ApiClient\ValueObject\Url;
 
 class PaymentMethod implements IPaymentMethod
 {
-    /**
-     * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::CARD
-     */
-    public const TAG_CARD = 'card';
-    /**
-     * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::ONLINE
-     */
-    public const TAG_ONLINE = 'online';
-    /**
-     * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::PRE_AUTHORIZATION
-     */
-    public const TAG_PRE_AUTHORIZATION = 'pre_authorization';
-    /**
-     * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::RETURNABLE
-     */
-    public const TAG_RETURNABLE = 'returnable';
-    /**
-     * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::ACCESS_ACCOUNT_OWNER
-     */
-    public const TAG_ACCESS_ACOUNT_OWNER = 'access_account_owner';
-    /**
-     * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::RECURRING_PAYMENTS
-     */
-    public const TAG_RECURRING_PAYMENTS = 'recurring_payments';
-    /**
-     * @deprecated use ThePay\ApiClient\ValueObject\PaymentMethodTag::ALTERNATIVE_METHOD
-     */
-    public const TAG_ALTERNATIVE_METHOD = 'alternative_method';
-
     /** @var string */
     private $code;
 

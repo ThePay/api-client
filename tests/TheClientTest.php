@@ -6,9 +6,6 @@ use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheClient;
 
-/**
- * @deprecated Remove when tests will be splitted
- */
 class TheClientTest extends BaseTestCase
 {
     public function testPaymentMethods(): void
