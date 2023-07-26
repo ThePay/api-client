@@ -13,7 +13,8 @@ You can create payment in two different ways:
 | currency | Currency code |
 | uid | unique ID for payment |
 
-The rest of parameters can be set via setters *todo: link somewhere?*
+The rest of parameters can be set via setters,
+look at [CreatePaymentParams model](../src/Model/CreatePaymentParams.php).
 
 Let's prepare payment of 1 CZK:
 

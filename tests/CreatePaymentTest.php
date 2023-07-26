@@ -10,6 +10,7 @@ use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentCustomer;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
+use ThePay\ApiClient\Model\PaymentMethod;
 use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheClient;
 
@@ -72,7 +73,41 @@ final class CreatePaymentTest extends BaseTestCase
 
     public function testGetPaymentMethods(): void
     {
-        $this->apiService->method('getActivePaymentMethods')->willReturn(new PaymentMethodCollection([]));
+        $this->apiService->method('getActivePaymentMethods')->willReturn(new PaymentMethodCollection([
+            new PaymentMethod([
+                'code' => 'test_method',
+                'title' => 'TestTitle',
+                'image' => [
+                    'src' => 'https://example-image.com',
+                ],
+                'tags' => [],
+                'available_currencies' => [
+                    ['code' => 'CZK'],
+                ],
+            ]),
+            new PaymentMethod([
+                'code' => 'second_method',
+                'title' => 'Second method',
+                'image' => [
+                    'src' => 'https://second-example-image.com',
+                ],
+                'tags' => [],
+                'available_currencies' => [
+                    ['code' => 'CZK'],
+                ],
+            ]),
+            new PaymentMethod([
+                'code' => 'incompatible_currency_method',
+                'title' => 'Incompatible currency',
+                'image' => [
+                    'src' => 'https://incompatible-example-image.com',
+                ],
+                'tags' => [],
+                'available_currencies' => [
+                    ['code' => 'EUR'],
+                ],
+            ]),
+        ]));
 
         $result = $this->client->getPaymentButtons(new CreatePaymentParams(100, 'CZK', '202001010005'));
 
@@ -85,8 +120,14 @@ final class CreatePaymentTest extends BaseTestCase
         // In default we want to send data through form post method, so we need form element
         self::assertStringContainsString('<form ', $result);
 
+        self::assertStringContainsString('<img src="https://example-image.com"', $result);
+        self::assertStringContainsString('<img src="https://second-example-image.com"', $result);
+        self::assertStringContainsString('>TestTitle</span>', $result);
+        self::assertStringContainsString('>Second method</span>', $result);
+        self::assertStringContainsString('payment_method_code=test_method" data-thepay="payment-button"', $result);
+        self::assertStringContainsString('payment_method_code=second_method" data-thepay="payment-button"', $result);
 
-        // todo: complete test, implementation was not final at this moment
+        self::assertStringNotContainsString('payment_method_code=incompatible_currency_method" data-thepay="payment-button"', $result);
     }
 
     public function testCreateApiPayment(): void
