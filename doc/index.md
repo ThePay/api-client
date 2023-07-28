@@ -57,6 +57,8 @@
 
 [Get pay URLs for existing payments](get-pay-urls-for-existing-payment.md)
 
+[Generating a confirmation PDF for paid payment](generate-payment-confirmation.md)
+
 ## Methods
 
 ### getProjects

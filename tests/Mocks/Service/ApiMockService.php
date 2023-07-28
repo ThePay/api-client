@@ -622,4 +622,9 @@ class ApiMockService implements ApiServiceInterface
         $transactionCollection->add($transactionCollection->offsetGet(0)); // Simulate 2 records
         return $transactionCollection;
     }
+
+    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null)
+    {
+        return 'test content';
+    }
 }
