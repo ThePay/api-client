@@ -450,7 +450,36 @@ class ApiService implements ApiServiceInterface
         return $paymentMethods;
     }
 
+    /**
+     * Method will generate PDF file as confirmation for paid payment
+     *
+     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/payments/get-payment-confirmation
+     *
+     * @return string with binary content of PDF file
+     *
+     * @throws ApiException if payment is not paid yet
+     */
+    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null)
+    {
+        $arguments = array();
+        if ($languageCode !== null) {
+            $arguments['language'] = $languageCode->getValue();
+        }
 
+        $url = $this->url(array('payments', $uid->getValue(), 'generate_confirmation'), $arguments);
+        $response = $this->httpService->get($url);
+
+        if ($response->getCode() !== 200) {
+            throw $this->buildException($url, $response);
+        }
+
+        $responseContent = $response->getBody();
+        if ($responseContent === null) {
+            throw new ApiException('TheApi call "' . $url . '" response body content can not be null');
+        }
+
+        return $responseContent;
+    }
 
     /**
      * Build URL for API requests

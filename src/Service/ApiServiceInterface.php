@@ -161,4 +161,15 @@ interface ApiServiceInterface
      * @return array<PaymentMethodWithPayUrl>
      */
     public function getPaymentUrlsForPayment(Identifier $uid, LanguageCode $languageCode = null);
+
+    /**
+     * Method will generate PDF file as confirmation for paid payment
+     *
+     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/payments/get-payment-confirmation
+     *
+     * @return string with binary content of PDF file
+     *
+     * @throws ApiException if payment is not paid yet
+     */
+    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null);
 }
