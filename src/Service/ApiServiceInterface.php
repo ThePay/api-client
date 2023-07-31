@@ -148,5 +148,5 @@ interface ApiServiceInterface
      *
      * @throws ApiException if payment is not paid yet
      */
-    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null);
+    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null): string;
 }

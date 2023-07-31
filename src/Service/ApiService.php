@@ -437,26 +437,21 @@ class ApiService implements ApiServiceInterface
      *
      * @throws ApiException if payment is not paid yet
      */
-    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null)
+    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null): string
     {
-        $arguments = array();
+        $arguments = [];
         if ($languageCode !== null) {
             $arguments['language'] = $languageCode->getValue();
         }
 
-        $url = $this->url(array('payments', $uid->getValue(), 'generate_confirmation'), $arguments);
-        $response = $this->httpService->get($url);
+        $url = $this->url(['payments', $uid->getValue(), 'generate_confirmation'], $arguments);
+        $response = $this->sendRequest(self::METHOD_GET, $url);
 
-        if ($response->getCode() !== 200) {
+        if ($response->getStatusCode() !== 200) {
             throw $this->buildException($url, $response);
         }
 
-        $responseContent = $response->getBody();
-        if ($responseContent === null) {
-            throw new ApiException('TheApi call "' . $url . '" response body content can not be null');
-        }
-
-        return $responseContent;
+        return $response->getBody()->getContents();
     }
 
     /**

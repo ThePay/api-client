@@ -383,7 +383,7 @@ class TheClient
      *
      * @throws ApiException if payment is not paid yet
      */
-    public function generatePaymentConfirmationPdf($paymentUid, $languageCode = null)
+    public function generatePaymentConfirmationPdf(string $paymentUid, string $languageCode = null): string
     {
         $this->validateUid($paymentUid);
         return $this->api->generatePaymentConfirmationPdf(
