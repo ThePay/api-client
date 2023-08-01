@@ -372,6 +372,27 @@ class TheClient
     }
 
     /**
+     * Method will generate PDF file as confirmation for paid payment
+     *
+     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/payments/get-payment-confirmation
+     *
+     * @param non-empty-string $paymentUid
+     * @param non-empty-string|null $languageCode
+     *
+     * @return string with binary content of PDF file
+     *
+     * @throws ApiException if payment is not paid yet
+     */
+    public function generatePaymentConfirmationPdf(string $paymentUid, string $languageCode = null): string
+    {
+        $this->validateUid($paymentUid);
+        return $this->api->generatePaymentConfirmationPdf(
+            new Identifier($paymentUid),
+            $languageCode !== null ? new LanguageCode($languageCode) : null
+        );
+    }
+
+    /**
      * Returns <style> and <script> tags with styles and javascript code
      * @return string HTML code
      */
