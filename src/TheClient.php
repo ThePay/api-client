@@ -10,6 +10,7 @@ use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Http\HttpCurlService;
 use ThePay\ApiClient\Http\HttpServiceInterface;
+use ThePay\ApiClient\Model\AccountBalance;
 use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
@@ -80,6 +81,23 @@ class TheClient
     public function getProjects()
     {
         return $this->api->getProjects();
+    }
+
+    /**
+     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
+     *
+     * @param string|null $accountIban
+     * @param int|null $projectId
+     *
+     * @return array<AccountBalance>
+     */
+    public function getAccountsBalances($accountIban = null, $projectId = null, \DateTime $balanceAt = null)
+    {
+        return $this->api->getAccountsBalances(
+            $accountIban !== null ? new StringValue($accountIban) : null,
+            $projectId,
+            $balanceAt
+        );
     }
 
     /**
