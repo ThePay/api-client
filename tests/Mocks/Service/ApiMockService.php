@@ -627,4 +627,9 @@ class ApiMockService implements ApiServiceInterface
     {
         return 'test content';
     }
+
+    public function getAccountsBalances(StringValue $accountIban = null, $projectId = null, \DateTime $balanceAt = null)
+    {
+        return array();
+    }
 }
