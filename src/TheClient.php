@@ -8,8 +8,6 @@ use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
-use ThePay\ApiClient\Http\HttpCurlService;
-use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\AccountBalance;
 use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
@@ -26,48 +24,34 @@ use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\SimplePayment;
 use ThePay\ApiClient\Model\SimpleTransaction;
-use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\Service\GateService;
 use ThePay\ApiClient\Service\GateServiceInterface;
-use ThePay\ApiClient\Service\SignatureService;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
-use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 use ThePay\ApiClient\ValueObject\StringValue;
 
 /**
  * Class ThePay is base class for ThePay SDK
- * @package ThePay\ApiClient
  */
 class TheClient
 {
     /** @var string */
-    const VERSION = '1.7.0';
+    public const VERSION = '1.7.0';
 
-    /** @var TheConfig */
-    private $config;
-
-    /** @var GateServiceInterface */
-    private $gate;
-
-    /** @var ApiServiceInterface */
-    private $api;
-
-    /** @var HttpServiceInterface */
-    private $http;
+    private TheConfig $config;
+    private GateServiceInterface $gate;
+    private ApiServiceInterface $api;
 
     public function __construct(
         TheConfig $config,
-        GateServiceInterface $gate = null,
-        HttpServiceInterface $http = null,
-        ApiServiceInterface $api = null
+        ApiServiceInterface $api,
+        ?GateServiceInterface $gate = null
     ) {
         $this->config = $config;
-        $this->http = $http ?: new HttpCurlService(new SignatureService($config));
-        $this->api = $api ?: new ApiService($config, $this->http);
-        $this->gate = $gate ?: new GateService($config, $this->api);
+        $this->api = $api;
+        $this->gate = $gate ?? new GateService($config, $api);
     }
 
     /**
@@ -263,9 +247,9 @@ class TheClient
 
         if ($filter === null) {
             $filter = new PaymentMethodFilter(
-                array($params->getCurrencyCode()->getValue()),
-                array(),
-                array()
+                [$params->getCurrencyCode()->getValue()],
+                [],
+                []
             );
         } else {
             $filter->setCurrency($params->getCurrencyCode()->getValue());
@@ -310,7 +294,7 @@ class TheClient
      * @param bool $usePostMethod
      * @return string This is HTML snippet with link redirection to payment gate. To payment method selection page.
      */
-    public function getPaymentButton(CreatePaymentParams $params, $title = 'Pay!', $useInlineAssets = true, $methodCode = null, array $attributes = array(), $usePostMethod = true)
+    public function getPaymentButton(CreatePaymentParams $params, $title = 'Pay!', $useInlineAssets = true, $methodCode = null, array $attributes = [], $usePostMethod = true)
     {
         $this->setLanguageCodeIfMissing($params);
 
@@ -323,61 +307,57 @@ class TheClient
     }
 
     /**
-     * @param CreatePaymentParams $params
-     * @param string|null $methodCode
+     * @param non-empty-string|null $methodCode
      *
-     * @return CreatePaymentResponse
      * @throws ApiException
      */
-    public function createPayment(CreatePaymentParams $params, $methodCode = null)
+    public function createPayment(CreatePaymentParams $params, ?string $methodCode = null): CreatePaymentResponse
     {
         if ($params->getLanguageCode() === null) {
             $params->setLanguageCode($this->config->getLanguage()->getValue());
         }
 
-        $paymentMethod = $methodCode === null ? null : new PaymentMethodCode($methodCode);
-
         return $this
             ->api
-            ->createPayment($params, $paymentMethod);
+            ->createPayment($params, $methodCode);
     }
 
     /**
-     * @param string $paymentUid
-     * @param string $paymentMethodCode
-     * @return bool
+     * @param non-empty-string $paymentUid
+     * @param non-empty-string $methodCode
+     *
      * @throws ApiException|InvalidArgumentException
      */
-    public function changePaymentMethod($paymentUid, $paymentMethodCode)
+    public function changePaymentMethod(string $paymentUid, string $methodCode): void
     {
         $this->validateUid($paymentUid);
-        return $this
+        $this
             ->api
-            ->changePaymentMethod(new Identifier($paymentUid), new PaymentMethodCode($paymentMethodCode));
+            ->changePaymentMethod(new Identifier($paymentUid), $methodCode);
     }
 
     /**
      * @param RealizePreauthorizedPaymentParams $params
-     * @return bool
+     *
      * @throws ApiException|InvalidArgumentException
      */
-    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params)
+    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): void
     {
         $this->validateUid($params->getUid()->getValue());
-        return $this
+        $this
             ->api
             ->realizePreauthorizedPayment($params);
     }
 
     /**
-     * @param string $paymentUid
-     * @return bool
+     * @param non-empty-string $paymentUid
+     *
      * @throws ApiException|InvalidArgumentException
      */
-    public function cancelPreauthorizedPayment($paymentUid)
+    public function cancelPreauthorizedPayment(string $paymentUid): void
     {
         $this->validateUid($paymentUid);
-        return $this
+        $this
             ->api
             ->cancelPreauthorizedPayment(new Identifier($paymentUid));
     }
@@ -407,7 +387,7 @@ class TheClient
     public function createPaymentRefund($paymentUid, $amount, $reason)
     {
         $this->validateUid($paymentUid);
-        $this->api->createPaymentRefund(new Identifier($paymentUid), new Amount($amount), new StringValue($reason));
+        $this->api->createPaymentRefund(new Identifier($paymentUid), new Amount($amount), $reason);
     }
 
     /**
@@ -422,7 +402,7 @@ class TheClient
      *
      * @throws ApiException if payment is not paid yet
      */
-    public function generatePaymentConfirmationPdf($paymentUid, $languageCode = null)
+    public function generatePaymentConfirmationPdf(string $paymentUid, string $languageCode = null): string
     {
         $this->validateUid($paymentUid);
         return $this->api->generatePaymentConfirmationPdf(

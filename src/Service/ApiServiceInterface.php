@@ -5,7 +5,6 @@ namespace ThePay\ApiClient\Service;
 use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
-use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\AccountBalance;
 use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
@@ -22,19 +21,13 @@ use ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
-use ThePay\ApiClient\Model\SimplePayment;
-use ThePay\ApiClient\Model\SimpleTransaction;
-use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
-use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 use ThePay\ApiClient\ValueObject\StringValue;
 
 interface ApiServiceInterface
 {
-    public function __construct(TheConfig $config, HttpServiceInterface $httpService);
-
     /**
      * Fetch all projects for merchant set in TheConfig
      *
@@ -98,13 +91,10 @@ interface ApiServiceInterface
     public function realizePaymentBySavedAuthorization(Identifier $parentPaymentUid, RealizePaymentBySavedAuthorizationParams $params);
 
     /**
-     * @param PaymentsFilter $filter
-     * @param int $page
-     * @param null|int $limit
-     * @return PaymentCollection<SimplePayment>
-     * @throws ApiException
+     * @param int<1, max> $page
+     * @param int<1, 1000> $limit
      */
-    public function getPayments(PaymentsFilter $filter, $page = 1, $limit = null);
+    public function getPayments(PaymentsFilter $filter, int $page = 1, int $limit = 25): PaymentCollection;
 
     /**
      * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
@@ -116,39 +106,28 @@ interface ApiServiceInterface
     public function getAccountsBalances(StringValue $accountIban = null, $projectId = null, \DateTime $balanceAt = null);
 
     /**
-     * @param TransactionFilter $filter
-     * @param int $page
-     * @param null|int $limit
-     * @return TransactionCollection<SimpleTransaction>
+     * @param int<1, max> $page
+     * @param int<1, 1000> $limit
      */
-    public function getAccountTransactionHistory(TransactionFilter $filter, $page = 1, $limit = null);
+    public function getAccountTransactionHistory(TransactionFilter $filter, int $page = 1, int $limit = 100): TransactionCollection;
 
     /**
-     * @param CreatePaymentParams $createPaymentParams
-     * @return CreatePaymentResponse
+     * @param non-empty-string|null $methodCode
+     *
      * @throws ApiException
      */
-    public function createPayment(CreatePaymentParams $createPaymentParams, PaymentMethodCode $paymentMethod = null);
+    public function createPayment(CreatePaymentParams $createPaymentParams, ?string $methodCode = null): CreatePaymentResponse;
+
+    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): void;
+
+    public function cancelPreauthorizedPayment(Identifier $uid): void;
 
     /**
-     * @param RealizePreauthorizedPaymentParams $params
-     * @return bool
+     * @param non-empty-string $methodCode
+     *
      * @throws ApiException
      */
-    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params);
-
-    /**
-     * @param Identifier $uid
-     * @return bool
-     * @throws ApiException
-     */
-    public function cancelPreauthorizedPayment(Identifier $uid);
-
-    /**
-     * @return bool
-     * @throws ApiException
-     */
-    public function changePaymentMethod(Identifier $uid, PaymentMethodCode $paymentMethodCode);
+    public function changePaymentMethod(Identifier $uid, string $methodCode): void;
 
     /**
      * Returns information about payment refund.
@@ -161,9 +140,8 @@ interface ApiServiceInterface
      * Will create request for automatic refund of payment.
      *
      * @param Amount $amount amount which should be refunded in cents (currency used for refunding is same as payment currency)
-     * @return void
      */
-    public function createPaymentRefund(Identifier $uid, Amount $amount, StringValue $reason);
+    public function createPaymentRefund(Identifier $uid, Amount $amount, string $reason): void;
 
     /**
      * Returns an array of available payment methods with pay URLs for certain payment.
@@ -181,5 +159,5 @@ interface ApiServiceInterface
      *
      * @throws ApiException if payment is not paid yet
      */
-    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null);
+    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null): string;
 }

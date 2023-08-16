@@ -68,11 +68,11 @@ class Customer
      */
     public function toArray()
     {
-        return array(
+        return [
             'accountIban' => $this->accountIban,
             'name' => $this->name,
             'ip' => $this->ip,
             'email' => $this->email,
-        );
+        ];
     }
 }

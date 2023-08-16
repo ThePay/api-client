@@ -7,11 +7,11 @@ use ThePay\ApiClient\Utils\Json;
 
 class PaymentEvent
 {
-    const METHOD_SELECTION = 'method_selection';
-    const STATE_CHANGE = 'state_change';
-    const UNAVAILABLE_METHOD = 'unavailable_method';
-    const PAYMENT_CANCELLED = 'payment_cancelled';
-    const PAYMENT_ERROR = 'payment_error';
+    public const METHOD_SELECTION = 'method_selection';
+    public const STATE_CHANGE = 'state_change';
+    public const UNAVAILABLE_METHOD = 'unavailable_method';
+    public const PAYMENT_CANCELLED = 'payment_cancelled';
+    public const PAYMENT_ERROR = 'payment_error';
 
     /**
      * @var Datetime
@@ -59,10 +59,10 @@ class PaymentEvent
      */
     public function toArray()
     {
-        return array(
+        return [
             'occuredAt' => $this->occuredAt,
             'type' => $this->type,
             'data' => $this->data,
-        );
+        ];
     }
 }

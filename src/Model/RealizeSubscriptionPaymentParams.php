@@ -11,7 +11,7 @@ abstract class RealizeSubscriptionPaymentParams implements SignableRequest
     protected $amount;
 
     /** @var CreatePaymentItem[] */
-    protected $items = array();
+    protected $items = [];
 
     /** @var Identifier */
     protected $uid;
@@ -80,12 +80,12 @@ abstract class RealizeSubscriptionPaymentParams implements SignableRequest
      */
     public function toArray()
     {
-        $result = array(
+        $result = [
             'payment_uid' => $this->uid->getValue(),
             'items' => null,
             'order_id' => $this->orderId,
             'description_for_merchant' => $this->descriptionForMerchant,
-        );
+        ];
 
         if ($this->items) {
             foreach ($this->items as $item) {

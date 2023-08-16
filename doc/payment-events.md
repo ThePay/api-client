@@ -7,7 +7,7 @@ First thing you need to do is to obtain payment detail:
 
 ```php
 // get payment detail
-$payment = $client->getPayment('49096fe3-872d-3cbe-b908-2806ae2d7c79');
+$payment = $thePayClient->getPayment('49096fe3-872d-3cbe-b908-2806ae2d7c79');
 ```
 
 Then you can get the list of events that occured on that payment:

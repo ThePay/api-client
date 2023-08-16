@@ -317,27 +317,6 @@ final class CreatePaymentParams implements SignableRequest
     }
 
     /**
-     * @deprecated use $this->getSaveAuthorization()
-     *
-     * @return bool
-     */
-    public function isRecurring()
-    {
-        return $this->getSaveAuthorization();
-    }
-
-    /**
-     * @deprecated use $this->setSaveAuthorization()
-     *
-     * @param bool $isRecurring
-     * @return void
-     */
-    public function setIsRecurring($isRecurring)
-    {
-        $this->setSaveAuthorization($isRecurring);
-    }
-
-    /**
      * @return bool
      */
     public function isDeposit()
@@ -372,20 +351,18 @@ final class CreatePaymentParams implements SignableRequest
     }
 
     /**
-     * @deprecated 'is_recurring' key will be removed use 'save_authorization'
-     *
      * @return array<string, mixed>
      */
     public function toArray()
     {
-        $result = array(
+        $result = [
             'amount' => $this->amount->getValue(),
             'currency_code' => $this->currencyCode->getValue(),
             'uid' => $this->uid->getValue(),
             'description_for_customer' => $this->descriptionForCustomer,
             'description_for_merchant' => $this->descriptionForMerchant,
             'items' => null,
-        );
+        ];
 
         if ($this->items) {
             foreach ($this->items as $item) {
@@ -409,31 +386,31 @@ final class CreatePaymentParams implements SignableRequest
             $result['language_code'] = $this->languageCode->getValue();
         }
         if ($this->customer) {
-            $result['customer'] = array(
+            $result['customer'] = [
                 'name' => $this->customer->getName(),
                 'surname' => $this->customer->getSurname(),
                 'email' => $this->customer->getEmail(),
                 'phone' => $this->customer->getPhone(),
-            );
+            ];
 
             $billingAddress = $this->customer->getBillingAddress();
             if ($billingAddress) {
-                $result['customer']['billing_address'] = array(
+                $result['customer']['billing_address'] = [
                     'country_code' => $billingAddress->getCountryCode(),
                     'city' => $billingAddress->getCity(),
                     'zip' => $billingAddress->getZip(),
                     'street' => $billingAddress->getStreet(),
-                );
+                ];
             }
 
             $shippingAddress = $this->customer->getShippingAddress();
             if ($shippingAddress) {
-                $result['customer']['shipping_address'] = array(
+                $result['customer']['shipping_address'] = [
                     'country_code' => $shippingAddress->getCountryCode(),
                     'city' => $shippingAddress->getCity(),
                     'zip' => $shippingAddress->getZip(),
                     'street' => $shippingAddress->getStreet(),
-                );
+                ];
             }
         } else {
             $result['customer'] = null;
@@ -442,7 +419,6 @@ final class CreatePaymentParams implements SignableRequest
             $result['subscription'] = $this->subscription->toArray();
         }
 
-        $result['is_recurring'] = $this->getSaveAuthorization();
         $result['is_deposit'] = $this->isDeposit();
 
         $result['save_authorization'] = $this->getSaveAuthorization();

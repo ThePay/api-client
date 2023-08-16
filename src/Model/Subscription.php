@@ -46,9 +46,9 @@ class Subscription
      */
     public function toArray()
     {
-        return array(
+        return [
             'type' => (string) $this->type,
             'period' => $this->period,
-        );
+        ];
     }
 }

@@ -13,7 +13,8 @@ You can create payment in two different ways:
 | currency | Currency code |
 | uid | unique ID for payment |
 
-The rest of parameters can be set via setters *todo: link somewhere?*
+The rest of parameters can be set via setters,
+look at [CreatePaymentParams model](../src/Model/CreatePaymentParams.php).
 
 Let's prepare payment of 1 CZK:
 
@@ -24,15 +25,19 @@ Let's prepare payment of 1 CZK:
 ### Redirect user to gate without payment method
 
 ```php
-    $button = $client->getPaymentButton($params);
+    $button = $thePayClient->getPaymentButton($params);
 ```
 
 ### Redirect user to gate with specific payment method and/or specify custom button attributes
 
+After [method selection](method-selection.md), you can create payment with payment method
+and method selection step is for user skipped in ThePay system.
+
 ```php
-    $paymentMethodCode = 'mojeplatba';
+    /** @var non-empty-string $paymentMethodCode one method selected by user */
+
     $buttonAttributes = array('class' => 'btn btn-success');
-    $button = $client->getPaymentButton($params, 'Button text', true, $paymentMethodCode, $buttonAttributes);
+    $button = $thePayClient->getPaymentButton($params, 'Button text', true, $paymentMethodCode, $buttonAttributes);
 ```
 
 ### Redirect user to gate with payment method selected
@@ -42,7 +47,7 @@ Method **getPaymentButtons** returns HTML code with form sended by click on paym
 ```php
     /** @var string $paymentButtons */
     // used default rendering
-    $paymentButtons = $client->getPaymentButtons($params);
+    $paymentButtons = $thePayClient->getPaymentButtons($params);
     // Filter payment methods by tag. If tags are empty, all available methods will be displayed.
     $onlyMethodsWithTags = array(
         \ThePay\ApiClient\ValueObject\PaymentMethodTag::ONLINE,
@@ -54,12 +59,12 @@ Method **getPaymentButtons** returns HTML code with form sended by click on paym
     // only payment methods matched used filter will be rendered in HTML,
     // but be still available for user in payment process!
     $filter = new \ThePay\ApiClient\Filter\PaymentMethodFilter(array(), $onlyMethodsWithTags, $onlyMethodsWithoutTags);
-    $paymentButtons = $client->getPaymentButtons($params, $filter);
+    $paymentButtons = $thePayClient->getPaymentButtons($params, $filter);
     // used without css styles
     // third bool parameter disable default css styles and javascript for payment method buttons
     // css styles are rendered in <style> tag in begin of rendered HTML
     // if default styles are disabled some custom styles must be implemented
-    $paymentButtons = $client->getPaymentButtons($params, null, false);
+    $paymentButtons = $thePayClient->getPaymentButtons($params, null, false);
 ```
 
 Payment method buttons should look like this, second image is with hover.
@@ -100,7 +105,7 @@ set **$useInlineAssets** parameter to false and join CSS and JS on your own.
 
 ```php
     // The third parameter disables joining inline styles and javascript
-    echo $client->getPaymentButtons($params, null, false);
+    echo $thePayClient->getPaymentButtons($params, null, false);
 ```
 
 Adding thepay javascript to your own package
@@ -133,7 +138,7 @@ If even our HTML is not suitable for you we recommend create payment via API.
 
 ```php
     /** @var \ThePay\ApiClient\Model\CreatePaymentResponse $response */
-    $response = $client->createPayment($params);
+    $response = $thePayClient->createPayment($params);
 ```
 
 *CreatePaymentResponse* has two properties with url for redirection user to payment gate:
