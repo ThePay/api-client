@@ -5,6 +5,7 @@ namespace ThePay\ApiClient\Service;
 use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
+use ThePay\ApiClient\Model\AccountBalance;
 use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
@@ -23,6 +24,7 @@ use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
+use ThePay\ApiClient\ValueObject\StringValue;
 
 interface ApiServiceInterface
 {
@@ -93,6 +95,15 @@ interface ApiServiceInterface
      * @param int<1, 1000> $limit
      */
     public function getPayments(PaymentsFilter $filter, int $page = 1, int $limit = 25): PaymentCollection;
+
+    /**
+     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
+     *
+     * @param int|null $projectId
+     *
+     * @return array<AccountBalance>
+     */
+    public function getAccountsBalances(StringValue $accountIban = null, $projectId = null, \DateTime $balanceAt = null);
 
     /**
      * @param int<1, max> $page

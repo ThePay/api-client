@@ -8,6 +8,7 @@ use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
+use ThePay\ApiClient\Model\AccountBalance;
 use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
@@ -29,6 +30,7 @@ use ThePay\ApiClient\Service\GateServiceInterface;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
+use ThePay\ApiClient\ValueObject\StringValue;
 
 /**
  * Class ThePay is base class for ThePay SDK
@@ -36,7 +38,7 @@ use ThePay\ApiClient\ValueObject\LanguageCode;
 class TheClient
 {
     /** @var string */
-    public const VERSION = '1.6.0';
+    public const VERSION = '1.7.0';
 
     private TheConfig $config;
     private GateServiceInterface $gate;
@@ -63,6 +65,23 @@ class TheClient
     public function getProjects()
     {
         return $this->api->getProjects();
+    }
+
+    /**
+     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
+     *
+     * @param string|null $accountIban
+     * @param int|null $projectId
+     *
+     * @return array<AccountBalance>
+     */
+    public function getAccountsBalances($accountIban = null, $projectId = null, \DateTime $balanceAt = null)
+    {
+        return $this->api->getAccountsBalances(
+            $accountIban !== null ? new StringValue($accountIban) : null,
+            $projectId,
+            $balanceAt
+        );
     }
 
     /**

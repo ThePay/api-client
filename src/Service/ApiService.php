@@ -9,6 +9,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
+use ThePay\ApiClient\Model\AccountBalance;
 use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
@@ -32,6 +33,7 @@ use ThePay\ApiClient\Utils\Json;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
+use ThePay\ApiClient\ValueObject\StringValue;
 use ThePay\ApiClient\ValueObject\SubscriptionType;
 
 /**
@@ -122,6 +124,47 @@ class ApiService implements ApiServiceInterface
         }
 
         return new PaymentMethodCollection($response->getBody()->getContents());
+    }
+
+    /**
+     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
+     *
+     * @param int|null $projectId
+     *
+     * @return array<AccountBalance>
+     */
+    public function getAccountsBalances(StringValue $accountIban = null, $projectId = null, \DateTime $balanceAt = null)
+    {
+        $arguments = [];
+        if ($accountIban !== null) {
+            $arguments['account_iban'] = $accountIban->getValue();
+        }
+        if ($projectId !== null) {
+            $arguments['project_id'] = $projectId;
+        }
+        if ($balanceAt) {
+            $arguments['balance_at'] = $balanceAt->format(\DateTime::ATOM);
+        }
+
+        $url = $this->url(['balances'], $arguments, false);
+        $response = $this->sendRequest(self::METHOD_GET, $url);
+
+        if ($response->getStatusCode() !== 200) {
+            throw $this->buildException($url, $response);
+        }
+
+        $responseArray = Json::decode($response->getBody()->getContents(), true);
+
+        return array_map(
+            static function (array $accountBalance) {
+                return new AccountBalance(
+                    $accountBalance['iban'],
+                    $accountBalance['name'],
+                    $accountBalance['balance']
+                );
+            },
+            $responseArray
+        );
     }
 
     /**
