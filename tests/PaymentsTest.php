@@ -57,6 +57,7 @@ final class PaymentsTest extends BaseTestCase
                             'data' => null,
                         ],
                     ],
+                    'card' => null,
                 ]
             )
         );
@@ -101,6 +102,13 @@ final class PaymentsTest extends BaseTestCase
                                     'type' => 'payment_cancelled',
                                     'data' => null,
                                 ],
+                            ],
+                        'card' =>
+                            [
+                                'number' => '435044******2002',
+                                'expiration_date' => '2025-04',
+                                'brand' => 'VISA',
+                                'type' => 'credit',
                             ],
                     ],
                 ],
