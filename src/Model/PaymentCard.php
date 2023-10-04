@@ -18,7 +18,7 @@ class PaymentCard
     private string $type;
 
     /**
-     * @param string|array{number:string,expiration_date:DateTime,brand:string,type:self::TYPE_*} $values Json in string or associative array
+     * @param string|array{number:string,expiration_date:string|null,brand:string,type:self::TYPE_*} $values Json in string or associative array
      */
     public function __construct($values)
     {
