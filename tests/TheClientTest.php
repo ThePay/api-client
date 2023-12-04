@@ -3,6 +3,7 @@
 namespace ThePay\ApiClient\Tests;
 
 use Mockery;
+use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Tests\Mocks\Service\ApiMockService;
 use ThePay\ApiClient\TheClient;
 
@@ -11,6 +12,9 @@ use ThePay\ApiClient\TheClient;
  */
 class TheClientTest extends BaseTestCase
 {
+    /**
+     * @return void
+     */
     public function testPaymentMethods()
     {
         $thePay = $this->getExampleTheClient();
@@ -23,6 +27,9 @@ class TheClientTest extends BaseTestCase
         static::assertSame('CZK', $assert2[0]);
     }
 
+    /**
+     * @return void
+     */
     public function testRenderPaymentMethods()
     {
         /*
@@ -33,8 +40,12 @@ class TheClientTest extends BaseTestCase
         */
     }
 
+    /**
+     * @return TheClient
+     */
     private function getExampleTheClient()
     {
+        /** @var HttpServiceInterface $httpService */
         $httpService = Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
         $apiService = new ApiMockService($this->config, $httpService);
 

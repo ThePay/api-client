@@ -19,8 +19,8 @@ with this source code in the file LICENSE.
 EOF;
 
 $finder = PhpCsFixer\Finder::create()
-            ->in(__DIR__.'/src')
-            ->in(__DIR__.'/tests')
+            ->in(__DIR__ . '/src')
+            ->in(__DIR__ . '/tests')
 ;
 
 $config = new PhpCsFixer\Config();
@@ -46,7 +46,6 @@ $config
         'no_useless_else' => true,
         'no_useless_return' => true,
         'no_unused_imports' => true,
-        'not_operator_with_space' => true,
         'trailing_comma_in_multiline' => true,
         'normalize_index_brace' => true,
         'cast_spaces' => true,

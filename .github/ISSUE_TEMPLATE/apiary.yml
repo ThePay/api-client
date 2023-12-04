@@ -1,0 +1,22 @@
+name: Apiary
+description: Issue about documentation for ThePay.cz WS API
+labels: ["Apiary"]
+body:
+  - type: markdown
+    attributes:
+      value: "If you don't understand something in ThePay WS API documentation, miss some information, or find the documentation inconsistent with returned values from the API, let us know in the description below."
+  - type: textarea
+    attributes:
+      label: Description
+      description: Describe the problem as detailed as you can.
+      render: markdown
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Merchant/project
+      description: |
+        If you need to identify yourself for the troubleshooting process, prefer to use your project ID or public URL.
+        Do not share your merchant ID or any other authentication information.
+    validations:
+      required: false

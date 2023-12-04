@@ -4,8 +4,11 @@ namespace ThePay\ApiClient\Service;
 
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
+use ThePay\ApiClient\Model\IPaymentMethod;
 use ThePay\ApiClient\Model\PaymentMethod;
 use ThePay\ApiClient\TheConfig;
+use ThePay\ApiClient\ValueObject\Identifier;
+use ThePay\ApiClient\ValueObject\LanguageCode;
 
 /**
  * Class GateService is responsible for rendering payment forms.
@@ -21,8 +24,6 @@ class GateService implements GateServiceInterface
 
     /**
      * @var ApiServiceInterface
-     *
-     * @phpstan-ignore-next-line never read (never mind, backward compatibility is more important)
      */
     private $api;
 
@@ -95,9 +96,31 @@ class GateService implements GateServiceInterface
         }
 
         $result .= '<div class="tp-btn-grid" >';
+        /** @var IPaymentMethod $method */
         foreach ($methods as $method) {
             $btnAttrs['data-payment-method'] = $method->getCode();
             $result .= $this->buildButton($this->getUrlForPayment($paymentData, $method->getCode()), $this->getButtonMethodContent($method), $btnAttrs);
+        }
+        $result .= '</div>';
+
+        return $result;
+    }
+
+    /**
+     * @param Identifier $uid UID of payment
+     * @return string HTML
+     */
+    public function getPaymentButtonsForPayment(Identifier $uid, LanguageCode $languageCode = null)
+    {
+        $paymentMethods = $this->api->getPaymentUrlsForPayment($uid, $languageCode);
+        $result = '';
+
+        $btnAttrs = array();
+
+        $result .= '<div class="tp-btn-grid" >';
+        foreach ($paymentMethods as $method) {
+            $btnAttrs['data-payment-method'] = $method->getCode();
+            $result .= $this->buildButton($method->getPayUrl(), $this->getButtonMethodContent($method), $btnAttrs);
         }
         $result .= '</div>';
 
@@ -202,10 +225,10 @@ class GateService implements GateServiceInterface
 
     /**
      * Returns content of method for button link
-     * @param PaymentMethod $method
+     * @param IPaymentMethod $method
      * @return string HTML
      */
-    private function getButtonMethodContent(PaymentMethod $method)
+    private function getButtonMethodContent(IPaymentMethod $method)
     {
         return '<span class="tp-icon" >'
             . '<img ' . $this->htmlAttributes(array('src' => $method->getImageUrl(), 'alt' => $method->getTitle())) . ' />'

@@ -11,6 +11,7 @@ class TheConfigTest extends BaseTestCase
      *
      * @param string $expectedGateUrl
      * @param string $expectedApiUrl
+     * @return void
      */
     public function testGetGateUrl(TheConfig $config, $expectedGateUrl, $expectedApiUrl)
     {
@@ -18,6 +19,9 @@ class TheConfigTest extends BaseTestCase
         static::assertSame($expectedApiUrl, $config->getApiUrl());
     }
 
+    /**
+     * @return array<array<mixed>>
+     */
     public function configDataProvider()
     {
         return array(
@@ -25,6 +29,9 @@ class TheConfigTest extends BaseTestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testLanguageInConfig()
     {
         static::assertSame('cs', $this->config->getLanguage()->getValue());
@@ -33,6 +40,9 @@ class TheConfigTest extends BaseTestCase
         static::assertSame('en', $this->config->getLanguage()->getValue());
     }
 
+    /**
+     * @return void
+     */
     public function testInvalidLanguageCodeInConfig()
     {
         $this->setExpectedException('InvalidArgumentException', 'Value `wtf` is not valid ISO 6391 language code');

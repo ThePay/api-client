@@ -7,6 +7,7 @@ use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Http\HttpResponse;
 use ThePay\ApiClient\Http\HttpServiceInterface;
+use ThePay\ApiClient\Model\AccountBalance;
 use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
@@ -15,6 +16,7 @@ use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\PaginatedCollectionParams;
 use ThePay\ApiClient\Model\Payment;
+use ThePay\ApiClient\Model\PaymentMethodWithPayUrl;
 use ThePay\ApiClient\Model\PaymentRefund;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\Project;
@@ -95,7 +97,7 @@ class ApiService implements ApiServiceInterface
             $arguments['language'] = $languageCode->getValue();
         }
 
-        $url = $this->url(array('methods'));
+        $url = $this->url(array('methods'), $arguments);
         $response = $this
             ->httpService
             ->get($url);
@@ -105,6 +107,47 @@ class ApiService implements ApiServiceInterface
         }
 
         return new PaymentMethodCollection($response->getBody());
+    }
+
+    /**
+     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
+     *
+     * @param int|null $projectId
+     *
+     * @return array<AccountBalance>
+     */
+    public function getAccountsBalances(StringValue $accountIban = null, $projectId = null, \DateTime $balanceAt = null)
+    {
+        $arguments = array();
+        if ($accountIban !== null) {
+            $arguments['account_iban'] = $accountIban->getValue();
+        }
+        if ($projectId !== null) {
+            $arguments['project_id'] = $projectId;
+        }
+        if ($balanceAt) {
+            $arguments['balance_at'] = $balanceAt->format(\DateTime::ATOM);
+        }
+
+        $url = $this->url(array('balances'), $arguments, false);
+        $response = $this->httpService->get($url);
+
+        if ($response->getCode() !== 200) {
+            throw $this->buildException($url, $response);
+        }
+
+        $responseArray = Json::decode($response->getBody(), true);
+
+        return array_map(
+            static function (array $accountBalance) {
+                return new AccountBalance(
+                    $accountBalance['iban'],
+                    $accountBalance['name'],
+                    $accountBalance['balance']
+                );
+            },
+            $responseArray
+        );
     }
 
     /**
@@ -129,9 +172,7 @@ class ApiService implements ApiServiceInterface
             throw $this->buildException($url, $response);
         }
 
-        $headers = $response->getHeaders();
-
-        return new TransactionCollection(Json::decode($response->getBody(), true), $page, $limit, (int) $headers['X-Total-Count:']);
+        return new TransactionCollection(Json::decode($response->getBody(), true), $page, $limit, (int) $response->getHeader('X-Total-Count:'));
     }
 
     /**
@@ -203,9 +244,7 @@ class ApiService implements ApiServiceInterface
             throw $this->buildException($url, $response);
         }
 
-        $headers = $response->getHeaders();
-
-        return new PaymentCollection($response->getBody(), $page, $limit, (int) $headers['X-Total-Count:']);
+        return new PaymentCollection($response->getBody(), $page, $limit, (int) $response->getHeader('X-Total-Count:'));
     }
 
     /**
@@ -424,6 +463,65 @@ class ApiService implements ApiServiceInterface
         }
     }
 
+    /**
+     * Returns an array of available payment methods with pay URLs for certain payment.
+     *
+     * @return array<PaymentMethodWithPayUrl>
+     */
+    public function getPaymentUrlsForPayment(Identifier $uid, LanguageCode $languageCode = null)
+    {
+        $arguments = array();
+        if ($languageCode) {
+            $arguments['language'] = $languageCode->getValue();
+        }
+
+        $url = $this->url(array('payments', $uid->getValue(), 'payment_urls'), $arguments);
+        $response = $this->httpService->get($url);
+
+        if ($response->getCode() !== 200) {
+            throw $this->buildException($url, $response);
+        }
+
+        $responseData = Json::decode($response->getBody(), true);
+
+        $paymentMethods = array();
+        foreach ($responseData as $paymentMethod) {
+            $paymentMethods[] = new PaymentMethodWithPayUrl($paymentMethod);
+        }
+
+        return $paymentMethods;
+    }
+
+    /**
+     * Method will generate PDF file as confirmation for paid payment
+     *
+     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/payments/get-payment-confirmation
+     *
+     * @return string with binary content of PDF file
+     *
+     * @throws ApiException if payment is not paid yet
+     */
+    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null)
+    {
+        $arguments = array();
+        if ($languageCode !== null) {
+            $arguments['language'] = $languageCode->getValue();
+        }
+
+        $url = $this->url(array('payments', $uid->getValue(), 'generate_confirmation'), $arguments);
+        $response = $this->httpService->get($url);
+
+        if ($response->getCode() !== 200) {
+            throw $this->buildException($url, $response);
+        }
+
+        $responseContent = $response->getBody();
+        if ($responseContent === null) {
+            throw new ApiException('TheApi call "' . $url . '" response body content can not be null');
+        }
+
+        return $responseContent;
+    }
 
     /**
      * Build URL for API requests
@@ -455,13 +553,8 @@ class ApiService implements ApiServiceInterface
         $apiUrl = $this->config->getApiUrl();
 
         $pathImploded = substr($pathImploded, 0, -1);
-        $argsPath = '';
 
-        if ($arguments) {
-            $argsPath .= '?' . http_build_query($arguments);
-        }
-
-        return $apiUrl . $pathImploded . $argsPath;
+        return $apiUrl . $pathImploded . '?' . http_build_query($arguments);
     }
 
     /**

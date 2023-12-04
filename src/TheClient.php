@@ -10,11 +10,13 @@ use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Http\HttpCurlService;
 use ThePay\ApiClient\Http\HttpServiceInterface;
+use ThePay\ApiClient\Model\AccountBalance;
 use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
+use ThePay\ApiClient\Model\PaymentMethodWithPayUrl;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizeIrregularSubscriptionPaymentParams;
@@ -42,7 +44,7 @@ use ThePay\ApiClient\ValueObject\StringValue;
 class TheClient
 {
     /** @var string */
-    const VERSION = '1.3.4';
+    const VERSION = '1.7.0';
 
     /** @var TheConfig */
     private $config;
@@ -79,6 +81,23 @@ class TheClient
     public function getProjects()
     {
         return $this->api->getProjects();
+    }
+
+    /**
+     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
+     *
+     * @param string|null $accountIban
+     * @param int|null $projectId
+     *
+     * @return array<AccountBalance>
+     */
+    public function getAccountsBalances($accountIban = null, $projectId = null, \DateTime $balanceAt = null)
+    {
+        return $this->api->getAccountsBalances(
+            $accountIban !== null ? new StringValue($accountIban) : null,
+            $projectId,
+            $balanceAt
+        );
     }
 
     /**
@@ -208,6 +227,27 @@ class TheClient
     }
 
     /**
+     * Returns an array of available payment methods with pay URLs for certain payment.
+     *
+     * @param string $uid UID of payment,
+     * @param string|null $languageCode language code in ISO 6391 format
+     * @return array<PaymentMethodWithPayUrl>
+     */
+    public function getPaymentUrlsForPayment($uid, $languageCode = null)
+    {
+        $this->validateUid($uid);
+
+        $language = null;
+        if ($languageCode !== null) {
+            $language = new LanguageCode($languageCode);
+        }
+
+        return $this
+            ->api
+            ->getPaymentUrlsForPayment(new Identifier($uid), $language);
+    }
+
+    /**
      * Returns HTML code with payment buttons for each available payment method.
      * Every button is a link with click event handler to post the user to the payment process.
      *
@@ -231,13 +271,33 @@ class TheClient
             $filter->setCurrency($params->getCurrencyCode()->getValue());
         }
 
-        $methods = $this->getActivePaymentMethods($filter, $params->getLanguageCode(), $params->isRecurring(), $params->isDeposit());
+        $methods = $this->getActivePaymentMethods($filter, $params->getLanguageCode(), $params->getSaveAuthorization(), $params->isDeposit());
 
         $result = '';
         if ($useInlineAssets) {
             $result .= $this->getInlineAssets();
         }
         $result .= $this->gate->getPaymentButtons($params, $methods);
+        return $result;
+    }
+
+    /**
+     * Returns HTML code with payment buttons for each available payment method.
+     * Every button contains direct link to pay with certain method.
+     *
+     * @param string $uid UID of payment
+     * @param string|null $languageCode
+     * @param bool $useInlineAssets false value disable generation default style & scripts
+     *
+     * @return string HTML
+     */
+    public function getPaymentButtonsForPayment($uid, $languageCode = null, $useInlineAssets = true)
+    {
+        $result = '';
+        if ($useInlineAssets) {
+            $result .= $this->getInlineAssets();
+        }
+        $result .= $this->gate->getPaymentButtonsForPayment(new Identifier($uid), $languageCode ? new LanguageCode($languageCode) : $languageCode);
         return $result;
     }
 
@@ -348,6 +408,27 @@ class TheClient
     {
         $this->validateUid($paymentUid);
         $this->api->createPaymentRefund(new Identifier($paymentUid), new Amount($amount), new StringValue($reason));
+    }
+
+    /**
+     * Method will generate PDF file as confirmation for paid payment
+     *
+     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/payments/get-payment-confirmation
+     *
+     * @param non-empty-string $paymentUid
+     * @param non-empty-string|null $languageCode
+     *
+     * @return string with binary content of PDF file
+     *
+     * @throws ApiException if payment is not paid yet
+     */
+    public function generatePaymentConfirmationPdf($paymentUid, $languageCode = null)
+    {
+        $this->validateUid($paymentUid);
+        return $this->api->generatePaymentConfirmationPdf(
+            new Identifier($paymentUid),
+            $languageCode !== null ? new LanguageCode($languageCode) : null
+        );
     }
 
     /**

@@ -7,11 +7,22 @@ use ThePay\ApiClient\TheClient;
 
 /**
  * Class HttpCurlService is simple curl wrapper
+ *
+ * @deprecated will be replaced by https://www.php-fig.org/psr/psr-18/ interface
  */
 class HttpCurlService implements HttpServiceInterface
 {
+    /**
+     * @deprecated will be private
+     */
     const HEADER_SIGNATURE = 'Signature';
+    /**
+     * @deprecated will be private
+     */
     const HEADER_SIGNATURE_DATE = 'SignatureDate';
+    /**
+     * @deprecated will be private
+     */
     const HEADER_PLATFORM = 'Platform';
 
     /** @var SignatureService */
@@ -21,10 +32,12 @@ class HttpCurlService implements HttpServiceInterface
     private $curlWrapperFactory;
 
     /**
-    * HttpCurlService constructor.
-    *
-    * @param SignatureService $signatureService
-    */
+     * HttpCurlService constructor.
+     *
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-18/ interface
+     *
+     * @param SignatureService $signatureService
+     */
     public function __construct(SignatureService $signatureService)
     {
         $this->signatureService = $signatureService;
@@ -32,6 +45,8 @@ class HttpCurlService implements HttpServiceInterface
     }
 
     /**
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-18/ interface
+     *
      * @param string $url
      * @return HttpResponse
      */
@@ -42,6 +57,8 @@ class HttpCurlService implements HttpServiceInterface
     }
 
     /**
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-18/ interface
+     *
      * @param string $url
      * @param string $data POST request body content
      * @return HttpResponse
@@ -53,6 +70,8 @@ class HttpCurlService implements HttpServiceInterface
     }
 
     /**
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-18/ interface
+     *
      * @param string $url
      * @param string $data put request body content
      * @return HttpResponse
@@ -64,6 +83,8 @@ class HttpCurlService implements HttpServiceInterface
     }
 
     /**
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-18/ interface
+     *
      * @param string $url
      * @return HttpResponse
      */

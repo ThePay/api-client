@@ -15,6 +15,9 @@ class RealizeSubscriptionPaymentTest extends BaseTestCase
     /** @var TheClient */
     private $client;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         parent::setUp();
@@ -26,6 +29,9 @@ class RealizeSubscriptionPaymentTest extends BaseTestCase
         $this->client = new TheClient($this->config, null, $httpService, $apiService);
     }
 
+    /**
+     * @return void
+     */
     public function testRealizeSubscriptionPayment()
     {
         $params = new RealizeRegularSubscriptionPaymentParams('childPayment');

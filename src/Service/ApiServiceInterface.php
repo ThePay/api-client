@@ -6,6 +6,7 @@ use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Http\HttpServiceInterface;
+use ThePay\ApiClient\Model\AccountBalance;
 use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
@@ -13,6 +14,7 @@ use ThePay\ApiClient\Model\Collection\TransactionCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
 use ThePay\ApiClient\Model\Payment;
+use ThePay\ApiClient\Model\PaymentMethodWithPayUrl;
 use ThePay\ApiClient\Model\PaymentRefundInfo;
 use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizeIrregularSubscriptionPaymentParams;
@@ -105,6 +107,15 @@ interface ApiServiceInterface
     public function getPayments(PaymentsFilter $filter, $page = 1, $limit = null);
 
     /**
+     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
+     *
+     * @param int|null $projectId
+     *
+     * @return array<AccountBalance>
+     */
+    public function getAccountsBalances(StringValue $accountIban = null, $projectId = null, \DateTime $balanceAt = null);
+
+    /**
      * @param TransactionFilter $filter
      * @param int $page
      * @param null|int $limit
@@ -153,4 +164,22 @@ interface ApiServiceInterface
      * @return void
      */
     public function createPaymentRefund(Identifier $uid, Amount $amount, StringValue $reason);
+
+    /**
+     * Returns an array of available payment methods with pay URLs for certain payment.
+     *
+     * @return array<PaymentMethodWithPayUrl>
+     */
+    public function getPaymentUrlsForPayment(Identifier $uid, LanguageCode $languageCode = null);
+
+    /**
+     * Method will generate PDF file as confirmation for paid payment
+     *
+     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/payments/get-payment-confirmation
+     *
+     * @return string with binary content of PDF file
+     *
+     * @throws ApiException if payment is not paid yet
+     */
+    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null);
 }

@@ -2,6 +2,9 @@
 
 namespace ThePay\ApiClient\Http;
 
+/**
+ * @deprecated will be replaced by https://www.php-fig.org/psr/psr-7/ interface
+ */
 class HttpResponse
 {
     /**
@@ -31,6 +34,9 @@ class HttpResponse
 
     /**
      * HttpResponse constructor.
+     *
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-7/ interface
+     *
      * @param string|null $response
      * @param int|null $code
      * @param string $codeMessage
@@ -47,6 +53,8 @@ class HttpResponse
     }
 
     /**
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-7/ interface
+     *
      * @return string|null
      */
     public function getResponse()
@@ -55,6 +63,8 @@ class HttpResponse
     }
 
     /**
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-7/ interface
+     *
      * @param string|null $response
      * @return self
      */
@@ -65,6 +75,8 @@ class HttpResponse
     }
 
     /**
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-7/ interface
+     *
      * @return int|null
      */
     public function getCode()
@@ -73,6 +85,8 @@ class HttpResponse
     }
 
     /**
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-7/ interface
+     *
      * @return string
      */
     public function getCodeMessage()
@@ -81,6 +95,8 @@ class HttpResponse
     }
 
     /**
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-7/ interface
+     *
      * @param int|null $code
      * @return self
      */
@@ -91,6 +107,8 @@ class HttpResponse
     }
 
     /**
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-7/ interface
+     *
      * @return array<string, string>|null
      */
     public function getHeaders()
@@ -99,6 +117,25 @@ class HttpResponse
     }
 
     /**
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-7/ interface
+     *
+     * @param non-empty-string $key
+     * @return string|null
+     */
+    public function getHeader($key)
+    {
+        foreach ((array) $this->headers as $headerKey => $header) {
+            if (strtolower($headerKey) === strtolower($key)) {
+                return $header;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @deprecated will be replaced by https://www.php-fig.org/psr/psr-7/ interface
+     *
      * @return string|null
      */
     public function getBody()

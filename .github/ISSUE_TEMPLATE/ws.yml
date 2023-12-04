@@ -1,0 +1,40 @@
+name: WS API
+description: Issue about server implementation of ThePay.cz WS API
+labels: ["WS API", "bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "If the API call failed for some reason, returned unexpected data, or if the API is slow, let us know in the description below."
+  - type: textarea
+    attributes:
+      label: Description
+      description: Describe the problem as detailed as you can.
+      render: markdown
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Environment
+      description: What environment do you call?
+      multiple: true
+      options:
+        - Production
+        - Demo
+        - Apiary mock
+        - Apiary proxy
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Platform
+      description: What platform do you use? (PHP, Java, Js, ...)
+    validations:
+      required: false
+  - type: input
+    attributes:
+      label: Merchant/project
+      description: |
+        If you need to identify yourself for the troubleshooting process, prefer to use your project ID or public URL.
+        Do not share your merchant ID or any other authentication information.
+    validations:
+      required: false

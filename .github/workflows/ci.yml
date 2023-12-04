@@ -3,25 +3,69 @@ name: CI
 on:
     push:
         branches:
-            - "*"
+            - "**"
 
 jobs:
+    php82:
+        name: "php 8.2"
+        runs-on: ubuntu-latest
+        container: "nofutur3/php-tests:8.2"
+        steps:
+            -   name: Checkout repository
+                uses: actions/checkout@v3
+
+            -   name: Install dependencies
+                run: composer install --no-interaction
+            -   name: Old phpunit compatibility for php 8
+                run: composer require christiaanbye/polyfill-each --dev --no-interaction
+
+            # Disabled for now, fixer do not support PHP 8.2 yet.
+            #
+            #-   name: Check code style
+            #    run: composer cs-check
+
+            -   name: Run static analysis
+                run: composer stan
+
+            -   name: Run tests
+                run: composer test81
+
+    php81:
+        name: "php 8.1"
+        runs-on: ubuntu-latest
+        container: "nofutur3/php-tests:8.1"
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Install dependencies
+              run: composer install --no-interaction
+            - name: Old phpunit compatibility for php 8
+              run: composer require christiaanbye/polyfill-each --dev --no-interaction
+
+            - name: Check code style
+              run: composer cs-check
+
+            - name: Run static analysis
+              run: composer stan
+
+            - name: Run tests
+              run: composer test81
+
     php80:
         name: "php 8.0"
         runs-on: ubuntu-latest
         container: "nofutur3/php-tests:8.0"
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: Install dependencies
               run: composer install --no-interaction
-            - name: Phpstan has to be added in pipeline bc it requires PHP 7.1+
-              run: composer require phpstan/phpstan --dev --no-interaction
             - name: Old phpunit compatibility for php 8
               run: composer require christiaanbye/polyfill-each --dev --no-interaction
 
-            - name: Chesk code style
+            - name: Check code style
               run: composer cs-check
 
             - name: Run static analysis
@@ -35,32 +79,16 @@ jobs:
         runs-on: ubuntu-latest
         container: "nofutur3/php-tests:7.4"
         steps:
+            # Deprecation example for future support removal.
+            #
+            #-   name: Deprecation check (2023-01-01T00:00:00+01:00)
+            #    run: if [ "$(date +%s)" -gt "1672527600" ]; then echo "This PHP version support ended"; exit1; else echo "Deprecation OK"; fi
+
             -   name: Checkout repository
-                uses: actions/checkout@v2
+                uses: actions/checkout@v3
 
             -   name: Install dependencies
                 run: composer install --no-interaction
-            -   name: Phpstan has to be added in pipeline bc it requires PHP 7.1+
-                run: composer require phpstan/phpstan --dev --no-interaction
-
-            -   name: Run static analysis
-                run: composer stan7
-
-            -   name: Run tests
-                run: composer test
-
-    php73:
-        name: "php 7.3"
-        runs-on: ubuntu-latest
-        container: "nofutur3/php-tests:7.3"
-        steps:
-            -   name: Checkout repository
-                uses: actions/checkout@v2
-
-            -   name: Install dependencies
-                run: composer install --no-interaction
-            -   name: Phpstan has to be added in pipeline bc it requires PHP 7.1+
-                run: composer require phpstan/phpstan --dev --no-interaction
 
             -   name: Run static analysis
                 run: composer stan7
@@ -73,13 +101,16 @@ jobs:
         runs-on: ubuntu-latest
         container: "nofutur3/php-tests:7.2"
         steps:
+            # Deprecation example for future support removal.
+            #
+            #-   name: Deprecation check (2023-01-01T00:00:00+01:00)
+            #    run: if [ "$(date +%s)" -gt "1672527600" ]; then echo "This PHP version support ended"; exit1; else echo "Deprecation OK"; fi
+
             -   name: Checkout repository
                 uses: actions/checkout@v2
 
             -   name: Install dependencies
                 run: composer install --no-interaction
-            -   name: Phpstan has to be added in pipeline bc it requires PHP 7.1+
-                run: composer require phpstan/phpstan --dev --no-interaction
 
             -   name: Run static analysis
                 run: composer stan7
@@ -87,77 +118,16 @@ jobs:
             -   name: Run tests
                 run: composer test
 
-    php71:
-        name: "php 7.1"
+    npm:
+        name: "npm"
         runs-on: ubuntu-latest
-        container: "nofutur3/php-tests:7.1"
+        container: "node"
         steps:
             -   name: Checkout repository
-                uses: actions/checkout@v2
+                uses: actions/checkout@v3
 
             -   name: Install dependencies
-                run: composer install --no-interaction
-            -   name: Phpstan has to be added in pipeline bc it requires PHP 7.1+
-                run: composer require phpstan/phpstan --dev --no-interaction
-
-            -   name: Run static analysis
-                run: composer stan7
+                run: npm install
 
             -   name: Run tests
-                run: composer test
-
-    php70:
-        name: "php 7.0"
-        runs-on: ubuntu-latest
-        container: "nofutur3/php-component:7.0"
-        steps:
-            -   name: Checkout repository
-                uses: actions/checkout@v2
-
-            -   name: Install dependencies
-                run: composer install --no-interaction
-
-            -   name: Run tests
-                run: composer test
-
-    php56:
-        name: "php 5.6"
-        runs-on: ubuntu-latest
-        container: "nofutur3/php-component:5.6"
-        steps:
-            -   name: Checkout repository
-                uses: actions/checkout@v2
-
-            -   name: Install dependencies
-                run: composer install --no-interaction
-
-            -   name: Run tests
-                run: composer test
-
-    php55:
-        name: "php 5.5"
-        runs-on: ubuntu-latest
-        container: "nofutur3/php-component:5.5"
-        steps:
-            -   name: Checkout repository
-                uses: actions/checkout@v2
-
-            -   name: Install dependencies
-                run: composer install --no-interaction
-
-            -   name: Run tests
-                run: composer test
-
-    php53:
-        name: "php 5.3"
-        runs-on: ubuntu-latest
-        container: "nofutur3/php-component:5.3"
-        steps:
-            -   name: Checkout repository
-                uses: actions/checkout@v2
-
-            -   name: Install dependencies
-                run: composer install --no-interaction
-
-            -   name: Run tests
-                run: composer test
+                run: npm test

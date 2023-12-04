@@ -14,13 +14,17 @@ class CreatePaymentTest extends BaseTestCase
     /** @var TheClient */
     private $client;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         parent::setUp();
 
         $httpService = Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
+        /** @phpstan-ignore-next-line */
         $apiService = new ApiMockService($this->config, $httpService);
-
+        /** @phpstan-ignore-next-line */
         $this->client = new TheClient($this->config, null, $httpService, $apiService);
     }
 
@@ -30,6 +34,7 @@ class CreatePaymentTest extends BaseTestCase
      *
      * @param string $data
      * @param string $signature
+     * @return void
      */
     public function testCreateButton(CreatePaymentParams $params, $data, $signature)
     {
@@ -39,6 +44,9 @@ class CreatePaymentTest extends BaseTestCase
         static::assertContains($signature, $r);
     }
 
+    /**
+     * @return array<array<mixed>>
+     */
     public function createButtonProvider()
     {
         return array(
@@ -55,6 +63,9 @@ class CreatePaymentTest extends BaseTestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testCreateCustomButton()
     {
         $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010003'));
@@ -67,6 +78,9 @@ class CreatePaymentTest extends BaseTestCase
         static::assertContains('data-payment-method="bitcoin"', $r);
     }
 
+    /**
+     * @return void
+     */
     public function testGetPaymentMethods()
     {
         $result = $this->client->getPaymentButtons(new CreatePaymentParams(100, 'CZK', '202001010005'));
@@ -84,22 +98,9 @@ class CreatePaymentTest extends BaseTestCase
         // todo: complete test, implementation was not final at this moment
     }
 
-    public function testGetInlineStyles()
-    {
-        $result = $this->client->getInlineStyles();
-        $lines = count(explode("\n", $result));
-        // Minified style does not have more than 5 lines.
-        static::assertLessThanOrEqual(5, $lines, 'TheClient::getInlineStyles() has more than 5 lines. Fix this bug with "npm run production"');
-    }
-
-    public function testGetInlineScripts()
-    {
-        $result = $this->client->getInlineScripts();
-        $lines = count(explode("\n", $result));
-        // Minified javascript does not have more than 5 lines.
-        static::assertLessThanOrEqual(5, $lines, 'TheClient::getInlineScript() has more than 5 lines. Fix this bug with "npm run production"');
-    }
-
+    /**
+     * @return void
+     */
     public function testCreateApiPayment()
     {
         // Create entity with information about customer
