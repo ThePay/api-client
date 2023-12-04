@@ -10,7 +10,7 @@ There are three query parameters added to notifications url:
 
 * payment_uid
 * project_id
-* type (which determines notification type - see [Notification types enum](https://dataapi21.docs.apiary.io/#introduction/enums/notification-types))
+* type (which determines notification type - see [Notification types enum](https://thepay.docs.apiary.io/#introduction/enums/notification-types))
 
 In most cases you want to check the state of payment after getting notification:
 

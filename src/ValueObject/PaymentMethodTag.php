@@ -3,7 +3,7 @@
 namespace ThePay\ApiClient\ValueObject;
 
 /**
- * @see https://dataapi21.docs.apiary.io/#introduction/enums/payment-method-tags
+ * @see https://thepay.docs.apiary.io/#introduction/enums/payment-method-tags
  */
 final class PaymentMethodTag extends EnumValueObject
 {
