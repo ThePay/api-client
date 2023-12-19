@@ -83,12 +83,12 @@ class SimplePayment
     private $description_for_merchant;
 
     /**
-     * @var string
+     * @var string|null null if subscription payment
      */
     private $payUrl;
 
     /**
-     * @var string
+     * @var string|null null if subscription payment
      */
     private $detailUrl;
 
@@ -266,7 +266,7 @@ class SimplePayment
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getPayUrl()
     {
@@ -274,7 +274,7 @@ class SimplePayment
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDetailUrl()
     {
