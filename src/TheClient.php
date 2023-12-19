@@ -57,7 +57,7 @@ class TheClient
     /**
      * Fetch all projects for merchant set in TheConfig
      *
-     * @see https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-projects
+     * @see https://thepay.docs.apiary.io/#reference/0/merchant-level-resources/get-projects
      *
      * @return Project[]
      * @throws ApiException
@@ -68,7 +68,7 @@ class TheClient
     }
 
     /**
-     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
+     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
      *
      * @param string|null $accountIban
      * @param int|null $projectId
@@ -393,7 +393,7 @@ class TheClient
     /**
      * Method will generate PDF file as confirmation for paid payment
      *
-     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/payments/get-payment-confirmation
+     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/payments/get-payment-confirmation
      *
      * @param non-empty-string $paymentUid
      * @param non-empty-string|null $languageCode

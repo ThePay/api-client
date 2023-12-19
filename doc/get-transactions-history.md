@@ -10,7 +10,7 @@ $filter = new \ThePay\ApiClient\Filter\TransactionFilter('TP32111146804895511653
 $transactionPaginatedCollection = $thePayClient->getAccountTransactionHistory($filter);
 ```
 
-The first parameter of method **getAccountTransactionHistory** is filter object `\ThePay\ApiClient\Filter\TransactionFilter()`. All filter parameters are described in [Apiary](https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-account-transaction-history).
+The first parameter of method **getAccountTransactionHistory** is filter object `\ThePay\ApiClient\Filter\TransactionFilter()`. All filter parameters are described in [Apiary](https://thepay.docs.apiary.io/#reference/0/merchant-level-resources/get-account-transaction-history).
 
 Second and third parameter are used for pagination, where second is page number and third is number of records per page. Parameters are not required.
 
