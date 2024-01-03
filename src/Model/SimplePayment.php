@@ -118,6 +118,8 @@ class SimplePayment
      */
     private $paymentEvents = [];
 
+    private ?PaymentCard $card = null;
+
     /**
      * @param string|array<string, mixed> $values Json in string or associative array
      * @throws Exception
@@ -150,6 +152,10 @@ class SimplePayment
             foreach ($data['events'] as $eventData) {
                 $this->paymentEvents[] = new PaymentEvent($eventData);
             }
+        }
+
+        if ($data['card'] !== null) {
+            $this->card = new PaymentCard($data['card']);
         }
     }
 
@@ -329,6 +335,11 @@ class SimplePayment
         return $this->wasEventTypeOnLastAttempt(PaymentEvent::PAYMENT_CANCELLED);
     }
 
+    public function getCard(): ?PaymentCard
+    {
+        return $this->card;
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -355,6 +366,7 @@ class SimplePayment
             'offsetAccountStatus' => $this->offsetAccountStatus,
             'offsetAccountDeterminedAt' => $this->offsetAccountDeterminedAt,
             'events' => $this->paymentEvents,
+            'card' => $this->card ? $this->getCard()->toArray() : null,
         ];
     }
 

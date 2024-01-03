@@ -97,7 +97,7 @@ interface ApiServiceInterface
     public function getPayments(PaymentsFilter $filter, int $page = 1, int $limit = 25): PaymentCollection;
 
     /**
-     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
+     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
      *
      * @param int|null $projectId
      *
@@ -153,7 +153,7 @@ interface ApiServiceInterface
     /**
      * Method will generate PDF file as confirmation for paid payment
      *
-     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/payments/get-payment-confirmation
+     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/payments/get-payment-confirmation
      *
      * @return string with binary content of PDF file
      *

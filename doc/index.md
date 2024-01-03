@@ -1,28 +1,28 @@
 # Available methods and usage
 
-[![API documentation](https://img.shields.io/static/v1?label=API&message=documentation)](https://dataapi21.docs.apiary.io/#)
+[![API documentation](https://img.shields.io/static/v1?label=API&message=documentation)](https://thepay.docs.apiary.io/#)
 
 
 | SDK method | API/GATE call | Description |
 | --- | --- | --- |
-| getProjects | https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-projects | |
-| getActivePaymentMethods | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/get-payment-methods |
-| getPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/get-payment-detail |
-| getPayments | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/get-payments |
+| getProjects | https://thepay.docs.apiary.io/#reference/0/merchant-level-resources/get-projects | |
+| getActivePaymentMethods | https://thepay.docs.apiary.io/#reference/0/project-level-resources/get-payment-methods |
+| getPayment | https://thepay.docs.apiary.io/#reference/0/project-level-resources/get-payment-detail |
+| getPayments | https://thepay.docs.apiary.io/#reference/0/project-level-resources/get-payments |
 | getPaymentButtons | |
 | getPaymentButton | |
 | getPaymentButtonsForPayment | |
-| createPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/create-new-payment |
-| realizePreauthorizedPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-preauthorized-payment |
-| cancelPreauthorizedPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/cancel-preauthorized-payment |
-| getPaymentRefund | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/payment-refund-info |
-| createPaymentRefund | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/payment-refund-request |
-| getAccountTransactionHistory | https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-account-transaction-history |
-| realizeRegularSubscriptionPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-regular-subscription-payment |
-| realizeIrregularSubscriptionPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-irregular-subscription-payment |
-| realizeUsageBasedSubscriptionPayment | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-usage-based-subscription-payment |
-| realizePaymentBySavedAuthorization | https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/realize-payment-by-saved-authorization |
-| getPaymentUrlsForPayment | https://dataapi21.docs.apiary.io/#reference/payment-management/general-payment-management/get-available-payment-methods |
+| createPayment | https://thepay.docs.apiary.io/#reference/0/project-level-resources/create-new-payment |
+| realizePreauthorizedPayment | https://thepay.docs.apiary.io/#reference/0/project-level-resources/realize-preauthorized-payment |
+| cancelPreauthorizedPayment | https://thepay.docs.apiary.io/#reference/0/project-level-resources/cancel-preauthorized-payment |
+| getPaymentRefund | https://thepay.docs.apiary.io/#reference/0/project-level-resources/payment-refund-info |
+| createPaymentRefund | https://thepay.docs.apiary.io/#reference/0/project-level-resources/payment-refund-request |
+| getAccountTransactionHistory | https://thepay.docs.apiary.io/#reference/0/merchant-level-resources/get-account-transaction-history |
+| realizeRegularSubscriptionPayment | https://thepay.docs.apiary.io/#reference/0/project-level-resources/realize-regular-subscription-payment |
+| realizeIrregularSubscriptionPayment | https://thepay.docs.apiary.io/#reference/0/project-level-resources/realize-irregular-subscription-payment |
+| realizeUsageBasedSubscriptionPayment | https://thepay.docs.apiary.io/#reference/0/project-level-resources/realize-usage-based-subscription-payment |
+| realizePaymentBySavedAuthorization | https://thepay.docs.apiary.io/#reference/0/project-level-resources/realize-payment-by-saved-authorization |
+| getPaymentUrlsForPayment | https://thepay.docs.apiary.io/#reference/payment-management/general-payment-management/get-available-payment-methods |
 
 ## Usage examples
 
