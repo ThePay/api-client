@@ -57,7 +57,7 @@ class ApiService implements ApiServiceInterface
     /**
      * Fetch all projects for merchant set in TheConfig
      *
-     * @see https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-projects
+     * @see https://thepay.docs.apiary.io/#reference/0/merchant-level-resources/get-projects
      *
      * @return Project[]
      */
@@ -85,7 +85,7 @@ class ApiService implements ApiServiceInterface
     /**
      * Fetch all active payment methods.
      *
-     * @see https://dataapi21.docs.apiary.io/#reference/projects/payment-methods/list-payment-methods
+     * @see https://thepay.docs.apiary.io/#reference/projects/payment-methods/list-payment-methods
      * @param LanguageCode|null $languageCode language for payment method titles, null value language from TheConfig used
      * @return PaymentMethodCollection
      * @throws ApiException
@@ -110,7 +110,7 @@ class ApiService implements ApiServiceInterface
     }
 
     /**
-     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
+     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
      *
      * @param int|null $projectId
      *
@@ -151,7 +151,7 @@ class ApiService implements ApiServiceInterface
     }
 
     /**
-     * @see https://dataapi21.docs.apiary.io/#reference/0/merchant-level-resources/get-account-transaction-history
+     * @see https://thepay.docs.apiary.io/#reference/0/merchant-level-resources/get-account-transaction-history
      *
      * @param TransactionFilter $filter
      * @param int $page
@@ -178,7 +178,7 @@ class ApiService implements ApiServiceInterface
     /**
      * Get complete information about the specified payment.
      *
-     * @see https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/get-payment-detail
+     * @see https://thepay.docs.apiary.io/#reference/0/project-level-resources/get-payment-detail
      *
      * @param Identifier $paymentUid
      *
@@ -202,7 +202,7 @@ class ApiService implements ApiServiceInterface
     /**
      * Invalidates the specified payment.
      *
-     * @see https://dataapi21.docs.apiary.io/#reference/0/project-level-resources/invalidate-payment
+     * @see https://thepay.docs.apiary.io/#reference/0/project-level-resources/invalidate-payment
      *
      * @param Identifier $paymentUid
      *
@@ -224,7 +224,7 @@ class ApiService implements ApiServiceInterface
     /**
      * Fetch information about payments by filter.
      *
-     * @see https://dataapi21.docs.apiary.io/#reference/projects/payments/get-collection
+     * @see https://thepay.docs.apiary.io/#reference/projects/payments/get-collection
      * @param PaymentsFilter $filter
      * @param int $page
      * @param null|int $limit
@@ -495,7 +495,7 @@ class ApiService implements ApiServiceInterface
     /**
      * Method will generate PDF file as confirmation for paid payment
      *
-     * @see https://dataapi21.docs.apiary.io/#reference/data-retrieval/payments/get-payment-confirmation
+     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/payments/get-payment-confirmation
      *
      * @return string with binary content of PDF file
      *

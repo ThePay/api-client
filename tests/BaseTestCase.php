@@ -34,7 +34,7 @@ abstract class BaseTestCase extends TestCase
             '6cdf1b24',
             1212,
             'password',
-            'https://private-472c9-dataapi21.apiary-mock.com/',
+            'https://private-aa6aa3-thepay.apiary-mock.com/',
             'https://private-ddc40-gatezalozeniplatby.apiary-mock.com/'
         );
         return new TheClient($config);
