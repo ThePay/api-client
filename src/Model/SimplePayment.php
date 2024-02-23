@@ -154,7 +154,7 @@ class SimplePayment
             }
         }
 
-        if ($data['card'] !== null) {
+        if (($data['card'] ?? null) !== null) {
             $this->card = new PaymentCard($data['card']);
         }
     }
