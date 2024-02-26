@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Model;
 
 use DateTime;
 use ThePay\ApiClient\Utils\Json;
 
-class PaymentCard
+final class PaymentCard
 {
     public const TYPE_CREDIT = 'credit';
     public const TYPE_DEBIT = 'debit';
@@ -66,7 +68,7 @@ class PaymentCard
     /**
      * @return array{number:string,expiration_date:DateTime|null,brand:string,type:self::TYPE_*}
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'number' => $this->number,
