@@ -4,19 +4,19 @@ namespace ThePay\ApiClient\ValueObject;
 
 final class PaymentRefundState extends EnumValueObject
 {
-    const WAITING = 'waiting';
-    const RETURNED = 'returned';
-    const DECLINED = 'declined';
+    public const WAITING = 'waiting';
+    public const RETURNED = 'returned';
+    public const DECLINED = 'declined';
 
     /**
      * @return string[]
      */
     public static function getOptions()
     {
-        return array(
+        return [
             self::WAITING,
             self::RETURNED,
             self::DECLINED,
-        );
+        ];
     }
 }

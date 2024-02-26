@@ -2,11 +2,13 @@
 
 namespace ThePay\ApiClient\Service;
 
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
-use ThePay\ApiClient\Http\HttpResponse;
-use ThePay\ApiClient\Http\HttpServiceInterface;
 use ThePay\ApiClient\Model\AccountBalance;
 use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
@@ -25,14 +27,12 @@ use ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
 use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
-use ThePay\ApiClient\Model\SimplePayment;
-use ThePay\ApiClient\Model\SimpleTransaction;
+use ThePay\ApiClient\TheClient;
 use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\Utils\Json;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
-use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 use ThePay\ApiClient\ValueObject\StringValue;
 use ThePay\ApiClient\ValueObject\SubscriptionType;
 
@@ -42,36 +42,54 @@ use ThePay\ApiClient\ValueObject\SubscriptionType;
  */
 class ApiService implements ApiServiceInterface
 {
-    /** @var TheConfig */
-    private $config;
+    private const METHOD_GET = 'GET';
+    private const METHOD_POST = 'POST';
+    private const METHOD_DELETE = 'DELETE';
+    private const METHOD_PUT = 'PUT';
 
-    /** @var HttpServiceInterface */
-    private $httpService;
+    private const HEADER_SIGNATURE = 'Signature';
+    private const HEADER_SIGNATURE_DATE = 'SignatureDate';
+    private const HEADER_USER_AGENT = 'User-Agent';
+    private const HEADER_PLATFORM = 'Platform';
 
-    public function __construct(TheConfig $config, HttpServiceInterface $httpService)
-    {
+    private TheConfig $config;
+    private SignatureService $signatureService;
+    private ClientInterface $httpClient;
+    private RequestFactoryInterface $requestFactory;
+    private StreamFactoryInterface $streamFactory;
+
+    public function __construct(
+        TheConfig $config,
+        SignatureService $signatureService,
+        ClientInterface $httpClient,
+        RequestFactoryInterface $requestFactory,
+        StreamFactoryInterface $streamFactory
+    ) {
         $this->config = $config;
-        $this->httpService = $httpService;
+        $this->signatureService = $signatureService;
+        $this->httpClient = $httpClient;
+        $this->requestFactory = $requestFactory;
+        $this->streamFactory = $streamFactory;
     }
 
     /**
      * Fetch all projects for merchant set in TheConfig
      *
-     * @see https://thepay.docs.apiary.io/#reference/0/merchant-level-resources/get-projects
+     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/project-info/get-projects
      *
-     * @return Project[]
+     * @return array<Project>
      */
-    public function getProjects()
+    public function getProjects(): array
     {
         $url = $this->config->getApiUrl() . 'projects?merchant_id=' . $this->config->getMerchantId();
-        $response = $this->httpService->get($url);
+        $response = $this->sendRequest(self::METHOD_GET, $url);
 
-        if ($response->getCode() !== 200) {
+        if ($response->getStatusCode() !== 200) {
             throw $this->buildException($url, $response);
         }
 
-        $projects = array();
-        foreach (json_decode($response->getBody(), true) as $item) {
+        $projects = [];
+        foreach (Json::decode($response->getBody()->getContents(), true) as $item) {
             $projects[] = new Project(
                 $item['project_id'],
                 $item['project_url'],
@@ -85,28 +103,27 @@ class ApiService implements ApiServiceInterface
     /**
      * Fetch all active payment methods.
      *
-     * @see https://thepay.docs.apiary.io/#reference/projects/payment-methods/list-payment-methods
+     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/project-info/get-payment-methods
+     *
      * @param LanguageCode|null $languageCode language for payment method titles, null value language from TheConfig used
-     * @return PaymentMethodCollection
+     *
      * @throws ApiException
      */
-    public function getActivePaymentMethods(LanguageCode $languageCode = null)
+    public function getActivePaymentMethods(?LanguageCode $languageCode = null): PaymentMethodCollection
     {
-        $arguments = array();
+        $arguments = [];
         if ($languageCode) {
             $arguments['language'] = $languageCode->getValue();
         }
 
-        $url = $this->url(array('methods'), $arguments);
-        $response = $this
-            ->httpService
-            ->get($url);
+        $url = $this->url(['methods'], $arguments);
+        $response = $this->sendRequest(self::METHOD_GET, $url);
 
-        if ($response->getCode() !== 200) {
+        if ($response->getStatusCode() !== 200) {
             throw $this->buildException($url, $response);
         }
 
-        return new PaymentMethodCollection($response->getBody());
+        return new PaymentMethodCollection($response->getBody()->getContents());
     }
 
     /**
@@ -118,7 +135,7 @@ class ApiService implements ApiServiceInterface
      */
     public function getAccountsBalances(StringValue $accountIban = null, $projectId = null, \DateTime $balanceAt = null)
     {
-        $arguments = array();
+        $arguments = [];
         if ($accountIban !== null) {
             $arguments['account_iban'] = $accountIban->getValue();
         }
@@ -129,14 +146,14 @@ class ApiService implements ApiServiceInterface
             $arguments['balance_at'] = $balanceAt->format(\DateTime::ATOM);
         }
 
-        $url = $this->url(array('balances'), $arguments, false);
-        $response = $this->httpService->get($url);
+        $url = $this->url(['balances'], $arguments, false);
+        $response = $this->sendRequest(self::METHOD_GET, $url);
 
-        if ($response->getCode() !== 200) {
+        if ($response->getStatusCode() !== 200) {
             throw $this->buildException($url, $response);
         }
 
-        $responseArray = Json::decode($response->getBody(), true);
+        $responseArray = Json::decode($response->getBody()->getContents(), true);
 
         return array_map(
             static function (array $accountBalance) {
@@ -151,72 +168,61 @@ class ApiService implements ApiServiceInterface
     }
 
     /**
-     * @see https://thepay.docs.apiary.io/#reference/0/merchant-level-resources/get-account-transaction-history
+     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/transactions/get-account-transaction-history
      *
-     * @param TransactionFilter $filter
-     * @param int $page
-     * @param int $limit
-     * @return TransactionCollection<SimpleTransaction>
+     * @param int<1, max> $page
+     * @param int<1, 1000> $limit
+     *
+     * @return TransactionCollection
+     *
      * @throws \Exception
      */
-    public function getAccountTransactionHistory(TransactionFilter $filter, $page = 1, $limit = 100)
+    public function getAccountTransactionHistory(TransactionFilter $filter, int $page = 1, int $limit = 100): TransactionCollection
     {
         $paginatedCollectionParams = new PaginatedCollectionParams($filter, $page, $limit);
 
-        $url = $this->url(array('transactions', $filter->getAccountIban()), $paginatedCollectionParams->toArray(), false);
-        $response = $this
-            ->httpService
-            ->get($url);
+        $url = $this->url(['transactions', $filter->getAccountIban()], $paginatedCollectionParams->toArray(), false);
+        $response = $this->sendRequest(self::METHOD_GET, $url);
 
-        if ($response->getCode() !== 200) {
+        if ($response->getStatusCode() !== 200) {
             throw $this->buildException($url, $response);
         }
 
-        return new TransactionCollection(Json::decode($response->getBody(), true), $page, $limit, (int) $response->getHeader('X-Total-Count:'));
+        return new TransactionCollection(Json::decode($response->getBody()->getContents(), true), $page, $limit, (int) $response->getHeaderLine('X-Total-Count'));
     }
 
     /**
      * Get complete information about the specified payment.
      *
-     * @see https://thepay.docs.apiary.io/#reference/0/project-level-resources/get-payment-detail
+     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/payments/get-payment-detail
      *
-     * @param Identifier $paymentUid
-     *
-     * @return Payment
      * @throws ApiException
      */
-    public function getPayment(Identifier $paymentUid)
+    public function getPayment(Identifier $paymentUid): Payment
     {
-        $url = $this->url(array('payments', $paymentUid));
-        $response = $this
-            ->httpService
-            ->get($url);
+        $url = $this->url(['payments', $paymentUid]);
+        $response = $this->sendRequest(self::METHOD_GET, $url);
 
-        if ($response->getCode() !== 200) {
+        if ($response->getStatusCode() !== 200) {
             throw $this->buildException($url, $response);
         }
 
-        return new Payment($response->getBody());
+        return new Payment($response->getBody()->getContents());
     }
 
     /**
      * Invalidates the specified payment.
      *
-     * @see https://thepay.docs.apiary.io/#reference/0/project-level-resources/invalidate-payment
+     * @see https://thepay.docs.apiary.io/#reference/payment-management/general-payment-management/invalidate-payment
      *
-     * @param Identifier $paymentUid
-     *
-     * @return void
      * @throws ApiException
      */
-    public function invalidatePayment(Identifier $paymentUid)
+    public function invalidatePayment(Identifier $paymentUid): void
     {
-        $url = $this->url(array('payments', $paymentUid, 'invalidate'));
-        $response = $this
-            ->httpService
-            ->put($url);
+        $url = $this->url(['payments', $paymentUid, 'invalidate']);
+        $response = $this->sendRequest(self::METHOD_PUT, $url);
 
-        if ($response->getCode() !== 200) {
+        if ($response->getStatusCode() !== 200) {
             throw $this->buildException($url, $response);
         }
     }
@@ -224,219 +230,189 @@ class ApiService implements ApiServiceInterface
     /**
      * Fetch information about payments by filter.
      *
-     * @see https://thepay.docs.apiary.io/#reference/projects/payments/get-collection
-     * @param PaymentsFilter $filter
-     * @param int $page
-     * @param null|int $limit
-     * @return PaymentCollection<SimplePayment>
+     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/payments/project-get-payments
+     *
+     * @param int<1, max> $page
+     * @param int<1, 1000> $limit
+     *
      * @throws ApiException
      */
-    public function getPayments(PaymentsFilter $filter, $page = 1, $limit = 25)
+    public function getPayments(PaymentsFilter $filter, int $page = 1, int $limit = 25): PaymentCollection
     {
         $paginatedCollectionParams = new PaginatedCollectionParams($filter, $page, $limit);
 
-        $url = $this->url(array('payments'), $paginatedCollectionParams->toArray());
-        $response = $this
-            ->httpService
-            ->get($url);
+        $url = $this->url(['payments'], $paginatedCollectionParams->toArray());
+        $response = $this->sendRequest(self::METHOD_GET, $url);
 
-        if ($response->getCode() !== 200) {
+        if ($response->getStatusCode() !== 200) {
             throw $this->buildException($url, $response);
         }
 
-        return new PaymentCollection($response->getBody(), $page, $limit, (int) $response->getHeader('X-Total-Count:'));
+        return new PaymentCollection($response->getBody()->getContents(), $page, $limit, (int) $response->getHeaderLine('X-Total-Count'));
     }
 
     /**
      * @param Identifier $parentPaymentUid UID of payment which initialized this subscription.
-     * @param RealizeRegularSubscriptionPaymentParams $params
-     * @return ApiResponse
+     *
      * @throws ApiException
      */
-    public function realizeRegularSubscriptionPayment(Identifier $parentPaymentUid, RealizeRegularSubscriptionPaymentParams $params)
+    public function realizeRegularSubscriptionPayment(Identifier $parentPaymentUid, RealizeRegularSubscriptionPaymentParams $params): ApiResponse
     {
         $jsonParams = $params->toArray();
 
-        $url = $this->url(array('payments', $parentPaymentUid, 'subscription', SubscriptionType::REGULAR));
-        $response = $this
-            ->httpService
-            ->post($url, json_encode($jsonParams));
+        $url = $this->url(['payments', $parentPaymentUid, 'subscription', SubscriptionType::REGULAR]);
+        $response = $this->sendRequest(self::METHOD_POST, $url, $jsonParams);
 
-        if ( ! in_array($response->getCode(), array(200, 201), true)) {
+        if ( ! in_array($response->getStatusCode(), [200, 201], true)) {
             throw $this->buildException($url, $response);
         }
 
-        return new ApiResponse($response->getBody(), $response->getCode());
+        return new ApiResponse($response->getBody()->getContents(), $response->getStatusCode());
     }
 
     /**
      * @param Identifier $parentPaymentUid UID of payment which initialized this subscription.
-     * @param RealizeIrregularSubscriptionPaymentParams $params
-     * @return ApiResponse
+     *
      * @throws ApiException
      */
-    public function realizeIrregularSubscriptionPayment(Identifier $parentPaymentUid, RealizeIrregularSubscriptionPaymentParams $params)
+    public function realizeIrregularSubscriptionPayment(Identifier $parentPaymentUid, RealizeIrregularSubscriptionPaymentParams $params): ApiResponse
     {
         $jsonParams = $params->toArray();
 
-        $url = $this->url(array('payments', $parentPaymentUid, 'subscription', SubscriptionType::IRREGULAR));
-        $response = $this
-            ->httpService
-            ->post($url, json_encode($jsonParams));
+        $url = $this->url(['payments', $parentPaymentUid, 'subscription', SubscriptionType::IRREGULAR]);
+        $response = $this->sendRequest(self::METHOD_POST, $url, $jsonParams);
 
-        if ( ! in_array($response->getCode(), array(200, 201), true)) {
+        if ( ! in_array($response->getStatusCode(), [200, 201], true)) {
             throw $this->buildException($url, $response);
         }
 
-        return new ApiResponse($response->getBody(), $response->getCode());
+        return new ApiResponse($response->getBody()->getContents(), $response->getStatusCode());
     }
 
     /**
      * @param Identifier $parentPaymentUid UID of payment which initialized this subscription.
-     * @param RealizeUsageBasedSubscriptionPaymentParams $params
-     * @return ApiResponse
+     *
      * @throws ApiException
      */
-    public function realizeUsageBasedSubscriptionPayment(Identifier $parentPaymentUid, RealizeUsageBasedSubscriptionPaymentParams $params)
+    public function realizeUsageBasedSubscriptionPayment(Identifier $parentPaymentUid, RealizeUsageBasedSubscriptionPaymentParams $params): ApiResponse
     {
         $jsonParams = $params->toArray();
 
-        $url = $this->url(array('payments', $parentPaymentUid, 'subscription', SubscriptionType::USAGE_BASED));
-        $response = $this
-            ->httpService
-            ->post($url, json_encode($jsonParams));
+        $url = $this->url(['payments', $parentPaymentUid, 'subscription', SubscriptionType::USAGE_BASED]);
+        $response = $this->sendRequest(self::METHOD_POST, $url, $jsonParams);
 
-        if ( ! in_array($response->getCode(), array(200, 201), true)) {
+        if ( ! in_array($response->getStatusCode(), [200, 201], true)) {
             throw $this->buildException($url, $response);
         }
 
-        return new ApiResponse($response->getBody(), $response->getCode());
+        return new ApiResponse($response->getBody()->getContents(), $response->getStatusCode());
     }
 
     /**
      * @param Identifier $parentPaymentUid UID of first payment created with save_authorization=true.
-     * @param RealizePaymentBySavedAuthorizationParams $params
-     * @return ApiResponse
+     *
      * @throws ApiException
      */
-    public function realizePaymentBySavedAuthorization(Identifier $parentPaymentUid, RealizePaymentBySavedAuthorizationParams $params)
+    public function realizePaymentBySavedAuthorization(Identifier $parentPaymentUid, RealizePaymentBySavedAuthorizationParams $params): ApiResponse
     {
         $jsonParams = $params->toArray();
 
-        $url = $this->url(array('payments', $parentPaymentUid, 'savedauthorization'));
-        $response = $this
-            ->httpService
-            ->post($url, json_encode($jsonParams));
+        $url = $this->url(['payments', $parentPaymentUid, 'savedauthorization']);
+        $response = $this->sendRequest(self::METHOD_POST, $url, $jsonParams);
 
-        if ( ! in_array($response->getCode(), array(200, 201), true)) {
+        if ( ! in_array($response->getStatusCode(), [200, 201], true)) {
             throw $this->buildException($url, $response);
         }
 
-        return new ApiResponse($response->getBody(), $response->getCode());
+        return new ApiResponse($response->getBody()->getContents(), $response->getStatusCode());
     }
 
 
     /**
-     * @return CreatePaymentResponse
+     * @param non-empty-string|null $methodCode
+     *
      * @throws ApiException
      */
-    public function createPayment(CreatePaymentParams $createPaymentParams, PaymentMethodCode $paymentMethod = null)
+    public function createPayment(CreatePaymentParams $createPaymentParams, ?string $methodCode = null): CreatePaymentResponse
     {
         $jsonParams = $createPaymentParams->toArray();
-        if ($paymentMethod) {
-            $jsonParams['payment_method_code'] = $paymentMethod->getValue();
+        if ($methodCode !== null) {
+            $jsonParams['payment_method_code'] = $methodCode;
         }
 
-        $url = $this->url(array('payments'));
-        $response = $this
-            ->httpService
-            ->post($url, json_encode($jsonParams));
+        $url = $this->url(['payments']);
+        $response = $this->sendRequest(self::METHOD_POST, $url, $jsonParams);
 
-        if ( ! in_array($response->getCode(), array(200, 201), true)) {
+        if ( ! in_array($response->getStatusCode(), [200, 201], true)) {
             throw $this->buildException($url, $response);
         }
 
-        return new CreatePaymentResponse($response->getBody(), $response->getCode() === 201);
+        return new CreatePaymentResponse($response->getBody()->getContents(), $response->getStatusCode() === 201);
+    }
+
+    /**
+     * @param non-empty-string $methodCode
+     *
+     * @throws ApiException
+     */
+    public function changePaymentMethod(Identifier $uid, string $methodCode): void
+    {
+        $url = $this->url(['payments', $uid, 'method']);
+        $response = $this->sendRequest(
+            self::METHOD_PUT,
+            $url,
+            ['payment_method_code' => $methodCode]
+        );
+
+        if ($response->getStatusCode() !== 204) {
+            throw $this->buildException($url, $response);
+        }
     }
 
     /**
      * @throws ApiException
-     * @return bool
      */
-    public function changePaymentMethod(Identifier $uid, PaymentMethodCode $paymentMethodCode)
+    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): void
     {
-        $url = $this->url(array('payments', $uid, 'method'));
-        $response = $this
-            ->httpService
-            ->put($url, json_encode(array(
-                'payment_method_code' => $paymentMethodCode->getValue(),
-            )));
-
-        if ($response->getCode() !== 204) {
-            throw $this->buildException($url, $response);
-        }
-
-        return true;
-    }
-
-    /**
-     * @param RealizePreauthorizedPaymentParams $realizePreauthorizedPaymentParams
-     * @throws ApiException
-     * @return bool
-     */
-    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $realizePreauthorizedPaymentParams)
-    {
-        $url = $this->url(array(
+        $url = $this->url([
             'payments',
-            $realizePreauthorizedPaymentParams->getUid(),
+            $params->getUid(),
             'preauthorized',
-        ));
-        $response = $this
-            ->httpService
-            ->post($url, json_encode($realizePreauthorizedPaymentParams->toArray()));
+        ]);
+        $response = $this->sendRequest(self::METHOD_POST, $url, $params->toArray());
 
-        if ($response->getCode() !== 204) {
+        if ($response->getStatusCode() !== 204) {
             throw $this->buildException($url, $response);
         }
-
-        return true;
     }
 
     /**
-     * @param Identifier $uid
      * @throws ApiException
-     * @return bool
      */
-    public function cancelPreauthorizedPayment(Identifier $uid)
+    public function cancelPreauthorizedPayment(Identifier $uid): void
     {
-        $url = $this->url(array('payments', $uid, 'preauthorized'));
-        $response = $this
-            ->httpService
-            ->delete($url);
+        $url = $this->url(['payments', $uid, 'preauthorized']);
+        $response = $this->sendRequest(self::METHOD_DELETE, $url);
 
-        if ($response->getCode() !== 204) {
+        if ($response->getStatusCode() !== 204) {
             throw $this->buildException($url, $response);
         }
-
-        return true;
     }
 
     /**
      * Returns information about payment refund.
-     *
-     * @return PaymentRefundInfo
      */
-    public function getPaymentRefund(Identifier $uid)
+    public function getPaymentRefund(Identifier $uid): PaymentRefundInfo
     {
-        $url = $this->url(array('payments', $uid->getValue(), 'refund'));
-        $response = $this->httpService->get($url);
-        if ($response->getCode() !== 200) {
+        $url = $this->url(['payments', $uid->getValue(), 'refund']);
+        $response = $this->sendRequest(self::METHOD_GET, $url);
+        if ($response->getStatusCode() !== 200) {
             throw $this->buildException($url, $response);
         }
 
-        $responseData = Json::decode($response->getBody());
+        $responseData = Json::decode($response->getBody()->getContents());
 
-        $refunds = array();
+        $refunds = [];
         foreach ($responseData->partial_refunds as $responseRefund) {
             $refunds[] = new PaymentRefund($responseRefund->amount, $responseRefund->reason, $responseRefund->state);
         }
@@ -448,17 +424,20 @@ class ApiService implements ApiServiceInterface
      * Will create request for automatic refund of payment.
      *
      * @param Amount $amount amount which should be refunded in cents (currency used for refunding is same as payment currency)
-     * @return void
      */
-    public function createPaymentRefund(Identifier $uid, Amount $amount, StringValue $reason)
+    public function createPaymentRefund(Identifier $uid, Amount $amount, string $reason): void
     {
-        $url = $this->url(array('payments', $uid->getValue(), 'refund'));
-        $response = $this->httpService->post($url, json_encode(array(
-            'amount' => $amount->getValue(),
-            'reason' => $reason->getValue(),
-        )));
+        $url = $this->url(['payments', $uid->getValue(), 'refund']);
+        $response = $this->sendRequest(
+            self::METHOD_POST,
+            $url,
+            [
+                'amount' => $amount->getValue(),
+                'reason' => $reason,
+            ]
+        );
 
-        if ($response->getCode() !== 201) {
+        if ($response->getStatusCode() !== 201) {
             throw $this->buildException($url, $response);
         }
     }
@@ -468,23 +447,23 @@ class ApiService implements ApiServiceInterface
      *
      * @return array<PaymentMethodWithPayUrl>
      */
-    public function getPaymentUrlsForPayment(Identifier $uid, LanguageCode $languageCode = null)
+    public function getPaymentUrlsForPayment(Identifier $uid, ?LanguageCode $languageCode = null): array
     {
-        $arguments = array();
+        $arguments = [];
         if ($languageCode) {
             $arguments['language'] = $languageCode->getValue();
         }
 
-        $url = $this->url(array('payments', $uid->getValue(), 'payment_urls'), $arguments);
-        $response = $this->httpService->get($url);
+        $url = $this->url(['payments', $uid->getValue(), 'payment_urls'], $arguments);
+        $response = $this->sendRequest(self::METHOD_GET, $url);
 
-        if ($response->getCode() !== 200) {
+        if ($response->getStatusCode() !== 200) {
             throw $this->buildException($url, $response);
         }
 
-        $responseData = Json::decode($response->getBody(), true);
+        $responseData = Json::decode($response->getBody()->getContents(), true);
 
-        $paymentMethods = array();
+        $paymentMethods = [];
         foreach ($responseData as $paymentMethod) {
             $paymentMethods[] = new PaymentMethodWithPayUrl($paymentMethod);
         }
@@ -501,26 +480,21 @@ class ApiService implements ApiServiceInterface
      *
      * @throws ApiException if payment is not paid yet
      */
-    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null)
+    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null): string
     {
-        $arguments = array();
+        $arguments = [];
         if ($languageCode !== null) {
             $arguments['language'] = $languageCode->getValue();
         }
 
-        $url = $this->url(array('payments', $uid->getValue(), 'generate_confirmation'), $arguments);
-        $response = $this->httpService->get($url);
+        $url = $this->url(['payments', $uid->getValue(), 'generate_confirmation'], $arguments);
+        $response = $this->sendRequest(self::METHOD_GET, $url);
 
-        if ($response->getCode() !== 200) {
+        if ($response->getStatusCode() !== 200) {
             throw $this->buildException($url, $response);
         }
 
-        $responseContent = $response->getBody();
-        if ($responseContent === null) {
-            throw new ApiException('TheApi call "' . $url . '" response body content can not be null');
-        }
-
-        return $responseContent;
+        return $response->getBody()->getContents();
     }
 
     /**
@@ -531,7 +505,7 @@ class ApiService implements ApiServiceInterface
      * @param bool $includeProject
      * @return string
      */
-    private function url($path = array(), $arguments = array(), $includeProject = true)
+    private function url($path = [], $arguments = [], $includeProject = true)
     {
         if ( ! isset($arguments['merchant_id'])) {
             ($arguments['merchant_id'] = $this->config->getMerchantId());
@@ -558,15 +532,38 @@ class ApiService implements ApiServiceInterface
     }
 
     /**
-     * @param string $requestUrl
-     * @param HttpResponse $response
-     * @return \Exception
+     * @param self::METHOD_* $method
+     * @param non-empty-string $uri
+     * @param array<non-empty-string, mixed>|null $jsonBody
      */
-    private function buildException($requestUrl, HttpResponse $response)
+    private function sendRequest(string $method, string $uri, ?array $jsonBody = null): ResponseInterface
     {
-        $responseCode = (int) $response->getCode();
-        $message = 'TheApi call "' . $requestUrl . '" failed, status code: ' . $responseCode . ' ' . $response->getCodeMessage();
-        $message .= $this->getErrorResponseMessage((string) $response->getBody());
+        $signature = $this->signatureService->getSignatureForApi();
+
+        $request = $this->requestFactory->createRequest($method, $uri)
+
+            ->withHeader(self::HEADER_SIGNATURE, $signature->getHash())
+            ->withHeader(self::HEADER_SIGNATURE_DATE, $signature->getDate())
+
+            ->withHeader(self::HEADER_USER_AGENT, 'ThePay Client/' . TheClient::VERSION . ' (PHP version ' . phpversion() . ')')
+            ->withHeader(self::HEADER_PLATFORM, 'php_' . TheClient::VERSION)
+        ;
+        if ($jsonBody !== null) {
+            $request = $request->withBody(
+                $this->streamFactory->createStream(
+                    Json::encode($jsonBody)
+                )
+            );
+        }
+
+        return $this->httpClient->sendRequest($request);
+    }
+
+    private function buildException(string $requestUrl, ResponseInterface $response): \Exception
+    {
+        $responseCode = $response->getStatusCode();
+        $message = 'TheApi call "' . $requestUrl . '" failed, status code: ' . $responseCode . ' ' . $response->getReasonPhrase();
+        $message .= $this->getErrorResponseMessage($response->getBody()->getContents());
 
         if ($responseCode == 0 || $responseCode >= 500) {
             return new ApiException($message, $responseCode);

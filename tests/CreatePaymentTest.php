@@ -1,107 +1,136 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests;
 
-use Mockery;
+use PHPUnit\Framework\MockObject\MockObject;
 use ThePay\ApiClient\Model\Address;
+use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentCustomer;
 use ThePay\ApiClient\Model\CreatePaymentParams;
-use ThePay\ApiClient\Tests\Mocks\Service\ApiMockService;
+use ThePay\ApiClient\Model\CreatePaymentResponse;
+use ThePay\ApiClient\Model\PaymentMethod;
+use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheClient;
 
-class CreatePaymentTest extends BaseTestCase
+final class CreatePaymentTest extends BaseTestCase
 {
-    /** @var TheClient */
-    private $client;
+    private TheClient $client;
 
-    /**
-     * @return void
-     */
-    protected function setUp()
+    private MockObject $apiService;
+
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $httpService = Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
-        /** @phpstan-ignore-next-line */
-        $apiService = new ApiMockService($this->config, $httpService);
-        /** @phpstan-ignore-next-line */
-        $this->client = new TheClient($this->config, null, $httpService, $apiService);
+        $this->apiService = $this->createMock(ApiServiceInterface::class);
+        $this->client = new TheClient($this->config, $this->apiService);
     }
 
 
     /**
      * @dataProvider createButtonProvider
-     *
-     * @param string $data
-     * @param string $signature
-     * @return void
      */
-    public function testCreateButton(CreatePaymentParams $params, $data, $signature)
+    public function testCreateButton(CreatePaymentParams $params, string $data, string $signature): void
     {
         $r = $this->client->getPaymentButton($params);
 
-        static::assertContains($data, $r);
-        static::assertContains($signature, $r);
+        self::assertStringContainsString($data, $r);
+        self::assertStringContainsString($signature, $r);
     }
 
     /**
      * @return array<array<mixed>>
      */
-    public function createButtonProvider()
+    public static function createButtonProvider(): array
     {
-        return array(
-            array(
+        return [
+            [
                 new CreatePaymentParams(100, 'CZK', '202001010001'),
-                'eyJhbW91bnQiOjEwMCwiY3VycmVuY3lfY29kZSI6IkNaSyIsInVpZCI6IjIwMjAwMTAxMDAwMSIsImxhbmd1YWdlX2NvZGUiOiJjcyIsImlzX3JlY3VycmluZyI6ZmFsc2UsImlzX2RlcG9zaXQiOnRydWUsInNhdmVfYXV0aG9yaXphdGlvbiI6ZmFsc2UsImNhbl9jdXN0b21lcl9jaGFuZ2VfbWV0aG9kIjp0cnVlLCJtZXJjaGFudF9pZCI6Ijg2YTNlZWQwLTk1YTQtMTFlYS1hYzlmLTM3MWYzNDg4ZTBmYSIsInByb2plY3RfaWQiOjF9',
-                '99e8b5f1bb32cd6937af1ebbcc7d3b337b7f5524f244a5d694c930afef1a16a9',
-            ),
-            array(
+                'eyJhbW91bnQiOjEwMCwiY3VycmVuY3lfY29kZSI6IkNaSyIsInVpZCI6IjIwMjAwMTAxMDAwMSIsImxhbmd1YWdlX2NvZGUiOiJjcyIsImlzX2RlcG9zaXQiOnRydWUsInNhdmVfYXV0aG9yaXphdGlvbiI6ZmFsc2UsImNhbl9jdXN0b21lcl9jaGFuZ2VfbWV0aG9kIjp0cnVlLCJtZXJjaGFudF9pZCI6Ijg2YTNlZWQwLTk1YTQtMTFlYS1hYzlmLTM3MWYzNDg4ZTBmYSIsInByb2plY3RfaWQiOjF9',
+                '1b3e432dec35da90a62653e2cb8ce2d75e4204a32d360c6366afd24509f5178c',
+            ],
+            [
                 new CreatePaymentParams(100, 'EUR', '202001010002'),
-                'eyJhbW91bnQiOjEwMCwiY3VycmVuY3lfY29kZSI6IkVVUiIsInVpZCI6IjIwMjAwMTAxMDAwMiIsImxhbmd1YWdlX2NvZGUiOiJjcyIsImlzX3JlY3VycmluZyI6ZmFsc2UsImlzX2RlcG9zaXQiOnRydWUsInNhdmVfYXV0aG9yaXphdGlvbiI6ZmFsc2UsImNhbl9jdXN0b21lcl9jaGFuZ2VfbWV0aG9kIjp0cnVlLCJtZXJjaGFudF9pZCI6Ijg2YTNlZWQwLTk1YTQtMTFlYS1hYzlmLTM3MWYzNDg4ZTBmYSIsInByb2plY3RfaWQiOjF9',
-                '03e61b053d5b0ccd17a2913a5b005e35fd499b74472adec92e792eecdd123895',
-            ),
-        );
+                'eyJhbW91bnQiOjEwMCwiY3VycmVuY3lfY29kZSI6IkVVUiIsInVpZCI6IjIwMjAwMTAxMDAwMiIsImxhbmd1YWdlX2NvZGUiOiJjcyIsImlzX2RlcG9zaXQiOnRydWUsInNhdmVfYXV0aG9yaXphdGlvbiI6ZmFsc2UsImNhbl9jdXN0b21lcl9jaGFuZ2VfbWV0aG9kIjp0cnVlLCJtZXJjaGFudF9pZCI6Ijg2YTNlZWQwLTk1YTQtMTFlYS1hYzlmLTM3MWYzNDg4ZTBmYSIsInByb2plY3RfaWQiOjF9',
+                'b97e2a7c037c5d31a7db734d1ca84e06f53db5841fe9e56bdc701a833208f987',
+            ],
+        ];
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateCustomButton()
+    public function testCreateCustomButton(): void
     {
         $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010003'));
-        static::assertContains('Pay!', $r);
-        static::assertContains('class="tp-btn"', $r);
-        static::assertNotContains('data-payment-method', $r);
-        $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010004'), 'Zaplatit!', true, 'bitcoin', array('class' => 'btn btn-success'));
-        static::assertContains('Zaplatit!', $r);
-        static::assertContains('class="tp-btn btn btn-success"', $r);
-        static::assertContains('data-payment-method="bitcoin"', $r);
+        self::assertStringContainsString('Pay!', $r);
+        self::assertStringContainsString('class="tp-btn"', $r);
+        self::assertStringNotContainsString('data-payment-method', $r);
+        $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010004'), 'Zaplatit!', true, 'bitcoin', ['class' => 'btn btn-success']);
+        self::assertStringContainsString('Zaplatit!', $r);
+        self::assertStringContainsString('class="tp-btn btn btn-success"', $r);
+        self::assertStringContainsString('data-payment-method="bitcoin"', $r);
     }
 
-    /**
-     * @return void
-     */
-    public function testGetPaymentMethods()
+    public function testGetPaymentMethods(): void
     {
+        $this->apiService->method('getActivePaymentMethods')->willReturn(new PaymentMethodCollection([
+            new PaymentMethod([
+                'code' => 'test_method',
+                'title' => 'TestTitle',
+                'image' => [
+                    'src' => 'https://example-image.com',
+                ],
+                'tags' => [],
+                'available_currencies' => [
+                    ['code' => 'CZK'],
+                ],
+            ]),
+            new PaymentMethod([
+                'code' => 'second_method',
+                'title' => 'Second method',
+                'image' => [
+                    'src' => 'https://second-example-image.com',
+                ],
+                'tags' => [],
+                'available_currencies' => [
+                    ['code' => 'CZK'],
+                ],
+            ]),
+            new PaymentMethod([
+                'code' => 'incompatible_currency_method',
+                'title' => 'Incompatible currency',
+                'image' => [
+                    'src' => 'https://incompatible-example-image.com',
+                ],
+                'tags' => [],
+                'available_currencies' => [
+                    ['code' => 'EUR'],
+                ],
+            ]),
+        ]));
+
         $result = $this->client->getPaymentButtons(new CreatePaymentParams(100, 'CZK', '202001010005'));
 
-        static::assertTrue(is_string($result));
+        self::assertIsString($result);
 
         // In default we need to join assets
-        static::assertContains('<style', $result);
-        static::assertContains('<script', $result);
+        self::assertStringContainsString('<style', $result);
+        self::assertStringContainsString('<script', $result);
 
         // In default we want to send data through form post method, so we need form element
-        static::assertContains('<form ', $result);
+        self::assertStringContainsString('<form ', $result);
 
+        self::assertStringContainsString('<img src="https://example-image.com"', $result);
+        self::assertStringContainsString('<img src="https://second-example-image.com"', $result);
+        self::assertStringContainsString('>TestTitle</span>', $result);
+        self::assertStringContainsString('>Second method</span>', $result);
+        self::assertStringContainsString('payment_method_code=test_method" data-thepay="payment-button"', $result);
+        self::assertStringContainsString('payment_method_code=second_method" data-thepay="payment-button"', $result);
 
-        // todo: complete test, implementation was not final at this moment
+        self::assertStringNotContainsString('payment_method_code=incompatible_currency_method" data-thepay="payment-button"', $result);
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateApiPayment()
+    public function testCreateApiPayment(): void
     {
         // Create entity with information about customer
         $customer = new CreatePaymentCustomer(
@@ -121,8 +150,17 @@ class CreatePaymentTest extends BaseTestCase
         $createPayment->setDescriptionForMerchant('Payment from VIP customer XYZ');
         $createPayment->setCustomer($customer);
 
+        $this->apiService->method('createPayment')->willReturn(
+            new CreatePaymentResponse(
+                '{
+                    "pay_url": "https://gate.thepay.cz/",
+                    "detail_url": "https://gate.thepay.cz/"
+                }'
+            )
+        );
+
         $result = $this->client->createPayment($createPayment);
 
-        static::assertTrue(get_class($result) === 'ThePay\ApiClient\Model\CreatePaymentResponse');
+        self::assertSame(CreatePaymentResponse::class, get_class($result));
     }
 }

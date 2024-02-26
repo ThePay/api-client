@@ -1,22 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\HttpFactory;
 use PHPUnit\Framework\TestCase;
+use ThePay\ApiClient\Service\ApiService;
+use ThePay\ApiClient\Service\SignatureService;
 use ThePay\ApiClient\TheClient;
 use ThePay\ApiClient\TheConfig;
 
 abstract class BaseTestCase extends TestCase
 {
-    const MERCHANT_ID = '86a3eed0-95a4-11ea-ac9f-371f3488e0fa';
+    public const MERCHANT_ID = '86a3eed0-95a4-11ea-ac9f-371f3488e0fa';
 
-    /** @var TheConfig */
-    protected $config;
+    protected TheConfig $config;
 
-    /**
-     * @return void
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -25,10 +27,8 @@ abstract class BaseTestCase extends TestCase
 
     /**
      * method return TheClient witch use apiary mock server
-     *
-     * @return TheClient
      */
-    protected function getApiaryClient()
+    protected function getApiaryClient(): TheClient
     {
         $config = new TheConfig(
             '6cdf1b24',
@@ -37,6 +37,18 @@ abstract class BaseTestCase extends TestCase
             'https://private-aa6aa3-thepay.apiary-mock.com/',
             'https://private-ddc40-gatezalozeniplatby.apiary-mock.com/'
         );
-        return new TheClient($config);
+
+        $httpFactory = new HttpFactory();
+
+        return new TheClient(
+            $config,
+            new ApiService(
+                $config,
+                new SignatureService($config),
+                new Client(),
+                $httpFactory,
+                $httpFactory
+            )
+        );
     }
 }

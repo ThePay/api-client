@@ -34,7 +34,7 @@ interface GateServiceInterface
      * @param bool $usePostMethod
      * @return string HTML
      */
-    public function getPaymentButton($content, CreatePaymentParams $params, $methodCode = null, array $attributes = array(), $usePostMethod = true);
+    public function getPaymentButton($content, CreatePaymentParams $params, $methodCode = null, array $attributes = [], $usePostMethod = true);
 
     /**
      * @return string HTML

@@ -1,76 +1,76 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests;
 
-use Mockery;
-use ThePay\ApiClient\Http\HttpResponse;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use ThePay\ApiClient\Service\ApiService;
+use ThePay\ApiClient\Service\SignatureService;
 use ThePay\ApiClient\TheClient;
-use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 
-class ChangePaymentMethod extends BaseTestCase
+final class ChangePaymentMethod extends BaseTestCase
 {
-    /** @var \Mockery\LegacyMockInterface|\ThePay\ApiClient\Http\HttpServiceInterface */
-    private $httpService;
+    /** @var MockObject&ClientInterface */
+    private MockObject $httpClient;
 
-    /** @var TheClient */
-    private $client;
+    private TheClient $client;
 
-    /**
-     * @return void
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->httpService = Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
-        /** @phpstan-ignore-next-line  */
-        $apiService = new ApiService($this->config, $this->httpService);
-        /** @phpstan-ignore-next-line  */
-        $this->client = new TheClient($this->config, null, $this->httpService, $apiService);
+        $this->httpClient = $this->createMock(ClientInterface::class);
+        $apiService = new ApiService(
+            $this->config,
+            $this->createMock(SignatureService::class),
+            $this->httpClient,
+            $this->createMock(RequestFactoryInterface::class),
+            $this->createMock(StreamFactoryInterface::class)
+        );
+        $this->client = new TheClient($this->config, $apiService);
     }
 
-    /**
-     * @return void
-     */
-    public function testRequest()
+    public function testRequest(): void
     {
-        call_user_func(array($this->httpService, 'shouldReceive'), 'put')->once()
-            ->with($this->config->getApiUrl() . 'projects/1/payments/abc/method?merchant_id=' . self::MERCHANT_ID, json_encode(
-                array(
-                    'payment_method_code' => new PaymentMethodCode(PaymentMethodCode::TRANSFER),
+        $this->httpClient
+            ->expects(self::once())
+            ->method('sendRequest')
+            ->with(
+                new Request(
+                    'PUT',
+                    $this->config->getApiUrl() . 'projects/1/payments/abc/method?merchant_id=' . self::MERCHANT_ID,
+                    [],
+                    '{"payment_method_code":"transfer"}'
                 )
-            ))
-            ->andReturn($this->getOkResponse());
+            )
+            ->willReturn($this->getOkResponse())
+        ;
 
-        $this->client->changePaymentMethod('abc', new PaymentMethodCode(PaymentMethodCode::TRANSFER));
-        \Mockery::close();
+        $this->client->changePaymentMethod('abc', 'transfer');
     }
 
-    /**
-     * @expectedException \Exception
-     * @return void
-     */
-    public function testNotOkResponse()
+    public function testNotOkResponse(): void
     {
-        call_user_func(array($this->httpService, 'shouldReceive'), 'delete')
-            ->andReturn($this->getNotOkResponse());
+        $this->expectException(\Exception::class);
 
-        $this->client->changePaymentMethod('abc', new PaymentMethodCode(PaymentMethodCode::TRANSFER));
+        $this->httpClient->method('sendRequest')->willReturn($this->getNotOkResponse());
+
+        $this->client->changePaymentMethod('abc', 'transfer');
     }
 
-    /**
-     * @return HttpResponse
-     */
-    private function getOkResponse()
+    private function getOkResponse(): ResponseInterface
     {
-        return new HttpResponse(null, 204);
+        return new Response(204);
     }
 
-    /**
-     * @return HttpResponse
-     */
-    private function getNotOkResponse()
+    private function getNotOkResponse(): ResponseInterface
     {
-        return new HttpResponse(null, 404);
+        return new Response(404);
     }
 }

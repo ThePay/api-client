@@ -39,9 +39,9 @@ class PaymentIdentificator
      */
     public function toArray()
     {
-        return array(
+        return [
             'uid' => $this->uid,
             'projectId' => $this->projectId,
-        );
+        ];
     }
 }

@@ -5,23 +5,19 @@ interacts with The Pay's REST API. To get started see examples below.
 
 ## Requirements
 
-- PHP 5.3+
-
-**DEPRECATED VERSIONS**: 5.3, 5.4, 5.5, 5.6, 7.0, 7.1
-**deprecated PHP versions** will be completely unsupported after 2023-01-01T00:00:00+01:00
-
-**DEPRECATED VERSIONS**: 7.2, 7.3
-**deprecated PHP versions** will be completely unsupported after 2023-06-09T00:00:00+02:00
-
-- **curl** extension
-- **json** extension
+All necessary requirements are defined in [composer.json](../composer.json) `require` property.
+We strongly recommend SDK installation using [Composer](https://getcomposer.org/)!
 
 ## Installation
 
-To install the SDK we recommend to use [Composer](https://getcomposer.org/):
-
 ```console
 composer require thepay/api-client
+```
+
+Installation with suggested PSR http client.
+
+```console
+composer require thepay/api-client guzzlehttp/guzzle
 ```
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -60,7 +56,14 @@ You will work with only two classes when using this SDK.
 All constructor parameters are described in [php doc](../src/TheConfig.php)
 
 ```php
-$config = new ThePay\ApiClient\TheConfig(
+$merchantId = '86a3eed0-95a4-11ea-ac9f-371f3488e0fa';
+$projectId = 3;
+$apiPassword = 'secret';
+$apiUrl = 'https://demo.api.thepay.cz/'; // production: 'https://api.thepay.cz/'
+$gateUrl = 'https://demo.gate.thepay.cz/'; // production: 'https://gate.thepay.cz/'
+$language = 'cs';
+
+$theConfig = new \ThePay\ApiClient\TheConfig(
     $merchantId,
     $projectId,
     $apiPassword,
@@ -68,7 +71,40 @@ $config = new ThePay\ApiClient\TheConfig(
     $gateUrl
 );
 
-$config->setLanguage($language);
+$theConfig->setLanguage($language);
+```
+
+## TheClient instance
+
+Before making `\ThePay\ApiClient\TheClient` instance, some dependencies must be prepared.
+
+If you use some DI container automation, all other dependencies than `TheConfig`
+should be auto-injected even PSR interfaces if you have some implementations
+already installed in your application.
+
+```php
+/** @var \ThePay\ApiClient\TheConfig $theConfig */
+
+// TheClient instance dependencies
+$signatureService = new \ThePay\ApiClient\Service\SignatureService($theConfig);
+/** @var \Psr\Http\Client\ClientInterface $httpClient some PSR-18 implementation */
+/** @var \Psr\Http\Message\RequestFactoryInterface $requestFactory some PSR-17 implementation */
+/** @var \Psr\Http\Message\StreamFactoryInterface $streamFactory some PSR-17 implementation */
+// if you install suggested guzzle implementation you can use this:
+// $httpClient = new \GuzzleHttp\Client();
+// $requestFactory = $streamFactory = new \GuzzleHttp\Psr7\HttpFactory();
+$apiService = new \ThePay\ApiClient\Service\ApiService(
+    $theConfig,
+    $signatureService,
+    $httpClient,
+    $requestFactory,
+    $streamFactory
+);
+
+$thePayClient = new \ThePay\ApiClient\TheClient(
+    $theConfig,
+    $apiService
+);
 ```
 
 ## Usual workflow
@@ -130,31 +166,23 @@ Always create only one payment for your order for all payment creation options, 
 
 For more examples see [create-payment.md](../doc/create-payment.md)
 
+[See how to make TheClient](#theclient-instance)
+
 ```php
-use ThePay\ApiClient\TheConfig;
-use ThePay\ApiClient\TheClient;
-use ThePay\ApiClient\Model\CreatePaymentParams;
 
-$merchantId = '86a3eed0-95a4-11ea-ac9f-371f3488e0fa';
-$projectId = 3;
-$apiPassword = 'secret';
-$apiUrl = 'https://demo.api.thepay.cz/'; // production: 'https://api.thepay.cz/'
-$gateUrl = 'https://demo.gate.thepay.cz/'; // production: 'https://gate.thepay.cz/'
-
-$config = new TheConfig($merchantId, $projectId, $apiPassword, $apiUrl, $gateUrl);
-$thePay = new TheClient($config);
+/** @var \ThePay\ApiClient\TheClient $thePayClient */
 
 // Render payment methods for payment (100,- Kč)
-$paymentParams = new CreatePaymentParams(10000, 'CZK', 'uid124');
+$paymentParams = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid124');
 
 // display button, user will choose payment method at the payment gate
-echo $thePay->getPaymentButton($paymentParams);
+echo $thePayClient->getPaymentButton($paymentParams);
 
 // or buttons with available payment methods, payment method will be preselected
-// echo $thePay->getPaymentButtons($paymentParams);
+// echo $thePayClient->getPaymentButtons($paymentParams);
 
 // or just get payment link and redirect customer whenever you want
-// $payment = $thePay->createPayment($createPayment);
+// $payment = $thePayClient->createPayment($createPayment);
 // $redirectLink = $payment->getPayUrl();
 ```
 
@@ -168,23 +196,14 @@ The state of payment must be checked at the time of customer return, since the p
 For example the customer simply returns to the e-shop without paying.
 
 #### General example of handling the customer return
+
+[See how to make TheClient](#theclient-instance)
+
 ```php
-use ThePay\ApiClient\TheConfig;
-use ThePay\ApiClient\TheClient;
-use ThePay\ApiClient\Model\CreatePaymentParams;
 
-$uid = $_GET["payment_uid"];
-$projectId = $_GET["project_id"];
+/** @var \ThePay\ApiClient\TheClient $thePayClient */
 
-$merchantId = '86a3eed0-95a4-11ea-ac9f-371f3488e0fa';
-$apiPassword = 'secret';
-$apiUrl = 'https://demo.api.thepay.cz/'; // production: 'https://api.thepay.cz/'
-$gateUrl = 'https://demo.gate.thepay.cz/'; // production: 'https://gate.thepay.cz/'
-
-$config = new TheConfig($merchantId, $projectId, $apiPassword, $apiUrl, $gateUrl);
-$thePay = new TheClient($config);
-
-$payment = $thePay->getPayment($uid);
+$payment = $thePayClient->getPayment($uid);
 
 // check if the payment is paid
 if ($payment->wasPaid()) {
@@ -197,21 +216,13 @@ if ($payment->wasPaid()) {
 
 It's basically the same as second step (customer return), it's triggered everytime the payment has changed, for example when the state of payment has been changed.
 
+[See how to make TheClient](#theclient-instance)
+
 ```php
-use ThePay\ApiClient\TheConfig;
-use ThePay\ApiClient\TheClient;
-use ThePay\ApiClient\Model\CreatePaymentParams;
 
-$uid = $_GET["payment_uid"];
-$projectId = $_GET["project_id"];
+/** @var \ThePay\ApiClient\TheClient $thePayClient */
 
-$merchantId = '86a3eed0-95a4-11ea-ac9f-371f3488e0fa';
-$apiPassword = 'secret';
-$apiUrl = 'https://demo.api.thepay.cz/'; // production: 'https://api.thepay.cz/'
-$gateUrl = 'https://demo.gate.thepay.cz/'; // production: 'https://gate.thepay.cz/'
-
-$config = new TheConfig($merchantId, $projectId, $apiPassword, $apiUrl, $gateUrl);
-$thePay = new TheClient($config);
+$payment = $thePayClient->getPayment($uid);
 
 // check if the payment is paid
 if ($payment->wasPaid()) {

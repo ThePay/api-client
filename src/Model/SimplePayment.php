@@ -83,12 +83,12 @@ class SimplePayment
     private $description_for_merchant;
 
     /**
-     * @var string
+     * @var string empty if subscription payment
      */
     private $payUrl;
 
     /**
-     * @var string
+     * @var string empty if subscription payment
      */
     private $detailUrl;
 
@@ -116,7 +116,9 @@ class SimplePayment
     /**
      * @var array<PaymentEvent>
      */
-    private $paymentEvents = array();
+    private $paymentEvents = [];
+
+    private ?PaymentCard $card = null;
 
     /**
      * @param string|array<string, mixed> $values Json in string or associative array
@@ -150,6 +152,10 @@ class SimplePayment
             foreach ($data['events'] as $eventData) {
                 $this->paymentEvents[] = new PaymentEvent($eventData);
             }
+        }
+
+        if (($data['card'] ?? null) !== null) {
+            $this->card = new PaymentCard($data['card']);
         }
     }
 
@@ -266,7 +272,7 @@ class SimplePayment
     }
 
     /**
-     * @return string
+     * @return string empty if subscription payment
      */
     public function getPayUrl()
     {
@@ -274,7 +280,7 @@ class SimplePayment
     }
 
     /**
-     * @return string
+     * @return string empty if subscription payment
      */
     public function getDetailUrl()
     {
@@ -329,12 +335,17 @@ class SimplePayment
         return $this->wasEventTypeOnLastAttempt(PaymentEvent::PAYMENT_CANCELLED);
     }
 
+    public function getCard(): ?PaymentCard
+    {
+        return $this->card;
+    }
+
     /**
      * @return array<string, mixed>
      */
     public function toArray()
     {
-        return array(
+        return [
             'uid' => $this->getUid(),
             'projectId' => $this->getProjectId(),
             'orderId' => $this->orderId,
@@ -355,7 +366,8 @@ class SimplePayment
             'offsetAccountStatus' => $this->offsetAccountStatus,
             'offsetAccountDeterminedAt' => $this->offsetAccountDeterminedAt,
             'events' => $this->paymentEvents,
-        );
+            'card' => $this->card ? $this->getCard()->toArray() : null,
+        ];
     }
 
     /**
@@ -363,7 +375,7 @@ class SimplePayment
      */
     public function wasPaid()
     {
-        return in_array($this->getState(), array('paid', 'partially_refunded', 'refunded'))
+        return in_array($this->getState(), ['paid', 'partially_refunded', 'refunded'])
             && $this->getFinishedAt() != null;
     }
 

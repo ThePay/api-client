@@ -1,10 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\Tests\Services;
 
-use ThePay\ApiClient\Http\HttpResponse;
+use GuzzleHttp\Psr7\HttpFactory;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Http\Client\ClientInterface;
 use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Service\ApiService;
+use ThePay\ApiClient\Service\SignatureService;
 use ThePay\ApiClient\Tests\BaseTestCase;
 
 /**
@@ -12,36 +18,34 @@ use ThePay\ApiClient\Tests\BaseTestCase;
  */
 final class ApiServiceTest extends BaseTestCase
 {
-    /** @var ApiService */
-    private $service;
+    private ApiService $service;
 
-    /** @var \Mockery\LegacyMockInterface|\ThePay\ApiClient\Http\HttpServiceInterface */
-    private $httpService;
+    /** @var MockObject&ClientInterface */
+    private MockObject $httpClient;
 
-    /**
-     * @return void
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        $this->httpService = \Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
-        /** @phpstan-ignore-next-line */
-        $this->service = new ApiService($this->config, $this->httpService);
+        $this->httpClient = $this->createMock(ClientInterface::class);
+        $httpFactory = new HttpFactory();
+        $this->service = new ApiService(
+            $this->config,
+            $this->createMock(SignatureService::class),
+            $this->httpClient,
+            $httpFactory,
+            $httpFactory
+        );
     }
 
-    /**
-     * @return void
-     */
-    public function testGetProjects()
+    public function testGetProjects(): void
     {
-        $expectedProjects = array(new Project(5, 'https://some-url', 'TP7711112006468461625654'));
+        $expectedProjects = [new Project(5, 'https://some-url', 'TP7711112006468461625654')];
         $mockBody = '[{"project_id":5,"project_url":"https://some-url","account_iban":"TP7711112006468461625654"}]';
 
-        call_user_func(array($this->httpService, 'shouldReceive'), 'get')
-            ->once()
-            ->andReturn(new HttpResponse(null, 200, 'OK', array(), $mockBody))
-        ;
+        $this->httpClient->expects(self::once())->method('sendRequest')->willReturn(
+            new Response(200, [], $mockBody)
+        );
 
         $projects = $this->service->getProjects();
 

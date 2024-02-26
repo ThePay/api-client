@@ -13,7 +13,7 @@ final class RealizePaymentBySavedAuthorizationParams implements SignableRequest
     private $amount;
 
     /** @var CreatePaymentItem[] */
-    private $items = array();
+    private $items = [];
 
     /** @var Identifier */
     private $uid;
@@ -114,12 +114,12 @@ final class RealizePaymentBySavedAuthorizationParams implements SignableRequest
      */
     public function toArray()
     {
-        $result = array(
+        $result = [
             'uid' => $this->uid->getValue(),
             'items' => null,
             'orderId' => $this->orderId,
             'descriptionForMerchant' => $this->descriptionForMerchant,
-        );
+        ];
 
         if ($this->items) {
             foreach ($this->items as $item) {
@@ -128,10 +128,10 @@ final class RealizePaymentBySavedAuthorizationParams implements SignableRequest
         }
 
         if ($this->amount) {
-            $result['value'] = array(
+            $result['value'] = [
                 'amount' => $this->amount->getValue(),
                 'currency' => $this->currencyCode->getValue(),
-            );
+            ];
         }
 
         return $result;

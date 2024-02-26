@@ -3,15 +3,20 @@
     "description": "API client for ThePay - payment gate API",
     "type": "library",
     "require": {
-        "php": "~5.3|~7.0|~8.0",
-        "ext-curl": "*",
-        "ext-json": "*"
+        "php": "~7.4|~8.0",
+        "ext-json": "*",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.0",
+        "psr/http-message": "^1.0|^2.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "*",
-        "mockery/mockery": "*",
+        "guzzlehttp/guzzle": "^7.7",
         "phpstan/phpstan": "^1.9",
-        "phpunit/phpunit": "~4.0"
+        "phpunit/phpunit": "^9.0"
+    },
+    "suggest": {
+        "guzzlehttp/guzzle": "Widly used implementation of PSR-7 (psr/http-message), PSR-17 (psr/http-factory) and PSR-18 (psr/http-client)"
     },
     "config": {
         "sort-packages": true
@@ -35,12 +40,6 @@
         ],
         "test": [
             "vendor/bin/phpunit tests --log-junit ./test-reports/junit.xml"
-        ],
-        "test81": [
-            "php -d \"error_reporting=E_ALL&~E_DEPRECATED\" vendor/bin/phpunit tests --log-junit ./test-reports/junit.xml"
-        ],
-        "stan7": [
-            "vendor/bin/phpstan analyse -c phpstan7.neon --memory-limit=1G"
         ],
         "stan": [
             "vendor/bin/phpstan analyse --memory-limit=1G"
