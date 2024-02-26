@@ -6,6 +6,23 @@ on:
             - "**"
 
 jobs:
+    php83:
+        name: "php 8.3"
+        runs-on: ubuntu-latest
+        container: "nofutur3/php-tests:8.3"
+        steps:
+            -   name: Checkout repository
+                uses: actions/checkout@v4
+
+            -   name: Install dependencies
+                run: composer install
+
+            -   name: Run static analysis
+                run: composer stan
+
+            -   name: Run tests
+                run: composer test
+
     php82:
         name: "php 8.2 psr/http-message 2.0"
         runs-on: ubuntu-latest
