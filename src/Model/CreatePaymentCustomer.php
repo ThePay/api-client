@@ -2,15 +2,14 @@
 
 namespace ThePay\ApiClient\Model;
 
+use InvalidArgumentException;
 use ThePay\ApiClient\ValueObject\PhoneNumber;
 use ThePay\ApiClient\ValueObject\StringValue;
 
 final class CreatePaymentCustomer
 {
-    /** @var StringValue|null */
-    private $name;
-    /** @var StringValue|null */
-    private $surname;
+    private string $name;
+    private string $surname;
     /** @var StringValue|null */
     private $email;
     /** @var PhoneNumber|null */
@@ -21,35 +20,33 @@ final class CreatePaymentCustomer
     private $shippingAddress;
 
     /**
-     * @param string|null $name
-     * @param string|null $surname
+     * @note At least one of $email and $phone is required.
+     *
      * @param string|null $email
      * @param string|null $phone - customer phone in international format max 15 numeric chars https://en.wikipedia.org/wiki/MSISDN
      */
-    public function __construct($name, $surname, $email, $phone, Address $billingAddress = null, Address $shippingAddress = null)
+    public function __construct(string $name, string $surname, $email, $phone, Address $billingAddress = null, Address $shippingAddress = null)
     {
-        $this->name = $name === null ? null : new StringValue($name);
-        $this->surname = $surname === null ? null : new StringValue($surname);
+        if ($email === null && $phone === null) {
+            throw new InvalidArgumentException('At least one of $email and $phone is required.');
+        }
+
+        $this->name = $name;
+        $this->surname = $surname;
         $this->email = $email === null ? null : new StringValue($email);
         $this->phone = $phone === null ? null : new PhoneNumber($phone);
         $this->billingAddress = $billingAddress;
         $this->shippingAddress = $shippingAddress;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getName()
+    public function getName(): string
     {
-        return $this->name === null ? null : $this->name->getValue();
+        return $this->name;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getSurname()
+    public function getSurname(): string
     {
-        return $this->surname === null ? null : $this->surname->getValue();
+        return $this->surname;
     }
 
     /**

@@ -40,8 +40,7 @@ final class CreatePaymentParams implements SignableRequest
     /** @var LanguageCode|null */
     private $languageCode;
 
-    /** @var CreatePaymentCustomer|null */
-    private $customer;
+    private CreatePaymentCustomer $customer;
 
     /** @var Subscription|null */
     private $subscription;
@@ -66,12 +65,12 @@ final class CreatePaymentParams implements SignableRequest
      * @param string $uid
      * @param string $languageCode - 2 letter lowercase language code
      */
-    public function __construct($amount, $currencyCode, $uid, $languageCode = null)
+    public function __construct($amount, $currencyCode, $uid, CreatePaymentCustomer $customer, $languageCode = null)
     {
         $this->amount = new Amount($amount);
         $this->currencyCode = new CurrencyCode($currencyCode);
         $this->uid = new Identifier($uid);
-        $this->customer = null;
+        $this->customer = $customer;
         if ($languageCode) {
             $this->languageCode = LanguageCode::create($languageCode);
         }
@@ -108,15 +107,6 @@ final class CreatePaymentParams implements SignableRequest
     public function getCustomer()
     {
         return $this->customer;
-    }
-
-    /**
-     * @return self
-     */
-    public function setCustomer(CreatePaymentCustomer $customer)
-    {
-        $this->customer = $customer;
-        return $this;
     }
 
     /**
@@ -385,36 +375,34 @@ final class CreatePaymentParams implements SignableRequest
         if ($this->languageCode) {
             $result['language_code'] = $this->languageCode->getValue();
         }
-        if ($this->customer) {
-            $result['customer'] = [
-                'name' => $this->customer->getName(),
-                'surname' => $this->customer->getSurname(),
-                'email' => $this->customer->getEmail(),
-                'phone' => $this->customer->getPhone(),
+
+        $result['customer'] = [
+            'name' => $this->customer->getName(),
+            'surname' => $this->customer->getSurname(),
+            'email' => $this->customer->getEmail(),
+            'phone' => $this->customer->getPhone(),
+        ];
+
+        $billingAddress = $this->customer->getBillingAddress();
+        if ($billingAddress) {
+            $result['customer']['billing_address'] = [
+                'country_code' => $billingAddress->getCountryCode(),
+                'city' => $billingAddress->getCity(),
+                'zip' => $billingAddress->getZip(),
+                'street' => $billingAddress->getStreet(),
             ];
-
-            $billingAddress = $this->customer->getBillingAddress();
-            if ($billingAddress) {
-                $result['customer']['billing_address'] = [
-                    'country_code' => $billingAddress->getCountryCode(),
-                    'city' => $billingAddress->getCity(),
-                    'zip' => $billingAddress->getZip(),
-                    'street' => $billingAddress->getStreet(),
-                ];
-            }
-
-            $shippingAddress = $this->customer->getShippingAddress();
-            if ($shippingAddress) {
-                $result['customer']['shipping_address'] = [
-                    'country_code' => $shippingAddress->getCountryCode(),
-                    'city' => $shippingAddress->getCity(),
-                    'zip' => $shippingAddress->getZip(),
-                    'street' => $shippingAddress->getStreet(),
-                ];
-            }
-        } else {
-            $result['customer'] = null;
         }
+
+        $shippingAddress = $this->customer->getShippingAddress();
+        if ($shippingAddress) {
+            $result['customer']['shipping_address'] = [
+                'country_code' => $shippingAddress->getCountryCode(),
+                'city' => $shippingAddress->getCity(),
+                'zip' => $shippingAddress->getZip(),
+                'street' => $shippingAddress->getStreet(),
+            ];
+        }
+
         if ($this->subscription) {
             $result['subscription'] = $this->subscription->toArray();
         }
