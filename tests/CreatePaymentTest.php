@@ -47,25 +47,25 @@ final class CreatePaymentTest extends BaseTestCase
     {
         return [
             [
-                new CreatePaymentParams(100, 'CZK', '202001010001'),
-                'eyJhbW91bnQiOjEwMCwiY3VycmVuY3lfY29kZSI6IkNaSyIsInVpZCI6IjIwMjAwMTAxMDAwMSIsImxhbmd1YWdlX2NvZGUiOiJjcyIsImlzX2RlcG9zaXQiOnRydWUsInNhdmVfYXV0aG9yaXphdGlvbiI6ZmFsc2UsImNhbl9jdXN0b21lcl9jaGFuZ2VfbWV0aG9kIjp0cnVlLCJtZXJjaGFudF9pZCI6Ijg2YTNlZWQwLTk1YTQtMTFlYS1hYzlmLTM3MWYzNDg4ZTBmYSIsInByb2plY3RfaWQiOjF9',
-                '1b3e432dec35da90a62653e2cb8ce2d75e4204a32d360c6366afd24509f5178c',
+                new CreatePaymentParams(100, 'CZK', '202001010001', self::getCreatePaymentCustomer()),
+                'eyJhbW91bnQiOjEwMCwiY3VycmVuY3lfY29kZSI6IkNaSyIsInVpZCI6IjIwMjAwMTAxMDAwMSIsImxhbmd1YWdlX2NvZGUiOiJjcyIsImlzX2RlcG9zaXQiOnRydWUsInNhdmVfYXV0aG9yaXphdGlvbiI6ZmFsc2UsImNhbl9jdXN0b21lcl9jaGFuZ2VfbWV0aG9kIjp0cnVlLCJjdXN0b21lcl9uYW1lIjoiTWlrZSIsImN1c3RvbWVyX3N1cm5hbWUiOiJTbWl0aCIsImN1c3RvbWVyX2VtYWlsIjoibWlrZS5zbWl0aEBleGFtcGxlLmNvbSIsImN1c3RvbWVyX3Bob25lIjoiNDIwNTg5Njg3OTYzIiwiY3VzdG9tZXJfYmlsbGluZ19jb3VudHJ5X2NvZGUiOiJDWiIsImN1c3RvbWVyX2JpbGxpbmdfY2l0eSI6IlByYWd1ZSIsImN1c3RvbWVyX2JpbGxpbmdfemlwIjoiMTIzIDAwIiwiY3VzdG9tZXJfYmlsbGluZ19zdHJlZXQiOiJEb3duc3RyZWV0IDUiLCJtZXJjaGFudF9pZCI6Ijg2YTNlZWQwLTk1YTQtMTFlYS1hYzlmLTM3MWYzNDg4ZTBmYSIsInByb2plY3RfaWQiOjF9',
+                'bbad8c591d54fa52353f680363129a9949c6de23659140a36fc799d762a92a80',
             ],
             [
-                new CreatePaymentParams(100, 'EUR', '202001010002'),
-                'eyJhbW91bnQiOjEwMCwiY3VycmVuY3lfY29kZSI6IkVVUiIsInVpZCI6IjIwMjAwMTAxMDAwMiIsImxhbmd1YWdlX2NvZGUiOiJjcyIsImlzX2RlcG9zaXQiOnRydWUsInNhdmVfYXV0aG9yaXphdGlvbiI6ZmFsc2UsImNhbl9jdXN0b21lcl9jaGFuZ2VfbWV0aG9kIjp0cnVlLCJtZXJjaGFudF9pZCI6Ijg2YTNlZWQwLTk1YTQtMTFlYS1hYzlmLTM3MWYzNDg4ZTBmYSIsInByb2plY3RfaWQiOjF9',
-                'b97e2a7c037c5d31a7db734d1ca84e06f53db5841fe9e56bdc701a833208f987',
+                new CreatePaymentParams(100, 'EUR', '202001010002', self::getCreatePaymentCustomer()),
+                'eyJhbW91bnQiOjEwMCwiY3VycmVuY3lfY29kZSI6IkVVUiIsInVpZCI6IjIwMjAwMTAxMDAwMiIsImxhbmd1YWdlX2NvZGUiOiJjcyIsImlzX2RlcG9zaXQiOnRydWUsInNhdmVfYXV0aG9yaXphdGlvbiI6ZmFsc2UsImNhbl9jdXN0b21lcl9jaGFuZ2VfbWV0aG9kIjp0cnVlLCJjdXN0b21lcl9uYW1lIjoiTWlrZSIsImN1c3RvbWVyX3N1cm5hbWUiOiJTbWl0aCIsImN1c3RvbWVyX2VtYWlsIjoibWlrZS5zbWl0aEBleGFtcGxlLmNvbSIsImN1c3RvbWVyX3Bob25lIjoiNDIwNTg5Njg3OTYzIiwiY3VzdG9tZXJfYmlsbGluZ19jb3VudHJ5X2NvZGUiOiJDWiIsImN1c3RvbWVyX2JpbGxpbmdfY2l0eSI6IlByYWd1ZSIsImN1c3RvbWVyX2JpbGxpbmdfemlwIjoiMTIzIDAwIiwiY3VzdG9tZXJfYmlsbGluZ19zdHJlZXQiOiJEb3duc3RyZWV0IDUiLCJtZXJjaGFudF9pZCI6Ijg2YTNlZWQwLTk1YTQtMTFlYS1hYzlmLTM3MWYzNDg4ZTBmYSIsInByb2plY3RfaWQiOjF9',
+                '157e1ed8af669621b3c5aafd68b0323100c924cc24b3c719f25c3321a7330cf4',
             ],
         ];
     }
 
     public function testCreateCustomButton(): void
     {
-        $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010003'));
+        $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010003', self::getCreatePaymentCustomer()));
         self::assertStringContainsString('Pay!', $r);
         self::assertStringContainsString('class="tp-btn"', $r);
         self::assertStringNotContainsString('data-payment-method', $r);
-        $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010004'), 'Zaplatit!', true, 'bitcoin', ['class' => 'btn btn-success']);
+        $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010004', self::getCreatePaymentCustomer()), 'Zaplatit!', true, 'bitcoin', ['class' => 'btn btn-success']);
         self::assertStringContainsString('Zaplatit!', $r);
         self::assertStringContainsString('class="tp-btn btn btn-success"', $r);
         self::assertStringContainsString('data-payment-method="bitcoin"', $r);
@@ -109,7 +109,7 @@ final class CreatePaymentTest extends BaseTestCase
             ]),
         ]));
 
-        $result = $this->client->getPaymentButtons(new CreatePaymentParams(100, 'CZK', '202001010005'));
+        $result = $this->client->getPaymentButtons(new CreatePaymentParams(100, 'CZK', '202001010005', self::getCreatePaymentCustomer()));
 
         self::assertIsString($result);
 
@@ -132,23 +132,11 @@ final class CreatePaymentTest extends BaseTestCase
 
     public function testCreateApiPayment(): void
     {
-        // Create entity with information about customer
-        $customer = new CreatePaymentCustomer(
-            'Mike',
-            'Smith',
-            'mike.smith@example.com',
-            // Phone number in international format max 15 numeric chars https://en.wikipedia.org/wiki/MSISDN
-            '420589687963',
-            // Create billing address
-            new Address('CZ', 'Prague', '123 00', 'Downstreet 5')
-        );
-
         // Create payment (105.20 € with unique id uid123)
-        $createPayment = new CreatePaymentParams(100, 'CZK', 'uid123');
+        $createPayment = new CreatePaymentParams(100, 'CZK', 'uid123', self::getCreatePaymentCustomer());
         $createPayment->setOrderId('15478');
         $createPayment->setDescriptionForCustomer('Payment for items on example.com');
         $createPayment->setDescriptionForMerchant('Payment from VIP customer XYZ');
-        $createPayment->setCustomer($customer);
 
         $this->apiService->method('createPayment')->willReturn(
             new CreatePaymentResponse(
@@ -162,5 +150,18 @@ final class CreatePaymentTest extends BaseTestCase
         $result = $this->client->createPayment($createPayment);
 
         self::assertSame(CreatePaymentResponse::class, get_class($result));
+    }
+
+    private static function getCreatePaymentCustomer(): CreatePaymentCustomer
+    {
+        return new CreatePaymentCustomer(
+            'Mike',
+            'Smith',
+            'mike.smith@example.com',
+            // Phone number in international format max 15 numeric chars https://en.wikipedia.org/wiki/MSISDN
+            '420589687963',
+            // Create billing address
+            new Address('CZ', 'Prague', '123 00', 'Downstreet 5')
+        );
     }
 }

@@ -17,11 +17,10 @@ $customer = new \ThePay\ApiClient\Model\CreatePaymentCustomer(
 );
 
 // Create payment (105.20 € with unique id uid123)
-$createPayment = new \ThePay\ApiClient\Model\CreatePaymentParams(10520, 'EUR', 'uid123');
+$createPayment = new \ThePay\ApiClient\Model\CreatePaymentParams(10520, 'EUR', 'uid123', $customer);
 $createPayment->setOrderId('15478');
 $createPayment->setDescriptionForCustomer('Payment for items on example.com');
 $createPayment->setDescriptionForMerchant('Payment from VIP customer XYZ');
-$createPayment->setCustomer($customer);
 
 $payment = $thePayClient->createPayment($createPayment);
 
@@ -34,7 +33,8 @@ echo $payment->getPayUrl(); // https://demo.gate.thepay.cz/5aa4f4af546a74848/pay
 In scenarios where you know the customer's preferred language, you can pass the language code in `CreatePaymentParams` constructor as the fourth argument. For example:
 
 ```php
-$createPayment = new \ThePay\ApiClient\Model\CreatePaymentParams(10520, 'EUR', 'uid123', 'en');
+/** @var \ThePay\ApiClient\Model\CreatePaymentParams $customer */
+$createPayment = new \ThePay\ApiClient\Model\CreatePaymentParams(10520, 'EUR', 'uid123', $customer, 'en');
 ```
 
 Possible values are described in ISO 639-1 standard. If you pass a language, that ThePay does not support, for example French (fr), then the English language will be used,
