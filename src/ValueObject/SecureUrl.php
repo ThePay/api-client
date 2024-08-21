@@ -1,43 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\ValueObject;
 
-/**
- * @extends BaseValueObject<string>
- */
-final class SecureUrl extends BaseValueObject
+class SecureUrl extends Url
 {
-    /** @var string */
-    private $url;
-
-    /**
-     * @param string $url
-     */
-    public function __construct($url)
+    protected static function filter($value)
     {
-        if ( ! filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new \InvalidArgumentException('Url is in incorrect format');
-        }
-        if (strpos($url, 'https://') !== 0) {
-            throw new \InvalidArgumentException('Url must start with "https://"');
+        $secureUrlCandidate = parent::filter($value);
+
+        if (strpos($secureUrlCandidate, 'https://') !== 0) {
+            throw self::invalidValue('"https://" prefixed URL', $secureUrlCandidate);
         }
 
-        $this->url = $url;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->getValue();
-    }
-
-    /**
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->url;
+        return $secureUrlCandidate;
     }
 }

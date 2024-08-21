@@ -1,42 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\ValueObject;
 
-use InvalidArgumentException;
-
-/**
- * @extends BaseValueObject<string>
- */
-final class Url extends BaseValueObject
+class Url extends NonEmptyString
 {
-    /** @var string */
-    private $url;
-
-    /**
-     * @param string $url
-     */
-    public function __construct($url)
+    protected static function filter($value)
     {
-        $url = trim($url);
-        if ( ! filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new InvalidArgumentException('Url is in incorrect format');
+        $nonEmptyString = parent::filter($value);
+        $urlCandidate = filter_var($nonEmptyString, FILTER_VALIDATE_URL);
+
+        if ($urlCandidate === false) {
+            throw self::invalidValue('URL', $nonEmptyString);
         }
-        $this->url = $url;
-    }
 
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return (string) $this->getValue();
-    }
-
-    /**
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->url;
+        return $urlCandidate;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\ValueObject;
 
 final class PaymentRefundState extends EnumValueObject
@@ -8,10 +10,7 @@ final class PaymentRefundState extends EnumValueObject
     public const RETURNED = 'returned';
     public const DECLINED = 'declined';
 
-    /**
-     * @return string[]
-     */
-    public static function getOptions()
+    public static function cases(): array
     {
         return [
             self::WAITING,

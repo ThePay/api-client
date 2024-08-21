@@ -1,43 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\ValueObject;
 
-use InvalidArgumentException;
-
-/**
- * @extends BaseValueObject<string>
- */
-final class Identifier extends BaseValueObject
+class Identifier extends NonEmptyString
 {
-    /**
-     * Uid constructor.
-     *
-     * @param string $value
-     */
-    public function __construct($value)
-    {
-        $value = trim($value);
+    public const STRLEN_MAX = 100;
 
-        if (strlen($value) > 100) {
-            throw new InvalidArgumentException('Value\'s length has to be up to 100 characters');
+    protected static function filter($value)
+    {
+        $nonEmptyString = parent::filter($value);
+        $identifierCandidate = trim($nonEmptyString);
+
+        if (strlen($identifierCandidate) > self::STRLEN_MAX) {
+            throw self::invalidValue(sprintf('up to %d characters', self::STRLEN_MAX), $nonEmptyString);
         }
 
-        $this->value = (string) $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->value;
+        return $identifierCandidate;
     }
 }

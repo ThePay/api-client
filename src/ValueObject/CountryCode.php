@@ -1,37 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\ValueObject;
 
-/**
- * @extends BaseValueObject<string>
- */
-final class CountryCode extends BaseValueObject
+class CountryCode extends NonEmptyString
 {
-    /**
-     * @param string $value
-     */
-    public function __construct($value)
+    protected static function filter($value)
     {
-        if ( ! is_string($value) || ! preg_match('/[A-Z]{2}/', $value)) {
-            throw new \InvalidArgumentException('Value `' . $value . '` is not valid ISO 3166-1 (alpha-2) country code');
+        $nonEmptyString = parent::filter($value);
+        $countryCodeCandidate = trim($nonEmptyString);
+
+        if (preg_match('/^[A-Z]{2}$/', $countryCodeCandidate) !== 1) {
+            throw self::invalidValue('ISO 3166-1 (alpha-2) country code', $nonEmptyString);
         }
 
-        $this->value = $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->value;
+        return $countryCodeCandidate;
     }
 }

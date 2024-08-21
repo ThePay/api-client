@@ -1,43 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\ValueObject;
 
-use InvalidArgumentException;
-
-/**
- * @extends BaseValueObject<string>
- */
-final class CurrencyCode extends BaseValueObject
+class CurrencyCode extends NonEmptyString
 {
-    /**
-     * CurrencyCode constructor.
-     *
-     * @param string $value
-     */
-    public function __construct($value)
+    protected static function filter($value)
     {
-        $value = trim($value);
+        $nonEmptyString = parent::filter($value);
+        $currencyCodeCandidate = trim($nonEmptyString);
 
-        if (strlen($value) !== 3) {
-            throw new InvalidArgumentException('Value `' . $value . '` is not valid ISO 4217 currency code');
+        if (preg_match('/^[A-Z]{3}$/', $currencyCodeCandidate) !== 1) {
+            throw self::invalidValue('ISO 4217 currency code', $nonEmptyString);
         }
 
-        $this->value = $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return (string) $this->value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->value;
+        return $currencyCodeCandidate;
     }
 }

@@ -16,24 +16,24 @@ final class EmailAddressTest extends BaseValueObjectTestCase
     /**
      * @see https://uasg.tech/download/uasg-004-use-cases-for-ua-readiness-evaluation-en/
      */
-    public static function validValuesAndStringRepresentationsDataProvider(): array
+    public static function validValueFilteredValueAndStringValueDataProvider(): array
     {
         return [
             // user part
-            ['user@universal-acceptance-test.icu', 'user@universal-acceptance-test.icu'],
-            ['user+label@universal-acceptance-test.icu', 'user+label@universal-acceptance-test.icu'],
+            ['user@universal-acceptance-test.icu', 'user@universal-acceptance-test.icu', 'user@universal-acceptance-test.icu'],
+            ['user+label@universal-acceptance-test.icu', 'user+label@universal-acceptance-test.icu', 'user+label@universal-acceptance-test.icu'],
             // domain part
-            ['ascii+short@universal-acceptance-test.icu', 'ascii+short@universal-acceptance-test.icu'],
-            ['ascii+long@universal-acceptance-test.international', 'ascii+long@universal-acceptance-test.international'],
-            ['idn+ltr@համընդհանուր-ընկալում-թեստ.հայ', 'idn+ltr@համընդհանուր-ընկալում-թեստ.հայ'],
-            ['idn+rtl@تجربة-القبول-الشامل.موريتانيا', 'idn+rtl@تجربة-القبول-الشامل.موريتانيا'],
+            ['ascii+short@universal-acceptance-test.icu', 'ascii+short@universal-acceptance-test.icu', 'ascii+short@universal-acceptance-test.icu'],
+            ['ascii+long@universal-acceptance-test.international', 'ascii+long@universal-acceptance-test.international', 'ascii+long@universal-acceptance-test.international'],
+            ['idn+ltr@համընդհանուր-ընկալում-թեստ.հայ', 'idn+ltr@համընդհանուր-ընկալում-թեստ.հայ', 'idn+ltr@համընդհանուր-ընկալում-թեստ.հայ'],
+            ['idn+rtl@تجربة-القبول-الشامل.موريتانيا', 'idn+rtl@تجربة-القبول-الشامل.موريتانيا', 'idn+rtl@تجربة-القبول-الشامل.موريتانيا'],
         ];
     }
 
-    public static function invalidValuesAndExceptionMessagesDataProvider(): array
+    public static function invalidValueAndExceptionMessageDataProvider(): array
     {
         return array_merge(
-            NonEmptyStringTest::invalidValuesAndExceptionMessagesDataProvider(),
+            NonEmptyStringTest::invalidValueAndExceptionMessageDataProvider(),
             [
                 ['something', 'Value "something" is not public e-mail address'],
                 ['user@example.com', 'Value "user@example.com" is not public e-mail address'],

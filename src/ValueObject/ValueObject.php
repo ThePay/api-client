@@ -1,14 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\ValueObject;
 
 interface ValueObject
 {
-    /**
-     * @param mixed $value
-     */
-    public function __construct($value);
-
     /**
      * @return string
      */
@@ -26,6 +23,7 @@ interface ValueObject
 
     /**
      * @param mixed $value
+     *
      * @return static
      */
     public static function create($value);

@@ -11,11 +11,12 @@ use ThePay\ApiClient\ValueObject\BaseValueObject;
 abstract class BaseValueObjectTestCase extends TestCase
 {
     /**
-     * @dataProvider validValuesAndStringRepresentationsDataProvider
+     * @dataProvider validValueFilteredValueAndStringValueDataProvider
      *
      * @param mixed $value
+     * @param mixed $filteredValue
      */
-    public function testCreatesWorkingInstanceWithValidValue($value, string $stringRepresentation): void
+    public function testCreatesWorkingInstanceWithValidValue($value, $filteredValue, string $stringValue): void
     {
         $className = static::getClassName();
         $a = $className::create($value);
@@ -23,12 +24,12 @@ abstract class BaseValueObjectTestCase extends TestCase
 
         self::assertTrue($a->equals($b));
         self::assertTrue($b->equals($a));
-        self::assertSame($value, $a->getValue());
-        self::assertSame($stringRepresentation, (string) $a);
+        self::assertSame($filteredValue, $a->getValue());
+        self::assertSame($stringValue, (string) $a);
     }
 
     /**
-     * @dataProvider invalidValuesAndExceptionMessagesDataProvider
+     * @dataProvider invalidValueAndExceptionMessageDataProvider
      *
      * @param mixed $value
      */
@@ -49,10 +50,10 @@ abstract class BaseValueObjectTestCase extends TestCase
     /**
      * @return array<array<mixed|string>>|array<string, array<mixed|string>>
      */
-    abstract public static function validValuesAndStringRepresentationsDataProvider(): array;
+    abstract public static function validValueFilteredValueAndStringValueDataProvider(): array;
 
     /**
      * @return array<array<mixed|string>>|array<string, array<mixed|string>>
      */
-    abstract public static function invalidValuesAndExceptionMessagesDataProvider(): array;
+    abstract public static function invalidValueAndExceptionMessageDataProvider(): array;
 }

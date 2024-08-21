@@ -1,17 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\ValueObject;
 
-class SubscriptionType extends EnumValueObject
+final class SubscriptionType extends EnumValueObject
 {
     public const REGULAR = 'regular';
     public const USAGE_BASED = 'usagebased';
     public const IRREGULAR = 'irregular';
 
-    /**
-     * @return string[]
-     */
-    public static function getOptions()
+    public static function cases(): array
     {
         return [
             self::REGULAR,
