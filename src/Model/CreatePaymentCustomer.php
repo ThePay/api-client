@@ -3,16 +3,17 @@
 namespace ThePay\ApiClient\Model;
 
 use InvalidArgumentException;
+use ThePay\ApiClient\ValueObject\EmailAddress;
+use ThePay\ApiClient\ValueObject\NonEmptyString;
 use ThePay\ApiClient\ValueObject\PhoneNumber;
-use ThePay\ApiClient\ValueObject\StringValue;
 
 final class CreatePaymentCustomer
 {
     private string $name;
     private string $surname;
-    /** @var StringValue|null */
+    /** @var string|null */
     private $email;
-    /** @var PhoneNumber|null */
+    /** @var string|null */
     private $phone;
     /** @var Address|null */
     private $billingAddress;
@@ -31,10 +32,10 @@ final class CreatePaymentCustomer
             throw new InvalidArgumentException('At least one of $email and $phone is required.');
         }
 
-        $this->name = $name;
-        $this->surname = $surname;
-        $this->email = $email === null ? null : new StringValue($email);
-        $this->phone = $phone === null ? null : new PhoneNumber($phone);
+        $this->name = (new NonEmptyString($name))->getValue();
+        $this->surname = (new NonEmptyString($surname))->getValue();
+        $this->email = $email === null ? null : (new EmailAddress($email))->getValue();
+        $this->phone = $phone === null ? null : (new PhoneNumber($phone))->getValue();
         $this->billingAddress = $billingAddress;
         $this->shippingAddress = $shippingAddress;
     }
@@ -54,7 +55,7 @@ final class CreatePaymentCustomer
      */
     public function getEmail()
     {
-        return $this->email === null ? null : $this->email->getValue();
+        return $this->email;
     }
 
     /**
@@ -62,7 +63,7 @@ final class CreatePaymentCustomer
      */
     public function getPhone()
     {
-        return $this->phone === null ? null : $this->phone->getValue();
+        return $this->phone;
     }
 
     /**

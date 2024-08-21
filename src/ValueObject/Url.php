@@ -4,6 +4,9 @@ namespace ThePay\ApiClient\ValueObject;
 
 use InvalidArgumentException;
 
+/**
+ * @extends BaseValueObject<string>
+ */
 final class Url extends BaseValueObject
 {
     /** @var string */

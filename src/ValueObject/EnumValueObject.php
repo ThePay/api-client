@@ -2,11 +2,11 @@
 
 namespace ThePay\ApiClient\ValueObject;
 
+/**
+ * @extends BaseValueObject<string>
+ */
 abstract class EnumValueObject extends BaseValueObject
 {
-    /** @var string */
-    protected $value;
-
     /**
      * @param string $value
      */

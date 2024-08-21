@@ -4,11 +4,11 @@ namespace ThePay\ApiClient\ValueObject;
 
 use InvalidArgumentException;
 
+/**
+ * @extends BaseValueObject<string>
+ */
 final class LanguageCode extends BaseValueObject
 {
-    /** @var string */
-    private $value;
-
     /**
      * CurrencyCode constructor.
      *

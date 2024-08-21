@@ -4,6 +4,9 @@ namespace ThePay\ApiClient\ValueObject;
 
 use InvalidArgumentException;
 
+/**
+ * @extends BaseValueObject<string>
+ */
 final class PhoneNumber extends BaseValueObject
 {
     /** @var string */

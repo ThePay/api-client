@@ -2,6 +2,9 @@
 
 namespace ThePay\ApiClient\ValueObject;
 
+/**
+ * @extends BaseValueObject<string>
+ */
 final class SecureUrl extends BaseValueObject
 {
     /** @var string */
