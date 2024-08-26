@@ -13,12 +13,20 @@ final class EmailAddressTest extends BaseValueObjectTestCase
         return EmailAddress::class;
     }
 
+    /**
+     * @see https://uasg.tech/download/uasg-004-use-cases-for-ua-readiness-evaluation-en/
+     */
     public static function validValuesAndStringRepresentationsDataProvider(): array
     {
         return [
-            ['user@example.com', 'user@example.com'],
-            ['user+label@example.com', 'user+label@example.com'],
-            ['idn@测试假域名.com', 'idn@测试假域名.com'],
+            // user part
+            ['user@universal-acceptance-test.icu', 'user@universal-acceptance-test.icu'],
+            ['user+label@universal-acceptance-test.icu', 'user+label@universal-acceptance-test.icu'],
+            // domain part
+            ['ascii+short@universal-acceptance-test.icu', 'ascii+short@universal-acceptance-test.icu'],
+            ['ascii+long@universal-acceptance-test.international', 'ascii+long@universal-acceptance-test.international'],
+            ['idn+ltr@համընդհանուր-ընկալում-թեստ.հայ', 'idn+ltr@համընդհանուր-ընկալում-թեստ.հայ'],
+            ['idn+rtl@تجربة-القبول-الشامل.موريتانيا', 'idn+rtl@تجربة-القبول-الشامل.موريتانيا'],
         ];
     }
 
@@ -27,7 +35,9 @@ final class EmailAddressTest extends BaseValueObjectTestCase
         return array_merge(
             NonEmptyStringTest::invalidValuesAndExceptionMessagesDataProvider(),
             [
-                ['foo', 'Value "foo" is not e-mail address'],
+                ['something', 'Value "something" is not public e-mail address'],
+                ['user@example.com', 'Value "user@example.com" is not public e-mail address'],
+                ['user@domain.internal', 'Value "user@domain.internal" is not public e-mail address'],
             ],
         );
     }

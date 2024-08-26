@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\ValueObject;
 
 use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\DNSCheckValidation;
+use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 use Egulias\EmailValidator\Validation\RFCValidation;
 
 class EmailAddress extends NonEmptyString
@@ -11,8 +15,11 @@ class EmailAddress extends NonEmptyString
     {
         $nonEmptyString = parent::filter($value);
 
-        if ((new EmailValidator())->isValid($nonEmptyString, new RFCValidation()) === false) {
-            throw self::invalidValue('e-mail address', $nonEmptyString);
+        if ((new EmailValidator())->isValid($nonEmptyString, new MultipleValidationWithAnd([
+            new RFCValidation(),
+            new DNSCheckValidation(),
+        ])) === false) {
+            throw self::invalidValue('public e-mail address', $nonEmptyString);
         }
 
         return $nonEmptyString;
