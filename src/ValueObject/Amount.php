@@ -4,11 +4,11 @@ namespace ThePay\ApiClient\ValueObject;
 
 use InvalidArgumentException;
 
+/**
+ * @extends BaseValueObject<int>
+ */
 final class Amount extends BaseValueObject
 {
-    /** @var int */
-    private $value;
-
     /**
      * Amount constructor.
      *

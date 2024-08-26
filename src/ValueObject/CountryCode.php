@@ -2,11 +2,11 @@
 
 namespace ThePay\ApiClient\ValueObject;
 
+/**
+ * @extends BaseValueObject<string>
+ */
 final class CountryCode extends BaseValueObject
 {
-    /** @var string */
-    private $value;
-
     /**
      * @param string $value
      */

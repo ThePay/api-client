@@ -4,11 +4,11 @@ namespace ThePay\ApiClient\ValueObject;
 
 use InvalidArgumentException;
 
+/**
+ * @extends BaseValueObject<string>
+ */
 final class Identifier extends BaseValueObject
 {
-    /** @var string */
-    private $value;
-
     /**
      * Uid constructor.
      *

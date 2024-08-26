@@ -9,7 +9,7 @@ Example with optional detail information about customer.
 $customer = new \ThePay\ApiClient\Model\CreatePaymentCustomer(
     'Mike',
     'Smith',
-    'mike.smith@example.com',
+    'mike.smith@universal-acceptance-test.icu',
     // Phone number in international format max 15 numeric chars https://en.wikipedia.org/wiki/MSISDN
     '420589687963',
     // Create billing address

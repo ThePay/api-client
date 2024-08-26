@@ -2,33 +2,22 @@
 
 namespace ThePay\ApiClient\ValueObject;
 
-final class StringValue extends BaseValueObject
+/**
+ * @extends BaseValueObject<string>
+ */
+class StringValue extends BaseValueObject
 {
-    /** @var string */
-    private $value;
-
-    public function __construct($value)
-    {
-        if ( ! is_string($value)) {
-            throw new \InvalidArgumentException('type of value: ' . (string) $value . ' is not string');
-        }
-
-        $this->value = $value;
-    }
-
-    /**
-     * @return string
-     */
     public function __toString()
     {
         return $this->value;
     }
 
-    /**
-     * @return string
-     */
-    public function getValue()
+    protected static function filter($value)
     {
-        return $this->value;
+        if ( ! is_string($value)) {
+            throw self::invalidValue('string');
+        }
+
+        return $value;
     }
 }
