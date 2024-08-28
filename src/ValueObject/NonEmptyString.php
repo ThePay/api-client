@@ -8,12 +8,12 @@ class NonEmptyString extends StringValue
 {
     protected static function filter($value)
     {
-        $string = parent::filter($value);
+        $nonEmptyStringCandidate = parent::filter($value);
 
-        if (trim($string) === '') {
-            throw self::invalidValue('non-empty string', $string);
+        if (trim($nonEmptyStringCandidate) === '') {
+            throw self::invalidValue('non-empty string', $nonEmptyStringCandidate);
         }
 
-        return $string;
+        return $nonEmptyStringCandidate;
     }
 }

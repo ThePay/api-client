@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace ThePay\ApiClient\Tests\ValueObject;
 
-use ThePay\ApiClient\ValueObject\NonEmptyString;
-
-final class NonEmptyStringTest extends BaseValueObjectTestCase
+final class EnumValueObjectTest extends BaseValueObjectTestCase
 {
     protected static function getClassName(): string
     {
-        return NonEmptyString::class;
+        return TestedEnumValueObject::class;
     }
 
     public static function validValueFilteredValueAndStringValueDataProvider(): array
     {
         return [
-            ['non-empty string', 'non-empty string', 'non-empty string'],
+            [TestedEnumValueObject::CASE, 'case', 'case'],
         ];
     }
 
@@ -25,8 +23,7 @@ final class NonEmptyStringTest extends BaseValueObjectTestCase
         return array_merge(
             StringValueTest::invalidValueAndExceptionMessageDataProvider(),
             [
-                ['', 'Value "" is not non-empty string'],
-                [' ', 'Value " " is not non-empty string'],
+                ['not case', 'Value "not case" is not case'],
             ],
         );
     }

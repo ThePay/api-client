@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\ValueObject;
 
 /**
@@ -17,10 +19,7 @@ final class PaymentMethodTag extends EnumValueObject
     public const ALTERNATIVE_METHOD = 'alternative_method';
     public const DEFERRED_PAYMENT = 'deferred_payment';
 
-    /**
-     * @return string[]
-     */
-    public static function getOptions()
+    public static function cases(): array
     {
         return [
             self::RETURNABLE,

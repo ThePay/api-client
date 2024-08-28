@@ -14,14 +14,15 @@ class EmailAddress extends NonEmptyString
     public static function filter($value)
     {
         $nonEmptyString = parent::filter($value);
+        $emailAddressCandidate = trim($nonEmptyString);
 
-        if ((new EmailValidator())->isValid($nonEmptyString, new MultipleValidationWithAnd([
+        if ((new EmailValidator())->isValid($emailAddressCandidate, new MultipleValidationWithAnd([
             new RFCValidation(),
             new DNSCheckValidation(),
         ])) === false) {
             throw self::invalidValue('public e-mail address', $nonEmptyString);
         }
 
-        return $nonEmptyString;
+        return $emailAddressCandidate;
     }
 }

@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\ValueObject;
 
-class PaymentState extends EnumValueObject
+final class PaymentState extends EnumValueObject
 {
     public const EXPIRED = 'expired';
     public const PAID = 'paid';
@@ -14,10 +16,7 @@ class PaymentState extends EnumValueObject
     public const WAITING_FOR_PAYMENT = 'waiting_for_payment';
     public const WAITING_FOR_CONFIRMATION = 'waiting_for_confirmation';
 
-    /**
-     * @return string[]
-     */
-    public static function getOptions()
+    public static function cases(): array
     {
         return [
             self::EXPIRED,

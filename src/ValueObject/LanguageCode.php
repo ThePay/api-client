@@ -1,44 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\ValueObject;
 
-use InvalidArgumentException;
-
-/**
- * @extends BaseValueObject<string>
- */
-final class LanguageCode extends BaseValueObject
+class LanguageCode extends NonEmptyString
 {
-    /**
-     * CurrencyCode constructor.
-     *
-     * @param string $value
-     */
-    public function __construct($value)
+    protected static function filter($value)
     {
-        $value = trim($value);
+        $nonEmptyString = parent::filter($value);
+        $languageCodeCandidate = trim($nonEmptyString);
 
-        if (strlen($value) !== 2) {
-            throw new InvalidArgumentException('Value `' . $value . '` is not valid ISO 6391 language code');
+        if (preg_match('/^[a-z]{2}$/', $languageCodeCandidate) !== 1) {
+            throw self::invalidValue('ISO 6391 language code', $nonEmptyString);
         }
 
-        $this->value = $value;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return (string) $this->value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->value;
+        return $languageCodeCandidate;
     }
 }

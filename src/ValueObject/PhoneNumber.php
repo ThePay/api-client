@@ -1,44 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\ValueObject;
 
-use InvalidArgumentException;
-
-/**
- * @extends BaseValueObject<string>
- */
-final class PhoneNumber extends BaseValueObject
+class PhoneNumber extends NonEmptyString
 {
-    /** @var string */
-    private $phone;
-
-    /**
-     * @param string $phone
-     */
-    public function __construct($phone)
+    protected static function filter($value)
     {
-        $phone = str_replace(['+', ' '], '', $phone);
+        $nonEmptyString = parent::filter($value);
+        $phoneNumberCandidate = ltrim(str_replace(' ', '', $nonEmptyString), '+0');
 
-        if ( ! preg_match('@^\d{1,15}$@', $phone)) {
-            throw new InvalidArgumentException('Phone number: "' . $phone . '" is not in correct MSISDN format.');
+        if (preg_match('/^\d{1,15}$/', $phoneNumberCandidate) !== 1) {
+            throw self::invalidValue('phone number in MSISDN format', $nonEmptyString);
         }
 
-        $this->phone = $phone;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->phone;
-    }
-
-    /**
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->phone;
+        return $phoneNumberCandidate;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ThePay\ApiClient\ValueObject;
 
 use InvalidArgumentException;
@@ -15,17 +17,17 @@ abstract class BaseValueObject implements ValueObject
     protected $value;
 
     /**
-     * @param TValue|mixed $value
+     * @param mixed $value
      *
      * @throws InvalidArgumentException
      */
-    public function __construct($value)
+    final public function __construct($value)
     {
         $this->value = static::filter($value);
     }
 
     /**
-     * @param TValue|mixed $value
+     * @param mixed $value
      *
      * @return static
      *
@@ -57,18 +59,13 @@ abstract class BaseValueObject implements ValueObject
     }
 
     /**
-     * @note should be abstract
-     *
-     * @param TValue|mixed $value
+     * @param mixed $value
      *
      * @return TValue
      *
      * @throws InvalidArgumentException
      */
-    protected static function filter($value)
-    {
-        throw self::invalidValue('expected');
-    }
+    abstract protected static function filter($value);
 
     protected static function invalidValue(string $expected, ?string $actual = null): InvalidArgumentException
     {

@@ -38,7 +38,7 @@ final class TheConfigTest extends BaseTestCase
     public function testInvalidLanguageCodeInConfig(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Value `wtf` is not valid ISO 6391 language code');
+        $this->expectExceptionMessage('Value "wtf" is not ISO 6391 language code');
 
         $this->config->setLanguage('wtf');
     }
