@@ -160,7 +160,7 @@ final class CreatePaymentParams implements SignableRequest
      *
      * @return CreatePaymentParams
      */
-    public function setSubscription(Subscription $subscription = null)
+    public function setSubscription(?Subscription $subscription = null)
     {
         $this->subscription = $subscription;
 

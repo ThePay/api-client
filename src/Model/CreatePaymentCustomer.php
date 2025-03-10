@@ -26,7 +26,7 @@ final class CreatePaymentCustomer
      * @param string|null $email
      * @param string|null $phone - customer phone in international format max 15 numeric chars https://en.wikipedia.org/wiki/MSISDN
      */
-    public function __construct($name, $surname, $email, $phone, Address $billingAddress = null, Address $shippingAddress = null)
+    public function __construct($name, $surname, $email, $phone, ?Address $billingAddress = null, ?Address $shippingAddress = null)
     {
         $this->name = $name === null ? null : new StringValue($name);
         $this->surname = $surname === null ? null : new StringValue($surname);
