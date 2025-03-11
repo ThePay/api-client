@@ -133,7 +133,7 @@ class ApiService implements ApiServiceInterface
      *
      * @return array<AccountBalance>
      */
-    public function getAccountsBalances(StringValue $accountIban = null, $projectId = null, \DateTime $balanceAt = null)
+    public function getAccountsBalances(?StringValue $accountIban = null, $projectId = null, ?\DateTime $balanceAt = null)
     {
         $arguments = [];
         if ($accountIban !== null) {
@@ -480,7 +480,7 @@ class ApiService implements ApiServiceInterface
      *
      * @throws ApiException if payment is not paid yet
      */
-    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null): string
+    public function generatePaymentConfirmationPdf(Identifier $uid, ?LanguageCode $languageCode = null): string
     {
         $arguments = [];
         if ($languageCode !== null) {

@@ -110,7 +110,7 @@ class GateService implements GateServiceInterface
      * @param Identifier $uid UID of payment
      * @return string HTML
      */
-    public function getPaymentButtonsForPayment(Identifier $uid, LanguageCode $languageCode = null)
+    public function getPaymentButtonsForPayment(Identifier $uid, ?LanguageCode $languageCode = null)
     {
         $paymentMethods = $this->api->getPaymentUrlsForPayment($uid, $languageCode);
         $result = '';

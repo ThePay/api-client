@@ -26,7 +26,7 @@ final class CreatePaymentCustomer
      * @param string|null $email
      * @param string|null $phone - customer phone in international format max 15 numeric chars https://en.wikipedia.org/wiki/MSISDN
      */
-    public function __construct(string $name, string $surname, $email, $phone, Address $billingAddress = null, Address $shippingAddress = null)
+    public function __construct(string $name, string $surname, $email, $phone, ?Address $billingAddress = null, ?Address $shippingAddress = null)
     {
         if ($email === null && $phone === null) {
             throw new InvalidArgumentException('At least one of $email and $phone is required.');
