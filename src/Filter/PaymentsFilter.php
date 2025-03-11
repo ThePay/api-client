@@ -52,15 +52,15 @@ class PaymentsFilter implements SignableRequest
      * @param string|null $orderId
      */
     public function __construct(
-        \DateTime $createdFrom = null,
-        \DateTime $createdTo = null,
-        \DateTime $finishedFrom = null,
-        \DateTime $finishedTo = null,
+        ?\DateTime $createdFrom = null,
+        ?\DateTime $createdTo = null,
+        ?\DateTime $finishedFrom = null,
+        ?\DateTime $finishedTo = null,
         ?string $methodCode = null,
-        PaymentState $state = null,
-        CurrencyCode $currency = null,
-        Amount $amountFrom = null,
-        Amount $amountTo = null,
+        ?PaymentState $state = null,
+        ?CurrencyCode $currency = null,
+        ?Amount $amountFrom = null,
+        ?Amount $amountTo = null,
         $orderId = null
     ) {
         $this->createdFrom = $createdFrom;

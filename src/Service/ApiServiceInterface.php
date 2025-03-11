@@ -42,7 +42,7 @@ interface ApiServiceInterface
      * @return PaymentMethodCollection
      * @throws ApiException
      */
-    public function getActivePaymentMethods(LanguageCode $languageCode = null);
+    public function getActivePaymentMethods(?LanguageCode $languageCode = null);
 
     /**
      * @param Identifier $paymentUid
@@ -103,7 +103,7 @@ interface ApiServiceInterface
      *
      * @return array<AccountBalance>
      */
-    public function getAccountsBalances(StringValue $accountIban = null, $projectId = null, \DateTime $balanceAt = null);
+    public function getAccountsBalances(?StringValue $accountIban = null, $projectId = null, ?\DateTime $balanceAt = null);
 
     /**
      * @param int<1, max> $page
@@ -148,7 +148,7 @@ interface ApiServiceInterface
      *
      * @return array<PaymentMethodWithPayUrl>
      */
-    public function getPaymentUrlsForPayment(Identifier $uid, LanguageCode $languageCode = null);
+    public function getPaymentUrlsForPayment(Identifier $uid, ?LanguageCode $languageCode = null);
 
     /**
      * Method will generate PDF file as confirmation for paid payment
@@ -159,5 +159,5 @@ interface ApiServiceInterface
      *
      * @throws ApiException if payment is not paid yet
      */
-    public function generatePaymentConfirmationPdf(Identifier $uid, LanguageCode $languageCode = null): string;
+    public function generatePaymentConfirmationPdf(Identifier $uid, ?LanguageCode $languageCode = null): string;
 }

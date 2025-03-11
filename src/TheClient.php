@@ -38,7 +38,7 @@ use ThePay\ApiClient\ValueObject\StringValue;
 class TheClient
 {
     /** @var string */
-    public const VERSION = '3.0.0';
+    public const VERSION = '3.0.1';
 
     private TheConfig $config;
     private GateServiceInterface $gate;
@@ -75,7 +75,7 @@ class TheClient
      *
      * @return array<AccountBalance>
      */
-    public function getAccountsBalances($accountIban = null, $projectId = null, \DateTime $balanceAt = null)
+    public function getAccountsBalances($accountIban = null, $projectId = null, ?\DateTime $balanceAt = null)
     {
         return $this->api->getAccountsBalances(
             $accountIban !== null ? new StringValue($accountIban) : null,
@@ -106,7 +106,7 @@ class TheClient
      * @return PaymentMethodCollection
      * @throws ApiException
      */
-    public function getActivePaymentMethods(PaymentMethodFilter $filter = null, LanguageCode $languageCode = null, $isRecurring = false, $isDeposit = true)
+    public function getActivePaymentMethods(?PaymentMethodFilter $filter = null, ?LanguageCode $languageCode = null, $isRecurring = false, $isDeposit = true)
     {
         $paymentMethods = $this
                 ->api
@@ -199,7 +199,7 @@ class TheClient
      * @return PaymentCollection<SimplePayment>
      * @throws ApiException
      */
-    public function getPayments(PaymentsFilter $filter = null, $page = 1, $limit = 25)
+    public function getPayments(?PaymentsFilter $filter = null, $page = 1, $limit = 25)
     {
         if ($filter === null) {
             $filter = new PaymentsFilter();
@@ -241,7 +241,7 @@ class TheClient
      * @return string
      * @throws ApiException
      */
-    public function getPaymentButtons(CreatePaymentParams $params, PaymentMethodFilter $filter = null, $useInlineAssets = true)
+    public function getPaymentButtons(CreatePaymentParams $params, ?PaymentMethodFilter $filter = null, $useInlineAssets = true)
     {
         $params = $this->setLanguageCodeIfMissing($params);
 
@@ -402,7 +402,7 @@ class TheClient
      *
      * @throws ApiException if payment is not paid yet
      */
-    public function generatePaymentConfirmationPdf(string $paymentUid, string $languageCode = null): string
+    public function generatePaymentConfirmationPdf(string $paymentUid, ?string $languageCode = null): string
     {
         $this->validateUid($paymentUid);
         return $this->api->generatePaymentConfirmationPdf(

@@ -25,7 +25,7 @@ interface GateServiceInterface
      * @param Identifier $uid UID of payment
      * @return string HTML
      */
-    public function getPaymentButtonsForPayment(Identifier $uid, LanguageCode $languageCode = null);
+    public function getPaymentButtonsForPayment(Identifier $uid, ?LanguageCode $languageCode = null);
 
     /**
      * @param string $content HTML content of button
