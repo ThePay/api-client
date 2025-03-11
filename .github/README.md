@@ -5,7 +5,9 @@ interacts with The Pay's REST API. To get started see examples below.
 
 ## Requirements
 
-- PHP 5.3+
+- PHP 5.3+ up until 8.3. PHP 8.4 is not supported within v1.x so please consider migrating to v2.x
+
+❗ All new implementation should be done with new major version.
 
 **DEPRECATED VERSIONS**: 5.3, 5.4, 5.5, 5.6, 7.0, 7.1
 **deprecated PHP versions** will be completely unsupported after 2023-01-01T00:00:00+01:00
