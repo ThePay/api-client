@@ -6,7 +6,7 @@ use ThePay\ApiClient\Utils\Json;
 
 class BankAccount
 {
-    /** @var string */
+    /** @var non-empty-string|null */
     private $iban;
 
     /** @var string */
@@ -19,12 +19,12 @@ class BankAccount
     {
         $data = is_array($values) ? $values : Json::decode($values, true);
 
-        $this->iban = $data['iban'];
+        $this->setIban(empty($data['iban']) ? null : $data['iban']);
         $this->ownerName = $data['owner_name'];
     }
 
     /**
-     * @return string
+     * @return non-empty-string|null
      */
     public function getIban()
     {
@@ -32,7 +32,7 @@ class BankAccount
     }
 
     /**
-     * @param string $iban
+     * @param non-empty-string|null $iban
      * @return self
      */
     public function setIban($iban)
