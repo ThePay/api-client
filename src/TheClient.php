@@ -5,6 +5,7 @@ namespace ThePay\ApiClient;
 use Exception;
 use InvalidArgumentException;
 use ThePay\ApiClient\Exception\ApiException;
+use ThePay\ApiClient\Exception\NoAvailablePaymentMethod;
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
@@ -38,7 +39,7 @@ use ThePay\ApiClient\ValueObject\StringValue;
 class TheClient
 {
     /** @var string */
-    public const VERSION = '2.1.2';
+    public const VERSION = '2.1.3';
 
     private TheConfig $config;
     private GateServiceInterface $gate;
@@ -238,10 +239,12 @@ class TheClient
      * @param CreatePaymentParams      $params
      * @param PaymentMethodFilter|null $filter
      * @param bool $useInlineAssets false value disable generation default style & scripts
+     * @param bool $throwExceptionIfNoMethodAvailable throw exception if no payment method is available
      * @return string
      * @throws ApiException
+     * @throws NoAvailablePaymentMethod
      */
-    public function getPaymentButtons(CreatePaymentParams $params, ?PaymentMethodFilter $filter = null, $useInlineAssets = true)
+    public function getPaymentButtons(CreatePaymentParams $params, ?PaymentMethodFilter $filter = null, $useInlineAssets = true, $throwExceptionIfNoMethodAvailable = false)
     {
         $params = $this->setLanguageCodeIfMissing($params);
 
@@ -256,6 +259,10 @@ class TheClient
         }
 
         $methods = $this->getActivePaymentMethods($filter, $params->getLanguageCode(), $params->getSaveAuthorization(), $params->isDeposit());
+
+        if ($throwExceptionIfNoMethodAvailable && $methods->size() === 0) {
+            throw new NoAvailablePaymentMethod('No payment methods available.');
+        }
 
         $result = '';
         if ($useInlineAssets) {
