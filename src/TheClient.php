@@ -5,7 +5,6 @@ namespace ThePay\ApiClient;
 use Exception;
 use InvalidArgumentException;
 use ThePay\ApiClient\Exception\ApiException;
-use ThePay\ApiClient\Exception\NoAvailablePaymentMethod;
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
@@ -52,7 +51,7 @@ class TheClient
     ) {
         $this->config = $config;
         $this->api = $api;
-        $this->gate = $gate ?? new GateService($config, $api);
+        $this->gate = $gate ?? new GateService($api);
     }
 
     /**
@@ -234,46 +233,6 @@ class TheClient
 
     /**
      * Returns HTML code with payment buttons for each available payment method.
-     * Every button is a link with click event handler to post the user to the payment process.
-     *
-     * @param CreatePaymentParams      $params
-     * @param PaymentMethodFilter|null $filter
-     * @param bool $useInlineAssets false value disable generation default style & scripts
-     * @param bool $throwExceptionIfNoMethodAvailable throw exception if no payment method is available
-     * @return string
-     * @throws ApiException
-     * @throws NoAvailablePaymentMethod
-     */
-    public function getPaymentButtons(CreatePaymentParams $params, ?PaymentMethodFilter $filter = null, $useInlineAssets = true, $throwExceptionIfNoMethodAvailable = false)
-    {
-        $params = $this->setLanguageCodeIfMissing($params);
-
-        if ($filter === null) {
-            $filter = new PaymentMethodFilter(
-                [$params->getCurrencyCode()->getValue()],
-                [],
-                []
-            );
-        } else {
-            $filter->setCurrency($params->getCurrencyCode()->getValue());
-        }
-
-        $methods = $this->getActivePaymentMethods($filter, $params->getLanguageCode(), $params->getSaveAuthorization(), $params->isDeposit());
-
-        if ($throwExceptionIfNoMethodAvailable && $methods->size() === 0) {
-            throw new NoAvailablePaymentMethod('No payment methods available.');
-        }
-
-        $result = '';
-        if ($useInlineAssets) {
-            $result .= $this->getInlineAssets();
-        }
-        $result .= $this->gate->getPaymentButtons($params, $methods);
-        return $result;
-    }
-
-    /**
-     * Returns HTML code with payment buttons for each available payment method.
      * Every button contains direct link to pay with certain method.
      *
      * @param string $uid UID of payment
@@ -289,27 +248,6 @@ class TheClient
             $result .= $this->getInlineAssets();
         }
         $result .= $this->gate->getPaymentButtonsForPayment(new Identifier($uid), $languageCode ? new LanguageCode($languageCode) : $languageCode);
-        return $result;
-    }
-
-    /**
-     * @param CreatePaymentParams $params
-     * @param string $title
-     * @param bool $useInlineAssets false value disable generation default style & scripts
-     * @param string|null $methodCode
-     * @param array<string, string> $attributes
-     * @param bool $usePostMethod
-     * @return string This is HTML snippet with link redirection to payment gate. To payment method selection page.
-     */
-    public function getPaymentButton(CreatePaymentParams $params, $title = 'Pay!', $useInlineAssets = true, $methodCode = null, array $attributes = [], $usePostMethod = true)
-    {
-        $this->setLanguageCodeIfMissing($params);
-
-        $result = '';
-        if ($useInlineAssets) {
-            $result .= $this->getInlineAssets();
-        }
-        $result .= $this->gate->getPaymentButton(htmlspecialchars($title), $params, $methodCode, $attributes, $usePostMethod);
         return $result;
     }
 
@@ -443,19 +381,6 @@ class TheClient
     public function getInlineScripts()
     {
         return $this->gate->getInlineScripts();
-    }
-
-    /**
-     * @param CreatePaymentParams $params
-     * @return CreatePaymentParams
-     */
-    private function setLanguageCodeIfMissing(CreatePaymentParams $params)
-    {
-        if ($params->getLanguageCode() === null) {
-            $params->setLanguageCode($this->config->getLanguage()->getValue());
-        }
-
-        return $params;
     }
 
     /**
