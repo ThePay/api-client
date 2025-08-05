@@ -34,6 +34,7 @@ final class CreatePaymentParams implements SignableRequest
     /** @var Url|null */
     private $notifUrl;
 
+    private ?bool $isCustomerNotificationEnabled = null;
     /** @var \DateTime|null */
     private $validTo;
 
@@ -243,6 +244,17 @@ final class CreatePaymentParams implements SignableRequest
         return $this;
     }
 
+    public function setIsCustomerNotificationEnabled(bool $isCustomerNotificationEnabled): self
+    {
+        $this->isCustomerNotificationEnabled = $isCustomerNotificationEnabled;
+        return $this;
+    }
+
+    public function isCustomerNotificationEnabled(): ?bool
+    {
+        return $this->isCustomerNotificationEnabled;
+    }
+
     /**
      * @return \DateTime|null
      */
@@ -378,6 +390,9 @@ final class CreatePaymentParams implements SignableRequest
         }
         if ($this->notifUrl) {
             $result['notif_url'] = $this->notifUrl->getValue();
+        }
+        if ($this->isCustomerNotificationEnabled !== null) {
+            $result['is_customer_notification_enabled'] = $this->isCustomerNotificationEnabled;
         }
         if ($this->validTo) {
             $result['valid_to'] = $this->validTo->format(DATE_RFC3339);
