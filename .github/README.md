@@ -168,6 +168,18 @@ For more examples see [create-payment.md](../doc/create-payment.md)
 
 [See how to make TheClient](#theclient-instance)
 
+```php
+
+/** @var \ThePay\ApiClient\TheClient $thePayClient */
+
+// Specify the parameters for payment creation (100,- Kč)
+$paymentParams = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid124');
+
+// get payment link and redirect customer whenever you want
+$payment = $thePayClient->createPayment($createPayment);
+$redirectLink = $payment->getPayUrl();
+```
+
 ### 2. Customer return
 
 The customer is returned from ThePay gate to the return url address.
