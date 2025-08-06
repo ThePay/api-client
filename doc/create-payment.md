@@ -1,9 +1,6 @@
 # Creating payment
 
-You can create payment in two different ways:
-
-1. the payment will be created by redirecting user to payment gate, the data will be sent by POST parameters
-2. create payment using our API and then redirect user to payment gate, it's recommended way if you want to customize the way how to display payment methods
+The only supported way is to create payment using our API and then redirect user to payment gate. Using this approach you can customize the way how to display payment methods.
 
 ## Usage
 
