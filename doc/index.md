@@ -9,8 +9,6 @@
 | getActivePaymentMethods | https://thepay.docs.apiary.io/#reference/0/project-level-resources/get-payment-methods |
 | getPayment | https://thepay.docs.apiary.io/#reference/0/project-level-resources/get-payment-detail |
 | getPayments | https://thepay.docs.apiary.io/#reference/0/project-level-resources/get-payments |
-| getPaymentButtons | |
-| getPaymentButton | |
 | getPaymentButtonsForPayment | |
 | createPayment | https://thepay.docs.apiary.io/#reference/0/project-level-resources/create-new-payment |
 | realizePreauthorizedPayment | https://thepay.docs.apiary.io/#reference/0/project-level-resources/realize-preauthorized-payment |
@@ -102,22 +100,6 @@ Returns list of all payments.
 | $filter | PaymentFilter | optional |
 | $page | int | optional |
 | $limit | int | optional |
-
-### getPaymentButtons
-
-Returns HTML markup with list of payment buttons.
-
-#### Parameters
-
-| name | type |  | desc |
-| --- | --- | --- | --- |
-| $params | CreatePaymentParams | required | |
-| $filter | PaymentMethodFilter | optional | |
-| $useInlineAssets | bool | optional | will generate basic css & js |
-
-### getPaymentButton
-
-Returns HTML markup with "Pay!" button.
 
 ### getPaymentButtonsForPayment
 

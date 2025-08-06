@@ -6,11 +6,9 @@ namespace ThePay\ApiClient\Tests;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use ThePay\ApiClient\Model\Address;
-use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentCustomer;
 use ThePay\ApiClient\Model\CreatePaymentParams;
 use ThePay\ApiClient\Model\CreatePaymentResponse;
-use ThePay\ApiClient\Model\PaymentMethod;
 use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheClient;
 
@@ -26,18 +24,6 @@ final class CreatePaymentTest extends BaseTestCase
 
         $this->apiService = $this->createMock(ApiServiceInterface::class);
         $this->client = new TheClient($this->config, $this->apiService);
-    }
-
-
-    /**
-     * @dataProvider createButtonProvider
-     */
-    public function testCreateButton(CreatePaymentParams $params, string $data, string $signature): void
-    {
-        $r = $this->client->getPaymentButton($params);
-
-        self::assertStringContainsString($data, $r);
-        self::assertStringContainsString($signature, $r);
     }
 
     /**
@@ -57,77 +43,6 @@ final class CreatePaymentTest extends BaseTestCase
                 '7f7ee7a177bdd4cee0287283a2c497f0511a76a89464e52ae72b0b372c7be6ce',
             ],
         ];
-    }
-
-    public function testCreateCustomButton(): void
-    {
-        $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010003', self::getCreatePaymentCustomer()));
-        self::assertStringContainsString('Pay!', $r);
-        self::assertStringContainsString('class="tp-btn"', $r);
-        self::assertStringNotContainsString('data-payment-method', $r);
-        $r = $this->client->getPaymentButton(new CreatePaymentParams(100, 'CZK', '202001010004', self::getCreatePaymentCustomer()), 'Zaplatit!', true, 'bitcoin', ['class' => 'btn btn-success']);
-        self::assertStringContainsString('Zaplatit!', $r);
-        self::assertStringContainsString('class="tp-btn btn btn-success"', $r);
-        self::assertStringContainsString('data-payment-method="bitcoin"', $r);
-    }
-
-    public function testGetPaymentMethods(): void
-    {
-        $this->apiService->method('getActivePaymentMethods')->willReturn(new PaymentMethodCollection([
-            new PaymentMethod([
-                'code' => 'test_method',
-                'title' => 'TestTitle',
-                'image' => [
-                    'src' => 'https://example-image.com',
-                ],
-                'tags' => [],
-                'available_currencies' => [
-                    ['code' => 'CZK'],
-                ],
-            ]),
-            new PaymentMethod([
-                'code' => 'second_method',
-                'title' => 'Second method',
-                'image' => [
-                    'src' => 'https://second-example-image.com',
-                ],
-                'tags' => [],
-                'available_currencies' => [
-                    ['code' => 'CZK'],
-                ],
-            ]),
-            new PaymentMethod([
-                'code' => 'incompatible_currency_method',
-                'title' => 'Incompatible currency',
-                'image' => [
-                    'src' => 'https://incompatible-example-image.com',
-                ],
-                'tags' => [],
-                'available_currencies' => [
-                    ['code' => 'EUR'],
-                ],
-            ]),
-        ]));
-
-        $result = $this->client->getPaymentButtons(new CreatePaymentParams(100, 'CZK', '202001010005', self::getCreatePaymentCustomer()));
-
-        self::assertIsString($result);
-
-        // In default we need to join assets
-        self::assertStringContainsString('<style', $result);
-        self::assertStringContainsString('<script', $result);
-
-        // In default we want to send data through form post method, so we need form element
-        self::assertStringContainsString('<form ', $result);
-
-        self::assertStringContainsString('<img src="https://example-image.com"', $result);
-        self::assertStringContainsString('<img src="https://second-example-image.com"', $result);
-        self::assertStringContainsString('>TestTitle</span>', $result);
-        self::assertStringContainsString('>Second method</span>', $result);
-        self::assertStringContainsString('payment_method_code=test_method" data-thepay="payment-button"', $result);
-        self::assertStringContainsString('payment_method_code=second_method" data-thepay="payment-button"', $result);
-
-        self::assertStringNotContainsString('payment_method_code=incompatible_currency_method" data-thepay="payment-button"', $result);
     }
 
     public function testCreateApiPayment(): void
