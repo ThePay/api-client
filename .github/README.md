@@ -24,34 +24,37 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## Support & Contributions
 
-If you find any bug, please submit the [issue](https://github.com/ThePay/api-client/issues/new/choose) in Github directly.
+If you find any bug, please submit the [issue](https://github.com/ThePay/api-client/issues/new/choose) to Github directly.
 
 Feel free to contribute via Github [issues](https://github.com/ThePay/api-client/issues) and
-[pull requests](https://github.com/ThePay/api-client/pulls). We will response as soon as possible.
-Please have on mind the backwards compatibility and do not change requirements without previous admin agreement.
+[pull requests](https://github.com/ThePay/api-client/pulls). We will respond as soon as possible.
+Please keep in mind the backwards compatibility and do not change the requirements without previous admin agreement.
 
 ## Preconditions
-
-Make sure that you have all required credentials and that you've set up the API access in [administration](https://admin.thepay.cz):
-
-- merchant ID
-- project ID
-- password for API access
-- enabled your IP address in project settings (you have to add IP address or IP address range of your server)
-
+### Testing the integration
 **To test the integration** you can create simplified "ready-to-go" DEMO account in our [DEMO environment](https://demo.admin.thepay.cz/registration).
 
 You can find all the necessary credentials in "Implementation" section under your merchant profile:
 
 ![](../doc/img/the-admin-credentials.png)
 
+### Access credentials
+Make sure that you have all required credentials and that you've set up the API access in [administration](https://admin.thepay.cz), in the Implementation section. The required credentials are:
+- merchant ID
+- project ID
+- password for API access
+
+### IP address whitelisting
+You must whitelist the IP address of the machine which will be accessing the API in project settings.
+You can use a particular IP address or specify a range. The whitelisting setup can be found in the same place as the credentials, that is the Implementation section of the administration.
+
 ## Usage
 
-You will work with only two classes when using this SDK.
+You will work with two classes when using this SDK.
 - TheConfig - for setting up the library
-- TheClient - for main functionality (calling the API, rendering helpers)
+- TheClient - for core functionality (calling the API, rendering helpers)
 
-## Configuration
+## Configuration with TheConfig
 
 All constructor parameters are described in [php doc](../src/TheConfig.php)
 
@@ -76,11 +79,16 @@ $theConfig->setLanguage($language);
 
 ## TheClient instance
 
-Before making `\ThePay\ApiClient\TheClient` instance, some dependencies must be prepared.
+Before creating the `\ThePay\ApiClient\TheClient` instance, some dependencies must be prepared first.
 
-If you use some DI container automation, all other dependencies than `TheConfig`
-should be auto-injected even PSR interfaces if you have some implementations
-already installed in your application.
+### With dependency injection
+If you're using automatic dependency injection (as most frameworks do), all dependencies except `TheConfig`
+(which you configured in the previous section) will be injected automatically - including PSR-standard interfaces,
+provided your application already includes implementations of them.
+
+### Without dependency injection
+In case you are not using dependency injection, you will have to setup the classes manually yourself,
+as in the following example:
 
 ```php
 /** @var \ThePay\ApiClient\TheConfig $theConfig */
@@ -107,73 +115,92 @@ $thePayClient = new \ThePay\ApiClient\TheClient(
 );
 ```
 
-## Usual workflow
+## Usual payment workflow
 
 There are three steps when creating a payment:
-- creating a link through which the customer will realize the payment
-- hadling the return of customer to your website
+- creating a payment link through which the customer will realize the payment
+- handling the return of customer to your website
 - handling server to server notification, which are sent by us everytime the payment state is changed
 
 All of these steps will need to be implemented by yourself, but fear not, we have prepared examples that you can take on your journey through our SDK.
 
 ### 1. Payment creation
-
-The payment (link) can be created via REST API
-
-Then you have two more options, based on preselection of payment method:
-- Payment method preselected in e-shop
-- Payment method NOT preselected - the customer will select payment method at ThePay gate
-
-Even if you (or your customer) preselect the payment method, it can still be changed after redirection, unless specifically forbidden.
-
-![](../doc/img/payment_flow.png)
-
 #### REST API
-You can create payment (link) via REST API and redirect user to that link. The payment itself is created through an API call.
-By using this approach you can fully customize the way how to display payment methods.
 
-The payment method can be preselected on your side and simply added as payment parameter to the API.
-Otherwise, the customer will be presented with payment method selection on visiting ThePay gate through generated link.
-
-The payment link is returned to you in a response, upon calling the API endpoint for payment creation.
-
-#### Payment amount is unchangeable
-In case your order amount changes, a new payment needs to be created.
-
-#### Payment flow and changes
-You should always create only one payment (with its unique UID) for each order in your e-shop. You should never create new payments, except when changing the payment amount.
-
-#### TL;DR - summary
-There is only one supported way to create payment:
-
-- API - creating the payment through API call (selection of payment method either in e-shop or ThePay gate)
-
-Always create only one payment for your order for all payment creation options, unless you need to change the payment amount. In that case, consider it a whole new payment.
-
-For more examples see [create-payment.md](../doc/create-payment.md)
-
-[See how to make TheClient](#theclient-instance)
+The payment is created via the REST API, after which the customer is typically redirected to the URL provided in the response.
 
 ```php
 
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
 
-// Specify the parameters for payment creation (100,- Kč)
+// Specify the payment parameters (100,- Kč) including it's unique identifier
 $paymentParams = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid124');
 
-// get payment link and redirect customer whenever you want
+// Get the payment link and redirect customer whenever you want
 $payment = $thePayClient->createPayment($createPayment);
 $redirectLink = $payment->getPayUrl();
 ```
+For more details and examples see [create-payment.md](../doc/create-payment.md)
+
+#### Payment method
+You have two options, regarding whether the payment method is preselected or not:
+- Payment method preselected in your e-shop
+- Payment method NOT preselected - the customer will select payment method at ThePay gate
+
+The payment method can be preselected on your side simply by adding a parameter to the API call for payment creation.
+By using this approach you can fully customize how you want to display the payment methods in your e-shop.
+
+If you do not preselect the payment method, the customer will be presented with payment method selection upon
+visiting ThePay gate through the generated link.
+
+Note, that even if you (or your customer) do preselect the payment method, it can still be changed
+after redirection by the customer, unless specifically forbidden.
+Once again, this can be achieved by adding a parameter to the payment creation API call.
+
+#### Payment amount is unchangeable
+
+Please note that the amount for which the payment was created cannot be changed later.
+
+This means if the order is updated on your side and the final amount of the payment changes,
+you will need to initiate a new payment via a new API call with the updated amount (and a new unique identifier).
+
+Once a payment is created, it is not possible to modify the amount.
+
+#### Payment flow and changes
+
+You should always create only one payment (with its unique UID) for each order in your e-shop.
+This means that if the customer navigates back and forth, they should use the same payment link to complete the process.
+
+A new payment should be created only if the order itself changes (e.g., the final amount changes).
+
+#### TL;DR - summary
+- The payment is created via a call to our API.
+- The payment method selection can be done either in your e-shop or through ThePay gateway.
+- Always create only one payment per order, regardless of how the payment is initiated — unless the payment amount changes. In that case, treat it as an entirely new payment.
 
 ### 2. Customer return
 
-The customer is returned from ThePay gate to the return url address.
+After a successful payment — or if the customer decides to return to the e-shop without completing the payment — they are redirected to the return URL.
 
-Return url is set in administration and customer gets redirected there with two query parameters added - payment_uid and project_id (needed if you have one endpoint for multiple projects).
+#### Return URL address
 
-The state of payment must be checked at the time of customer return, since the payment may not always be in the paid state at this time.
-For example the customer simply returns to the e-shop without paying.
+The return URL should point to the page in your e-shop where you want the customer to land after leaving the payment gateway.
+
+You can set the return URL either in ThePay administration or by passing it as a parameter when creating the payment.
+- If the return URL is set in ThePay administration, the parameter is optional and will override the configured value if provided.
+- If the return URL is not set in ThePay administration, then the parameter is required when creating the payment.
+
+#### Query parameters
+When the customer is redirected, two query parameters are appended to the URL:
+- payment_uid
+- project_id
+
+These parameters can be used, for example, to distinguish between different projects if you use the same return endpoint for multiple e-shops.
+
+#### Payment state check upon return
+
+The payment state must always be verified when the customer returns to your e-shop, as it may not yet be in the "paid" state.
+For example, the customer might return without completing the payment.
 
 #### General example of handling the customer return
 
@@ -187,14 +214,22 @@ $payment = $thePayClient->getPayment($uid);
 
 // check if the payment is paid
 if ($payment->wasPaid()) {
-    // Check if the order isn't labeled as paid yet. If not, do so.
+    // Check if the order isn't labeled as paid yet in your e-shop. If not, do so here.
     // ...
 }
 ```
 
 ### 3. Server to server notification
 
-It's basically the same as second step (customer return), it's triggered everytime the payment has changed, for example when the state of payment has been changed.
+A payment may take some time to process, or the customer may not return to your e-shop (e.g., by closing the browser window).
+You don’t need to worry about this — whenever the payment state changes, we will automatically send a server-to-server notification to your system.
+
+Notifications are triggered every time the payment state changes, for example, when the payment is completed or expires.
+Because not all state changes indicate a successful payment, you must always verify the current payment state upon receiving a notification to determine what has actually occurred.
+
+#### Payment state check upon receiving a notification
+
+The payment state check you perform here is the same as the one you should do when the customer returns to your e-shop.
 
 [See how to make TheClient](#theclient-instance)
 
@@ -206,7 +241,7 @@ $payment = $thePayClient->getPayment($uid);
 
 // check if the payment is paid
 if ($payment->wasPaid()) {
-    // Check if the order isn't labeled as paid yet. If not, do so.
+    // Check if the order isn't labeled as paid yet. If not, do so here.
     // ...
 }
 ```
@@ -217,8 +252,8 @@ You can find more usage examples at [folder /doc](../doc/index.md).
 
 ## Money calculations
 
-For safe money calculations we recommend to use [moneyphp/money](https://github.com/moneyphp/money) package.
-Please, do not use float to save information about prices because of its inaccuracy.
+For safe and accurate money calculations, we recommend using the [moneyphp/money](https://github.com/moneyphp/money) package.
+Please do not use floats to store or calculate prices, as they can lead to precision errors.
 
 ```console
 composer require moneyphp/money
