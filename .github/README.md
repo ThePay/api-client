@@ -157,6 +157,10 @@ Note, that even if you (or your customer) do preselect the payment method, it ca
 after redirection by the customer, unless specifically forbidden.
 Once again, this can be achieved by adding a parameter to the payment creation API call.
 
+You can find more examples of the mentioned use cases here:
+- [Changing the payment method](../doc/change-payment-method-of-payment.md)
+- [Disable changing the payment method by customer](../doc/payment-disable-payment-method-change.md)
+
 #### Payment amount is unchangeable
 
 Please note that the amount for which the payment was created cannot be changed later.
@@ -226,6 +230,10 @@ You don’t need to worry about this — whenever the payment state changes, we 
 
 Notifications are triggered every time the payment state changes, for example, when the payment is completed or expires.
 Because not all state changes indicate a successful payment, you must always verify the current payment state upon receiving a notification to determine what has actually occurred.
+
+#### Notification URL
+
+Similar to the return URL, the notification URL can be set either in ThePay administration or passed as a parameter when creating the payment
 
 #### Payment state check upon receiving a notification
 
