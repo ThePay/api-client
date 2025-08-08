@@ -28,7 +28,7 @@ If you find any bug, please submit the [issue](https://github.com/ThePay/api-cli
 
 Feel free to contribute via Github [issues](https://github.com/ThePay/api-client/issues) and
 [pull requests](https://github.com/ThePay/api-client/pulls). We will respond as soon as possible.
-Please keep in mind the backwards compatibility and do not change the requirements without previous admin agreement.
+Please keep in mind backward compatibility, and do not change the requirements without prior administrator agreement.
 
 ## Preconditions
 ### Testing the integration
