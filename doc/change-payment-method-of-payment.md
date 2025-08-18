@@ -1,6 +1,6 @@
 # Change payment method of payment
 
-After [method selection](method-selection.md), you can change the payment method of a payment that is still awaiting completion.
+After [method selection](method-selection.md), you can change the payment method of a pending payment.
 
 ```php
 /** @var \ThePay\ApiClient\TheClient $thePayClient */

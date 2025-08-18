@@ -32,6 +32,7 @@ Please keep in mind backward compatibility, and do not change the requirements w
 
 ## Preconditions
 ### Testing the integration
+
 **To test the integration** you can create simplified "ready-to-go" DEMO account in our [DEMO environment](https://demo.admin.thepay.cz/registration).
 
 You can find all the necessary credentials in "Implementation" section under your merchant profile:
@@ -39,12 +40,14 @@ You can find all the necessary credentials in "Implementation" section under you
 ![](../doc/img/the-admin-credentials.png)
 
 ### Access credentials
+
 Make sure that you have all required credentials and that you've set up the API access in [administration](https://admin.thepay.cz), in the Implementation section. The required credentials are:
 - merchant ID
 - project ID
 - password for API access
 
 ### IP address whitelisting
+
 You must whitelist the IP address of the machine which will be accessing the API in the project settings.
 You can use a particular IP address or specify a range. The whitelisting setup can be found in the same place as the credentials, that is the Implementation section of the administration.
 
@@ -82,13 +85,14 @@ $theConfig->setLanguage($language);
 Make sure to prepare the necessary dependencies before creating the `\ThePay\ApiClient\TheClient` instance.
 
 ### With dependency injection
+
 If you're using automatic dependency injection (as most frameworks do), all dependencies except `TheConfig`
 (which you configured in the previous section) will be injected automatically - including PSR-standard interfaces,
 provided your application already includes implementations of them.
 
 ### Without dependency injection
-In case you are not using dependency injection, you will have to setup the classes manually yourself,
-as in the following example:
+
+In case you are not using dependency injection, you will have to set up the classes manually as shown in the following example:
 
 ```php
 /** @var \ThePay\ApiClient\TheConfig $theConfig */
@@ -117,10 +121,10 @@ $thePayClient = new \ThePay\ApiClient\TheClient(
 
 ## Usual payment workflow
 
-There are three steps when creating a payment:
+Creating a payment involves three steps:
 - creating a payment link through which the customer will realize the payment
-- handling the return of customer to your website
-- handling server to server notification, which are sent by us everytime the payment state is changed
+- handling the return of a customer to your website
+- handling server-to-server notifications which are sent by us every time the payment state is changed
 
 All of these steps will need to be implemented by yourself, but fear not, we have prepared examples that you can take on your journey through our SDK.
 
@@ -140,19 +144,21 @@ $paymentParams = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', '
 $payment = $thePayClient->createPayment($createPayment);
 $redirectLink = $payment->getPayUrl();
 ```
+
 For more details and examples see [create-payment.md](../doc/create-payment.md)
 
 #### Payment method
+
 You have two options, regarding whether the payment method is preselected or not:
-- Payment method preselected in your e-shop (upon payment creation or later)
-- Payment method NOT preselected - the customer will select payment method at ThePay gateway
+- Payment *WITH* preselected method in your e-shop (upon payment creation or later)
+- Payment *WITHOUT* preselected method - the customer will choose the payment method at ThePay gateway
 
 The payment method can be preselected on your side simply by adding a parameter to the API call for payment creation.
 By using this approach you can fully customize how you want to display the payment methods in your e-shop.
-In addition, it is also possible to change the payment method from your side after it has been already created, if you need to do so for some reason.
+You can change the payment method on your side even after it has been created, if needed.
 
-If you do not preselect the payment method, the customer will be presented with payment method selection upon
-visiting ThePay gateway through the generated link.
+If you do not preselect the payment method, the customer will be prompted to choose one upon
+visiting ThePay gateway via the generated link.
 
 Note that even if the payment method is set from your side, the customer can still change it in ThePay gateway after redirection — unless this is explicitly forbidden.
 To prevent changes, you must specify the setting when creating the payment by adding the appropriate parameter to the payment creation API call.
@@ -164,12 +170,9 @@ You can find more examples of the mentioned use cases here:
 
 #### Payment amount is unchangeable
 
-Please note that the amount for which the payment was created cannot be changed later.
+⚠️ Please note that the amount specified during payment creation cannot be changed later. Once a payment is created, it is not possible to modify the amount.
 
-This means if the order is updated on your side and the final amount of the payment changes,
-you will need to initiate a new payment via a new API call with the updated amount (and a new unique identifier).
-
-Once a payment is created, it is not possible to modify the amount.
+This means that if the order is updated on your side and the final amount changes, you will need to create a new payment by making a new API call with the updated amount and a new unique identifier.
 
 #### Payment flow and changes
 
@@ -179,6 +182,7 @@ This means that if the customer navigates back and forth, they should use the sa
 A new payment should be created only if the order itself changes (e.g., the final amount changes).
 
 #### TL;DR - summary
+
 - The payment is created via a call to our API.
 - The payment method selection can be done either in your e-shop or through ThePay gateway.
 - Always create only one payment per order, regardless of how the payment is initiated — unless the payment amount changes. In that case, treat it as an entirely new payment.
@@ -193,9 +197,10 @@ The return URL should point to the page in your e-shop where you want the custom
 
 You can set the return URL either in ThePay administration or by passing it as a parameter when creating the payment.
 - If the return URL is set in ThePay administration, the parameter is optional and will override the configured value if provided.
-- If the return URL is not set in ThePay administration, then the parameter is required when creating the payment.
+- If the return URL is *not* set in ThePay administration, then the parameter is *required* when creating the payment.
 
 #### Query parameters
+
 When the customer is redirected, two query parameters are appended to the URL:
 - payment_uid
 - project_id
@@ -224,7 +229,7 @@ if ($payment->wasPaid()) {
 }
 ```
 
-### 3. Server to server notification
+### 3. Server-to-server notification
 
 A payment may take some time to process, or the customer may not return to your e-shop (e.g., by closing the browser window).
 You don’t need to worry about this — whenever the payment state changes, we will automatically send a server-to-server notification to your system.
