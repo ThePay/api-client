@@ -79,7 +79,7 @@ $theConfig->setLanguage($language);
 
 ## TheClient instance
 
-Before creating the `\ThePay\ApiClient\TheClient` instance, some dependencies must be prepared first.
+Make sure to prepare the necessary dependencies before creating the `\ThePay\ApiClient\TheClient` instance.
 
 ### With dependency injection
 If you're using automatic dependency injection (as most frameworks do), all dependencies except `TheConfig`
