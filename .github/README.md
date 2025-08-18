@@ -45,7 +45,7 @@ Make sure that you have all required credentials and that you've set up the API 
 - password for API access
 
 ### IP address whitelisting
-You must whitelist the IP address of the machine which will be accessing the API in project settings.
+You must whitelist the IP address of the machine which will be accessing the API in the project settings.
 You can use a particular IP address or specify a range. The whitelisting setup can be found in the same place as the credentials, that is the Implementation section of the administration.
 
 ## Usage
