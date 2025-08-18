@@ -13,10 +13,10 @@ The only supported way is to create payment using our API and then redirect user
 The rest of parameters can be set via setters,
 look at [CreatePaymentParams model](../src/Model/CreatePaymentParams.php).
 
-Let's prepare payment of 1 CZK:
+Let's prepare payment of 100 CZK:
 
 ```php
-   $params = new \ThePay\ApiClient\Model\CreatePaymentParams(100, 'CZK', '20200101000001');
+   $params = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid123');
 ```
 
 ### Via API
@@ -30,6 +30,19 @@ Let's prepare payment of 1 CZK:
 
 - getPayUrl() for url where user can make payment
 - getPaymentDetailUrl() for url where are details about payment and user can make payment as well
+
+### Preselecting the payment method
+
+You can preselect the payment method when creating a payment by passing it as the second argument to the method:
+```php
+/** @var \ThePay\ApiClient\TheClient $thePayClient */
+$params = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid123');
+
+// For example, pick the first active payment method
+$paymentMethod = $thePayClient->getActivePaymentMethods()[0];
+
+$thePayClient->createPayment($params, $paymentMethod);
+```
 
 ### Changing payment's language
 
