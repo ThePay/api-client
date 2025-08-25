@@ -16,10 +16,10 @@ look at [CreatePaymentParams model](../src/Model/CreatePaymentParams.php).
 As an example let's prepare a payment of 100 CZK:
 
 ```php
-$params = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid123');
+$paymentParams = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid123');
 
-/** @var \ThePay\ApiClient\Model\CreatePaymentResponse $response */
-$response = $thePayClient->createPayment($params);
+/** @var \ThePay\ApiClient\Model\CreatePaymentResponse $payment */
+$payment = $thePayClient->createPayment($paymentParams);
 
 $redirectLink = $payment->getPayUrl();
 // $redirectLink = $payment->getPaymentDetailUrl();
