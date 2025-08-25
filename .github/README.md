@@ -140,33 +140,20 @@ The payment is created via the REST API, after which the customer is typically r
 // Specify the payment parameters (100,- Kč) including it's unique identifier
 $paymentParams = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid123');
 
-// Get the payment link and redirect customer whenever you want
-$payment = $thePayClient->createPayment($createPayment);
+// Get the payment link and redirect the customer whenever you want
+$payment = $thePayClient->createPayment($paymentParams);
 $redirectLink = $payment->getPayUrl();
 ```
 
-For more details and examples see [create-payment.md](../doc/create-payment.md)
+For more details and examples see [Payment creation](../doc/create-payment.md#creating-payment).
 
 #### Payment method
 
-You have two options, regarding whether the payment method is preselected or not:
-- Payment *WITH* preselected method in your e-shop (upon payment creation or later)
-- Payment *WITHOUT* preselected method - the customer will choose the payment method at ThePay gateway
+By default, the customer selects their preferred payment method directly at ThePay gateway. This is the most common approach used by e-shops.
 
-The payment method can be preselected on your side simply by adding a parameter to the API call for payment creation.
-By using this approach you can fully customize how you want to display the payment methods in your e-shop.
-You can change the payment method on your side even after it has been created, if needed.
+If needed, you can also preselect the payment method on your side before redirecting the customer. In this case, the payment will be initialized with the chosen method already set.
 
-If you do not preselect the payment method, the customer will be prompted to choose one upon
-visiting ThePay gateway via the generated link.
-
-Note that even if the payment method is set from your side, the customer can still change it in ThePay gateway after redirection — unless this is explicitly forbidden.
-To prevent changes, you must specify the setting when creating the payment by adding the appropriate parameter to the payment creation API call.
-
-You can find more examples of the mentioned use cases here:
-- [Preselection before payment creation](../doc/create-payment.md)
-- [Payment method change after payment was created](../doc/change-payment-method-of-payment.md)
-- [Disable change of payment method](../doc/payment-disable-payment-method-change.md)
+For details and examples of how to set or adjust the payment method, see the [Payment creation - Payment method](../doc/create-payment.md#payment-method) section.
 
 #### Payment amount is unchangeable
 
