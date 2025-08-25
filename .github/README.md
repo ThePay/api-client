@@ -141,7 +141,7 @@ The payment is created via the REST API, after which the customer is typically r
 $paymentParams = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid123');
 
 // Get the payment link and redirect the customer whenever you want
-$payment = $thePayClient->createPayment($createPayment);
+$payment = $thePayClient->createPayment($paymentParams);
 $redirectLink = $payment->getPayUrl();
 ```
 
