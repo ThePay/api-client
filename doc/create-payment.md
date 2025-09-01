@@ -31,40 +31,16 @@ $redirectLink = $payment->getPayUrl();
 
 ### Payment method
 
-You have two options, regarding whether the payment method is preselected or not:
-- Payment *WITH* preselected method in your e-shop (upon payment creation or later)
-- Payment *WITHOUT* preselected method - the customer will choose the payment method at ThePay gateway
+When creating a payment, you can either let the customer choose the payment method at ThePay gateway, or you can preselect a method in your application.
+- **Without preselection** — no payment method is set during payment creation.
+  The customer will be asked to choose a method directly in the ThePay gateway.
+  *(This is the default behavior.)*
+- **With preselection** — you define the payment method in your e-shop.
+  This can be done immediately when creating the payment, or later by updating the payment before it is completed.
 
-#### Preselecting the payment method
+For details and examples of fetching available methods, preselecting a method, changing it, or preventing customers from changing it, see [Managing payment methods](../doc/managing-payment-methods).
 
-You can preselect the payment method when creating a payment by passing it as the second argument to the method:
-
-```php
-/** @var \ThePay\ApiClient\TheClient $thePayClient */
-$params = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid123');
-
-// For example, pick the first active payment method
-$paymentMethod = $thePayClient->getActivePaymentMethods()[0];
-
-$thePayClient->createPayment($params, $paymentMethod);
-```
-
-By using this approach you can fully customize how you want to display the payment methods in your e-shop.
-You can change the payment method on your side even after it has been created, if needed.
-
-Note that even if the payment method is set from your side, the customer can still change it in ThePay gateway after redirection — unless this is explicitly forbidden.
-To prevent changes, you must specify the setting when creating the payment by adding the appropriate parameter to the payment creation API call.
-
-You can find more examples of the mentioned use cases here:
-- [Payment method change after payment was created](../doc/change-payment-method-of-payment.md)
-- [Disable change of payment method](../doc/payment-disable-payment-method-change.md)
-
-#### Not preselecting the payment method
-
-If you do not preselect the payment method, the customer will be prompted to choose one upon
-visiting ThePay gateway via the generated link.
-
-### Changing payment language
+### Payment language
 
 If you know the customer’s preferred language, you can specify it when creating a payment by passing the language code as the fourth argument of the `CreatePaymentParams` constructor:
 

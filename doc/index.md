@@ -24,7 +24,7 @@
 
 ## Usage examples
 
-[Payment method selection](method-selection.md)
+[Managing payment methods](managing-payment-methods)
 
 [Creating payment](create-payment.md)
 
@@ -39,10 +39,6 @@
 [Payment events](payment-events.md)
 
 [Refund payment](refund-payment.md)
-
-[Disable change of payment method](payment-disable-payment-method-change.md)
-
-[Change payment method of payment](change-payment-method-of-payment.md)
 
 [Handling returns of customers](return-of-the-customer.md)
 

@@ -153,7 +153,7 @@ By default, the customer selects their preferred payment method directly at TheP
 
 If needed, you can also preselect the payment method on your side before redirecting the customer. In this case, the payment will be initialized with the chosen method already set.
 
-For details and examples of how to set or adjust the payment method, see the [Payment creation - Payment method](../doc/create-payment.md#payment-method) section.
+For details and examples of fetching available methods, preselecting a method, changing it, or preventing customers from changing it, see [Managing payment methods](../doc/managing-payment-methods).
 
 #### Payment amount is unchangeable
 
