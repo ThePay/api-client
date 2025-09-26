@@ -42,7 +42,9 @@ You can preselect the payment method when creating a payment by passing it as th
 
 ```php
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
-$params = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid123');
+/** @var \ThePay\ApiClient\Model\CreatePaymentCustomer $customer */
+
+$params = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid123', $customer);
 
 // For example, pick the first active payment method
 $paymentMethod = $thePayClient->getActivePaymentMethods()[0];
@@ -63,7 +65,6 @@ The method code must match one of the values returned by `getActivePaymentMethod
 
 ```php
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
-
 /** @var non-empty-string $paymentMethodCode */
 
 $thePayClient->changePaymentMethod('uid123', $paymentMethodCode);
@@ -78,7 +79,9 @@ To prevent this, call `setCanCustomerChangeMethod(false)` when creating the paym
 
 ```php
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
-$params = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid123');
+/** @var \ThePay\ApiClient\Model\CreatePaymentCustomer $customer */
+
+$params = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid123', $customer);
 $params->setCanCustomerChangeMethod(false);
 
 // Select a payment method (for example, the first available one)
