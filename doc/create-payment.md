@@ -22,8 +22,8 @@ The example below demonstrates how to create a payment of 100 CZK for a customer
 
 $paymentParams = new \ThePay\ApiClient\Model\CreatePaymentParams(
     amount: 10000, // amount in cents
-    currency: 'CZK',
-    orderId: 'uid123',
+    currencyCode: 'CZK',
+    uid: 'uid123',
     customer: $customer
 );
 
@@ -31,9 +31,9 @@ $paymentParams = new \ThePay\ApiClient\Model\CreatePaymentParams(
 $payment = $thePayClient->createPayment($paymentParams);
 
 // Optional additional parameters
-$createPayment->setOrderId('15478'); // Custom order ID
-$createPayment->setDescriptionForCustomer('Payment for items on example.com');
-$createPayment->setDescriptionForMerchant('Payment from VIP customer XYZ');
+$paymentParams->setOrderId('15478'); // Custom order ID
+$paymentParams->setDescriptionForCustomer('Payment for items on example.com');
+$paymentParams->setDescriptionForMerchant('Payment from VIP customer XYZ');
 
 // Redirect URLs for the customer to complete the payment
 $redirectLink = $payment->getPayUrl(); // Direct payment page
