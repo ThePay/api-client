@@ -4,30 +4,50 @@ The payment is created via the REST API, after which the customer is typically r
 
 ## Usage
 
-| parameter | description            |
-| --- |------------------------|
-| amount | Amount to pay in cents |
-| currency | Currency code          |
-| uid | Unique ID of payment    |
+| parameter    | description                  |
+|--------------|------------------------------|
+| amount       | Amount to pay in cents       |
+| currency     | Currency code                |
+| uid          | Unique ID of payment         |
+| customer     | Customer information         |
+| languageCode | Customer language (optional) |
 
 The rest of parameters can be set via setters,
 look at [CreatePaymentParams model](../src/Model/CreatePaymentParams.php).
 
-As an example let's prepare a payment of 100 CZK:
+The example below demonstrates how to create a payment of 100 CZK for a customer:
 
 ```php
-$paymentParams = new \ThePay\ApiClient\Model\CreatePaymentParams(10000, 'CZK', 'uid123');
+/** @var \ThePay\ApiClient\Model\CreatePaymentCustomer $customer */
+
+$paymentParams = new \ThePay\ApiClient\Model\CreatePaymentParams(
+    amount: 10000, // amount in cents
+    currencyCode: 'CZK',
+    uid: 'uid123',
+    customer: $customer
+);
 
 /** @var \ThePay\ApiClient\Model\CreatePaymentResponse $payment */
 $payment = $thePayClient->createPayment($paymentParams);
 
-$redirectLink = $payment->getPayUrl();
-// $redirectLink = $payment->getPaymentDetailUrl();
-```
+// Optional additional parameters
+$paymentParams->setOrderId('15478'); // Custom order ID
+$paymentParams->setDescriptionForCustomer('Payment for items on example.com');
+$paymentParams->setDescriptionForMerchant('Payment from VIP customer XYZ');
 
-*CreatePaymentResponse* has two url properties for redirecting the customer to the payment gateway:
+// Redirect URLs for the customer to complete the payment
+$redirectLink = $payment->getPayUrl(); // Direct payment page
+// $redirectLink = $payment->getPaymentDetailUrl(); // Payment details page (also allows completion)
+```
+Notes on AMOUNT:
+- Payment amount must be specified in *cents*. For CZK: 1 CZK = 100 haléřů.
+
+Notes on URLs:
 - getPayUrl() - The URL where the customer can directly proceed with the payment.
-- getPaymentDetailUrl() - The URL showing the payment state and details, from which the customer can also complete the payment.
+- getPaymentDetailUrl() - The URL showing the current payment state and details; the customer can also complete the payment from this page.
+
+Optional Descriptions
+- Descriptions for the customer and merchant are optional but recommended for clarity.
 
 ### Payment method
 
@@ -38,14 +58,28 @@ When creating a payment, you can either let the customer choose the payment meth
 - **With preselection** — you define the payment method in your e-shop.
   This can be done immediately when creating the payment, or later by updating the payment before it is completed.
 
-For details and examples of fetching available methods, preselecting a method, changing it, or preventing customers from changing it, see [Managing payment methods](../doc/managing-payment-methods).
+For details and examples of fetching available methods, preselecting a method, changing it, or preventing customers from changing it, see [Managing payment methods](../doc/managing-payment-methods.md).
+
+### Payment Customer
+
+When creating a payment customer, the full name and at least one contact method are required. You can provide either an email address or a phone number.
+
+```php
+$customer = new \ThePay\ApiClient\Model\CreatePaymentCustomer(
+    'Mike',
+    'Smith',
+    'mike.smith@universal-acceptance-test.icu', // Email (optional if phone is provided)
+    '420589687963', // Phone number in international format https://en.wikipedia.org/wiki/MSISDN (max 15 numeric characters)
+    new Address('CZ', 'Prague', '123 00', 'Downstreet 5') // Billing address
+);
+```
 
 ### Payment language
 
-If you know the customer’s preferred language, you can specify it when creating a payment by passing the language code as the fourth argument of the `CreatePaymentParams` constructor:
+If you know the customer’s preferred language, you can specify it when creating a payment by passing the language code as the fifth argument of the `CreatePaymentParams` constructor:
 
 ```php
-$params = new CreatePaymentParams(10520, 'EUR', 'uid123', 'en');
+$params = new CreatePaymentParams(10520, 'EUR', 'uid123', $customer, 'en');
 ```
 
 Language codes follow the ISO 639-1 standard.

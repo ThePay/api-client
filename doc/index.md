@@ -30,8 +30,6 @@
 
 [Preauth payment](preauth-payments.md)
 
-[Recommended payment creation](create-payment-recommended.md)
-
 [Get Information about payment](get-payment.md)
 
 [Get payments](get-payments.md)
