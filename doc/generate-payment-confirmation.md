@@ -1,25 +1,29 @@
-# Generating a confirmation PDF for paid payment
+# Generating a Payment Confirmation PDF
 
-If a merchant needs confirmation for someone that they received payment through our services.
-They can generate a confirmation PDF document for payment in ThePay administration.
+Merchants can generate a payment confirmation PDF as proof that a specific payment was successfully received through ThePay.
 
-The generating confirmation can be also integrated into merchant application as describe example below.
+This document can be generated manually in ThePay Administration, or automatically via API integration in your application.
+
+## API integration example
+
+To integrate payment confirmation generation into your application, you can use the following example:
 
 ```php
 
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
 
-$payment = $thePayClient->getPayment('exampleUID');
-// make detection if payment was really paid
-// and inform user that for not paid payment is confirmation unavailable,
-// because call method generatePaymentConfirmationPdf for unpaid payments will fail
-if($payment->wasPaid()) {
+$payment = $thePayClient->getPayment('uid123');
 
-    // we recommend asking user for language of receiver who confirmation wants, so he can understand it,
-    // if we not support given language, we return confirmation in english
+// Check if the payment has been successfully completed.
+// Confirmation can only be generated for paid payments.
+if ($payment->wasPaid()) {
+
+    // Optionally, ask the user to select the preferred language for the confirmation document.
+    // If the specified language is not supported, the PDF will default to English.
     $confirmationLanguageCode = 'cs';
 
-    $confirmationPdfContent = $thePayClient->generatePaymentConfirmationPdf('exampleUID', $confirmationLanguageCode);
+    // Generate the confirmation PDF
+    $confirmationPdfContent = $thePayClient->generatePaymentConfirmationPdf('uid123', $confirmationLanguageCode);
 
     header('Content-type:application/pdf');
 
