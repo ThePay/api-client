@@ -161,3 +161,16 @@ $tp-spacing: 0.75rem;
 
 If the buttons don’t render correctly (e.g., layout breaks or styles differ from the preview images), it may be caused by conflicts between your CSS and ThePay’s default styles.
 In such cases, we recommend disabling ThePay’s CSS entirely and implementing your own styling.
+
+#### Full customization of Buttons
+
+If the default payment buttons don’t fit your design or layout needs, you can fully customize them using the pay URLs for each available payment method.
+
+Use the method `getPaymentUrlsForPayment`, which returns a list of payment methods along with direct URLs for completing the payment.
+
+```php
+/** @var \ThePay\ApiClient\TheClient $thePayClient */
+$paymentMethods = $thePayClient->getPaymentUrlsForPayment('uid123', 'cs');
+```
+
+Each item in the returned array includes information about the payment method (e.g., name, logo, tags) and its corresponding payment URL.
