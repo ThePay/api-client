@@ -1,20 +1,32 @@
 # Invalidate payment
 
-To cancel (invalidate) already created payment.
+Use the `invalidatePayment` method to cancel an already created payment.
+
+A payment can only be invalidated if it has not yet been completed.
+
+## Example: Invalidate a Payment
 
 ```php
 $thePayClient->invalidatePayment('49096fe3-872d-3cbe-b908-2806ae2d7c79');
 ```
 
-The only parameter of method **invalidatePayment** is a payment UID and the payment has to belong to the project which is configured in TheConfig.
+**Parameters:**
+- `$uid` - The unique identifier (UID) of the payment.
 
-Method will return void if request was successful, otherwise it throws exception (For example if you are trying to invalidate payment that was already paid). Before invalidating payment is better to check its state:
+The payment must belong to the project configured in `TheConfig`
 
+**Returns:**
+- `void` if the request was successful.
+- Throws an exception if the payment cannot be invalidated (for example, if it was already paid).
+
+**Best Practice: Check Payment State Before Invalidating**
 
 ```php
-$payment = $thePayClient->getPayment('49096fe3-872d-3cbe-b908-2806ae2d7c79');
+$paymentUid = '49096fe3-872d-3cbe-b908-2806ae2d7c79';
+$payment = $thePayClient->getPayment($paymentUid);
+
 if ($payment->getState() === PaymentState::WAITING_FOR_PAYMENT) {
-    $thePayClient->invalidatePayment('49096fe3-872d-3cbe-b908-2806ae2d7c79');
+    $thePayClient->invalidatePayment($paymentUid);
 } else {
     // payment can not be invalidated
 }
