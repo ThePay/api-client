@@ -28,11 +28,9 @@
 
 [Creating payment](create-payment.md)
 
+[Retrieving payments](retrieve-payments.md)
+
 [Preauth payment](preauth-payments.md)
-
-[Get Information about payment](get-payment.md)
-
-[Get payments](get-payments.md)
 
 [Payment events](payment-events.md)
 
