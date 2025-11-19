@@ -43,4 +43,4 @@ $thePayClient->cancelPreauthorizedPayment('PREAUTH_PAYMENT_001');
 ```
 
 **Note on fund release:**
-- While the preauthorization is canceled immediately on ThePay’s side, banks may take some time to release the reserved funds back to the customer’s account.
+- While the preauthorization is cancelled immediately on ThePay’s side, banks may take some time to release the reserved funds back to the customer’s account.
