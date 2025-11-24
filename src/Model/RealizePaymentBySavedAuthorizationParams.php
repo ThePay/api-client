@@ -42,9 +42,6 @@ final class RealizePaymentBySavedAuthorizationParams implements SignableRequest
      */
     public function __construct($uid, $amount, $currencyCode, $orderId = null, $descriptionForMerchant = null, $notifUrl = null)
     {
-        if ($amount === null || $currencyCode === null) {
-            throw new InvalidArgumentException('Amount and currency code are required for V2 API.');
-        }
         $this->uid = new Identifier($uid);
         $this->amount = new Amount($amount);
         $this->currencyCode = new CurrencyCode($currencyCode);
