@@ -9,7 +9,7 @@ use ThePay\ApiClient\ValueObject\Identifier;
 
 final class RealizePaymentBySavedAuthorizationParams implements SignableRequest
 {
-    /** @var Amount|null */
+    /** @var Amount */
     private $amount;
 
     /** @var CreatePaymentItem[] */
@@ -18,7 +18,7 @@ final class RealizePaymentBySavedAuthorizationParams implements SignableRequest
     /** @var Identifier */
     private $uid;
 
-    /** @var CurrencyCode|null */
+    /** @var CurrencyCode */
     private $currencyCode;
 
     /** @var string|null */
@@ -27,25 +27,30 @@ final class RealizePaymentBySavedAuthorizationParams implements SignableRequest
     /** @var string|null */
     protected $descriptionForMerchant = null;
 
+    /** @var string|null */
+    protected $notifUrl = null;
+
     /**
      * RealizePaymentBySavedAuthorizationParams constructor.
      *
      * @param string $uid
-     * @param int|null $amount - payment amount in cents, if set to null it will use amount from parent payment, required if $currencyCode is present
-     * @param string|null $currencyCode required if $amount is present
+     * @param int $amount - payment amount in cents (required)
+     * @param string $currencyCode - currency code (required)
      * @param string|null $orderId
      * @param string|null $descriptionForMerchant
+     * @param string|null $notifUrl
      */
-    public function __construct($uid, $amount = null, $currencyCode = null, $orderId = null, $descriptionForMerchant = null)
+    public function __construct($uid, $amount, $currencyCode, $orderId = null, $descriptionForMerchant = null, $notifUrl = null)
     {
-        if (($amount === null && $currencyCode !== null) || ($amount !== null && $currencyCode === null)) {
-            throw new InvalidArgumentException('Amount and currency code is required if one of these parameters have value.');
+        if ($amount === null || $currencyCode === null) {
+            throw new InvalidArgumentException('Amount and currency code are required for V2 API.');
         }
         $this->uid = new Identifier($uid);
-        $this->amount = $amount === null ? null : new Amount($amount);
-        $this->currencyCode = $currencyCode === null ? null : new CurrencyCode($currencyCode);
+        $this->amount = new Amount($amount);
+        $this->currencyCode = new CurrencyCode($currencyCode);
         $this->orderId = $orderId;
         $this->descriptionForMerchant = $descriptionForMerchant;
+        $this->notifUrl = $notifUrl;
     }
 
     /**
@@ -97,6 +102,24 @@ final class RealizePaymentBySavedAuthorizationParams implements SignableRequest
     }
 
     /**
+     * @return string|null
+     */
+    public function getNotifUrl()
+    {
+        return $this->notifUrl;
+    }
+
+    /**
+     * @param string|null $notifUrl
+     * @return RealizePaymentBySavedAuthorizationParams
+     */
+    public function setNotifUrl($notifUrl)
+    {
+        $this->notifUrl = $notifUrl;
+        return $this;
+    }
+
+    /**
      * If no items will be set, the items from parent payment will be used.
      *
      * @param CreatePaymentItem $item
@@ -116,22 +139,25 @@ final class RealizePaymentBySavedAuthorizationParams implements SignableRequest
     {
         $result = [
             'uid' => $this->uid->getValue(),
-            'items' => null,
-            'orderId' => $this->orderId,
-            'descriptionForMerchant' => $this->descriptionForMerchant,
+            'value' => [
+                'amount' => (string) $this->amount->getValue(),
+                'currency' => $this->currencyCode->getValue(),
+            ],
+            'order_id' => $this->orderId,
+            'description_for_merchant' => $this->descriptionForMerchant,
         ];
 
         if ($this->items) {
+            $result['items'] = [];
             foreach ($this->items as $item) {
                 $result['items'][] = $item->toArray();
             }
+        } else {
+            $result['items'] = null;
         }
 
-        if ($this->amount) {
-            $result['value'] = [
-                'amount' => $this->amount->getValue(),
-                'currency' => $this->currencyCode->getValue(),
-            ];
+        if ($this->notifUrl !== null) {
+            $result['notif_url'] = $this->notifUrl;
         }
 
         return $result;

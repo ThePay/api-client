@@ -22,6 +22,9 @@ abstract class RealizeSubscriptionPaymentParams implements SignableRequest
     /** @var string|null */
     protected $descriptionForMerchant = null;
 
+    /** @var string|null */
+    protected $notifUrl = null;
+
     /**
      * @return Amount
      */
@@ -63,6 +66,24 @@ abstract class RealizeSubscriptionPaymentParams implements SignableRequest
     }
 
     /**
+     * @return string|null
+     */
+    public function getNotifUrl()
+    {
+        return $this->notifUrl;
+    }
+
+    /**
+     * @param string|null $notifUrl
+     * @return RealizeSubscriptionPaymentParams
+     */
+    public function setNotifUrl($notifUrl)
+    {
+        $this->notifUrl = $notifUrl;
+        return $this;
+    }
+
+    /**
      * If no items will be set, the items from parent payment will be used.
      *
      * @param CreatePaymentItem $item
@@ -81,7 +102,7 @@ abstract class RealizeSubscriptionPaymentParams implements SignableRequest
     public function toArray()
     {
         $result = [
-            'payment_uid' => $this->uid->getValue(),
+            'uid' => $this->uid->getValue(),
             'items' => null,
             'order_id' => $this->orderId,
             'description_for_merchant' => $this->descriptionForMerchant,
@@ -94,7 +115,11 @@ abstract class RealizeSubscriptionPaymentParams implements SignableRequest
         }
 
         if ($this->amount) {
-            $result['amount'] = $this->amount->getValue();
+            $result['amount'] = (string) $this->amount->getValue();
+        }
+
+        if ($this->notifUrl !== null) {
+            $result['notif_url'] = $this->notifUrl;
         }
 
         return $result;

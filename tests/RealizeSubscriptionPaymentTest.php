@@ -21,8 +21,11 @@ final class RealizeSubscriptionPaymentTest extends BaseTestCase
 
         $okResponse = new ApiResponse(
             '{
-                "state": "success",
-                "message": "Ok"
+                "state": "paid",
+                "message": "Ok",
+                "parent": {
+                    "recurring_payments_available": true
+                }
             }',
             200
         );
@@ -41,15 +44,19 @@ final class RealizeSubscriptionPaymentTest extends BaseTestCase
         $result = $this->client->realizeRegularSubscriptionPayment('parentUid', $params);
 
         self::assertSame(ApiResponse::class, get_class($result));
+        self::assertTrue($result->wasSuccessful());
+        self::assertTrue($result->isRecurringPaymentsAvailable());
 
         $params = new RealizeIrregularSubscriptionPaymentParams('childPayment2');
         $result = $this->client->realizeIrregularSubscriptionPayment('parentUid', $params);
 
         self::assertSame(ApiResponse::class, get_class($result));
+        self::assertTrue($result->wasSuccessful());
 
         $params = new RealizeUsageBasedSubscriptionPaymentParams('childPayment3', 1000);
         $result = $this->client->realizeUsageBasedSubscriptionPayment('parentUid', $params);
 
         self::assertSame(ApiResponse::class, get_class($result));
+        self::assertTrue($result->wasSuccessful());
     }
 }

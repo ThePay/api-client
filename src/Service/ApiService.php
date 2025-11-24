@@ -260,10 +260,10 @@ class ApiService implements ApiServiceInterface
     {
         $jsonParams = $params->toArray();
 
-        $url = $this->url(['payments', $parentPaymentUid, 'subscription', SubscriptionType::REGULAR]);
+        $url = $this->url(['v2', 'projects', $this->config->getProjectId(), 'payments', $parentPaymentUid, 'subscription', SubscriptionType::REGULAR], [], false);
         $response = $this->sendRequest(self::METHOD_POST, $url, $jsonParams);
 
-        if ( ! in_array($response->getStatusCode(), [200, 201], true)) {
+        if ( ! in_array($response->getStatusCode(), [200, 202], true)) {
             throw $this->buildException($url, $response);
         }
 
@@ -279,10 +279,10 @@ class ApiService implements ApiServiceInterface
     {
         $jsonParams = $params->toArray();
 
-        $url = $this->url(['payments', $parentPaymentUid, 'subscription', SubscriptionType::IRREGULAR]);
+        $url = $this->url(['v2', 'projects', $this->config->getProjectId(), 'payments', $parentPaymentUid, 'subscription', SubscriptionType::IRREGULAR], [], false);
         $response = $this->sendRequest(self::METHOD_POST, $url, $jsonParams);
 
-        if ( ! in_array($response->getStatusCode(), [200, 201], true)) {
+        if ( ! in_array($response->getStatusCode(), [200, 202], true)) {
             throw $this->buildException($url, $response);
         }
 
@@ -298,10 +298,10 @@ class ApiService implements ApiServiceInterface
     {
         $jsonParams = $params->toArray();
 
-        $url = $this->url(['payments', $parentPaymentUid, 'subscription', SubscriptionType::USAGE_BASED]);
+        $url = $this->url(['v2', 'projects', $this->config->getProjectId(), 'payments', $parentPaymentUid, 'subscription', SubscriptionType::USAGE_BASED], [], false);
         $response = $this->sendRequest(self::METHOD_POST, $url, $jsonParams);
 
-        if ( ! in_array($response->getStatusCode(), [200, 201], true)) {
+        if ( ! in_array($response->getStatusCode(), [200, 202], true)) {
             throw $this->buildException($url, $response);
         }
 
@@ -317,10 +317,10 @@ class ApiService implements ApiServiceInterface
     {
         $jsonParams = $params->toArray();
 
-        $url = $this->url(['payments', $parentPaymentUid, 'savedauthorization']);
+        $url = $this->url(['v2', 'projects', $this->config->getProjectId(), 'payments', $parentPaymentUid, 'savedauthorization'], [], false);
         $response = $this->sendRequest(self::METHOD_POST, $url, $jsonParams);
 
-        if ( ! in_array($response->getStatusCode(), [200, 201], true)) {
+        if ( ! in_array($response->getStatusCode(), [200, 202], true)) {
             throw $this->buildException($url, $response);
         }
 
@@ -372,18 +372,23 @@ class ApiService implements ApiServiceInterface
     /**
      * @throws ApiException
      */
-    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): void
+    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): ApiResponse
     {
         $url = $this->url([
+            'v2',
+            'projects',
+            $this->config->getProjectId(),
             'payments',
             $params->getUid(),
             'preauthorized',
-        ]);
+        ], [], false);
         $response = $this->sendRequest(self::METHOD_POST, $url, $params->toArray());
 
-        if ($response->getStatusCode() !== 204) {
+        if ( ! in_array($response->getStatusCode(), [200, 202], true)) {
             throw $this->buildException($url, $response);
         }
+
+        return new ApiResponse($response->getBody()->getContents(), $response->getStatusCode());
     }
 
     /**
@@ -519,12 +524,18 @@ class ApiService implements ApiServiceInterface
             array_unshift($path, 'projects', $this->config->getProjectId());
         }
 
+        $specificVersion = null;
+        if (isset($path[0]) && is_string($path[0]) && preg_match('/^v[0-9]+$/', $path[0])) {
+            $specificVersion = array_shift($path);
+        }
+
+
         $pathImploded = implode('/', $path);
         if (strlen($pathImploded)) {
             $pathImploded .= '/';
         }
 
-        $apiUrl = $this->config->getApiUrl();
+        $apiUrl = $this->config->getApiUrl($specificVersion);
 
         $pathImploded = substr($pathImploded, 0, -1);
 

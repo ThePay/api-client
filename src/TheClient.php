@@ -283,13 +283,13 @@ class TheClient
 
     /**
      * @param RealizePreauthorizedPaymentParams $params
-     *
+     * @return ApiResponse
      * @throws ApiException|InvalidArgumentException
      */
-    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): void
+    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): ApiResponse
     {
         $this->validateUid($params->getUid()->getValue());
-        $this
+        return $this
             ->api
             ->realizePreauthorizedPayment($params);
     }

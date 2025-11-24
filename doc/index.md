@@ -123,13 +123,21 @@ Will create payment.
 
 ### realizePreauthorizedPayment
 
-Will realize preauth payment
+Will realize preauth payment (V2 API endpoint)
 
 #### Parameters
 
 | name | type |  |
 | --- | --- | --- |
 | $params | RealizePreauthorizedPaymentParams | required |
+
+#### Return
+
+| return type |  |
+| --- | --- |
+| ApiResponse | Returns response with state ('paid', 'waiting_for_confirmation') and status code |
+
+**Note**: V2 API may return async response (HTTP 202) with state 'waiting_for_confirmation'. You will receive a notification when processing completes.
 
 ### cancelPreauthorizedPayment
 
@@ -182,7 +190,7 @@ Return information about transactions history
 
 ### realizeRegularSubscriptionPayment
 
-Realize subscription payment.
+Realize subscription payment (V2 API endpoint)
 
 #### Parameters
 
@@ -191,9 +199,17 @@ Realize subscription payment.
 | $uid | string | required | UID of parent payment |
 | $params | RealizeRegularSubscriptionPaymentParams | required | |
 
+#### Return
+
+| return type |  |
+| --- | --- |
+| ApiResponse | Returns response with state ('paid', 'error', 'waiting_for_confirmation'), parent availability info, and status code |
+
+**Note**: V2 API may return async response (HTTP 202). Always check `isRecurringPaymentsAvailable()` to determine if the parent payment can be used for more payments.
+
 ### realizeIrregularSubscriptionPayment
 
-Realize subscription payment.
+Realize subscription payment (V2 API endpoint)
 
 #### Parameters
 
@@ -202,9 +218,17 @@ Realize subscription payment.
 | $uid | string | required | UID of parent payment |
 | $params | RealizeIrregularSubscriptionPaymentParams | required | |
 
+#### Return
+
+| return type |  |
+| --- | --- |
+| ApiResponse | Returns response with state ('paid', 'error', 'waiting_for_confirmation'), parent availability info, and status code |
+
+**Note**: V2 API may return async response (HTTP 202). Always check `isRecurringPaymentsAvailable()` to determine if the parent payment can be used for more payments.
+
 ### realizeUsageBasedSubscriptionPayment
 
-Realize subscription payment.
+Realize subscription payment (V2 API endpoint)
 
 #### Parameters
 
@@ -213,17 +237,32 @@ Realize subscription payment.
 | $uid | string | required | UID of parent payment |
 | $params | RealizeUsageBasedSubscriptionPaymentParams | required | |
 
+#### Return
+
+| return type |  |
+| --- | --- |
+| ApiResponse | Returns response with state ('paid', 'error', 'waiting_for_confirmation'), parent availability info, and status code |
+
+**Note**: V2 API may return async response (HTTP 202). Always check `isRecurringPaymentsAvailable()` to determine if the parent payment can be used for more payments.
 
 ### realizePaymentBySavedAuthorization
 
-Create new payment using saved authorization.
+Create new payment using saved authorization (V2 API endpoint)
 
 #### Parameters
 
 | name | type |  | description |
 | --- | --- | --- | --- |
 | $uid | string | required | UID of parent payment |
-| $params | RealizePaymentBySavedAuthorizationParams | required | |
+| $params | RealizePaymentBySavedAuthorizationParams | required | Requires amount and currency code in V2 API |
+
+#### Return
+
+| return type |  |
+| --- | --- |
+| ApiResponse | Returns response with state ('paid', 'error', 'waiting_for_confirmation'), parent availability info, and status code |
+
+**Note**: V2 API requires amount and currency code (both required). May return async response (HTTP 202). Always check `isRecurringPaymentsAvailable()` to determine if the saved authorization is still valid.
 
 ### getPaymentUrlsForPayment
 

@@ -118,7 +118,10 @@ interface ApiServiceInterface
      */
     public function createPayment(CreatePaymentParams $createPaymentParams, ?string $methodCode = null): CreatePaymentResponse;
 
-    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): void;
+    /**
+     * @throws ApiException
+     */
+    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): ApiResponse;
 
     public function cancelPreauthorizedPayment(Identifier $uid): void;
 

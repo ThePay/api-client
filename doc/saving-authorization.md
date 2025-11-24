@@ -26,9 +26,10 @@ After the created payment was paid, we can realize new payment by saved authoriz
 ```php
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
 
+// V2 API requires amount and currency code
 // first parameter is uid of new (child) payment
-// second parameter contains amount in cents, if sets to null it will use amount of parent payment, required if third parameter is set
-// third parameter contains currency code, if sets to null it will use currency code of parent payment, required if second parameter is set
+// second parameter contains amount in cents (required)
+// third parameter contains currency code (required)
 $params = new \ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams('childpayment', 1000, 'EUR');
 
 // adding items is optional, if you do not add any item, items from parent payment will be used
@@ -38,9 +39,26 @@ $params->addItem($item);
 
 // first parameter is uid of parent payment (the one we create above with savedAuthorization set to true).
 // method will return ApiResponse
-$response = $thePayClient->realizePaymentBySavedAuthorization('subscriptionpayment', $params);
+$response = $thePayClient->realizePaymentBySavedAuthorization('savedauthtest', $params);
 
 if ($response->wasSuccessful()) {
     echo 'Payment was realized using saved authorization';
+} else if ($response->getState() === 'waiting_for_confirmation') {
+    echo 'Payment is being processed, you will receive a notification when complete';
+}
+
+// Check if more payments can be realized with this saved authorization
+if ($response->isRecurringPaymentsAvailable() === false) {
+    echo 'Saved authorization is no longer valid, customer needs to authorize a new payment';
 }
 ```
+
+**Note about V2 API:**
+The V2 API introduces several important changes:
+- **Amount and currency are now required** - you must always specify both parameters
+- **Asynchronous processing**: Payment may return HTTP 202 with state `waiting_for_confirmation`
+  - HTTP 200 with state `paid` means immediate success
+  - HTTP 200 with state `error` means immediate failure
+  - HTTP 202 with state `waiting_for_confirmation` means async processing
+- **Parent availability tracking**: Check `isRecurringPaymentsAvailable()` to know if the saved authorization is still valid
+- You will receive a notification when async payments complete (state changes to `paid` or `error`)

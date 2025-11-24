@@ -28,10 +28,24 @@ Once you are ready to capture the funds, call `realizePreauthorizedPayment()`:
 ```php
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
 $params = new \ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams(100, 'PREAUTH_PAYMENT_001');
-$thePayClient->realizePreauthorizedPayment($params);
+$response = $thePayClient->realizePreauthorizedPayment($params);
+
+if ($response->wasSuccessful()) {
+    echo 'Preauthorized payment was realized successfully';
+} else if ($response->getState() === 'waiting_for_confirmation') {
+    echo 'Payment is being processed, you will receive a notification when complete';
+} else {
+    echo 'Payment realization failed';
+}
 ```
 
 You may capture less than the originally preauthorized amount, but never more.
+
+**Note about V2 API:**
+The V2 API supports asynchronous payment processing:
+- HTTP 200 with state `paid` means immediate success
+- HTTP 202 with state `waiting_for_confirmation` means the payment is being processed asynchronously
+- You will receive a notification when the async payment completes (state changes to `paid` or `preauth_cancelled`)
 
 ## Cancel a Preauthorized Payment
 

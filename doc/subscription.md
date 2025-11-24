@@ -55,8 +55,26 @@ $response = $thePayClient->realizeRegularSubscriptionPayment('subscriptionpaymen
 
 if ($response->wasSuccessful()) {
     echo 'Subscription payment was realized';
+} else {
+    // Check if payment is still processing asynchronously
+    if ($response->getState() === 'waiting_for_confirmation') {
+        echo 'Payment is being processed, you will receive a notification when complete';
+    }
+}
+
+// Check if more payments can be realized with this parent
+if ($response->isRecurringPaymentsAvailable() === false) {
+    echo 'No more payments can be realized with this parent, inform customer to create new subscription';
 }
 ```
+
+**Note about V2 API:**
+The V2 API supports asynchronous payment processing:
+- HTTP 200 with state `paid` means immediate success
+- HTTP 200 with state `error` means immediate failure
+- HTTP 202 with state `waiting_for_confirmation` means the payment is being processed asynchronously
+- You will receive a notification when the async payment completes (state changes to `paid` or `error`)
+- Always check `parent.recurring_payments_available` to know if the subscription should end
 
 ### Realizing irregular subscription payment type
 
@@ -77,6 +95,13 @@ $response = $thePayClient->realizeIrregularSubscriptionPayment('subscriptionpaym
 
 if ($response->wasSuccessful()) {
     echo 'Subscription payment was realized';
+} else if ($response->getState() === 'waiting_for_confirmation') {
+    echo 'Payment is being processed, you will receive a notification when complete';
+}
+
+// Check if more payments can be realized
+if ($response->isRecurringPaymentsAvailable() === false) {
+    echo 'Parent payment no longer available for new subscriptions';
 }
 ```
 
@@ -100,5 +125,12 @@ $response = $thePayClient->realizeUsageBasedSubscriptionPayment('subscriptionpay
 
 if ($response->wasSuccessful()) {
     echo 'Subscription payment was realized';
+} else if ($response->getState() === 'waiting_for_confirmation') {
+    echo 'Payment is being processed, you will receive a notification when complete';
+}
+
+// Check if more payments can be realized
+if ($response->isRecurringPaymentsAvailable() === false) {
+    echo 'Parent payment no longer available for new subscriptions';
 }
 ```

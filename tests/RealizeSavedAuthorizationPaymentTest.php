@@ -19,8 +19,11 @@ final class RealizeSavedAuthorizationPaymentTest extends BaseTestCase
 
         $okResponse = new ApiResponse(
             '{
-                "state": "success",
-                "message": "Ok"
+                "state": "paid",
+                "message": "Ok",
+                "parent": {
+                    "recurring_payments_available": true
+                }
             }',
             200
         );
@@ -33,9 +36,11 @@ final class RealizeSavedAuthorizationPaymentTest extends BaseTestCase
 
     public function testRealizePaymentBySavedAuthorization(): void
     {
-        $params = new RealizePaymentBySavedAuthorizationParams('childPayment');
+        $params = new RealizePaymentBySavedAuthorizationParams('childPayment', 10000, 'CZK');
         $result = $this->client->realizePaymentBySavedAuthorization('parentUid', $params);
 
         self::assertSame(ApiResponse::class, get_class($result));
+        self::assertTrue($result->wasSuccessful());
+        self::assertTrue($result->isRecurringPaymentsAvailable());
     }
 }

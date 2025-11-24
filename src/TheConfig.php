@@ -57,10 +57,14 @@ class TheConfig
     }
 
     /**
+     * @param string|null $specificVersion
      * @return string
      */
-    public function getApiUrl()
+    public function getApiUrl($specificVersion = null)
     {
+        if ($specificVersion) {
+            return $this->apiUrl->getValue() . $specificVersion . '/';
+        }
         return $this->apiUrl->getValue() . $this->apiVersion . '/';
     }
 
