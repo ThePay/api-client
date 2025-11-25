@@ -2,7 +2,6 @@
 
 namespace ThePay\ApiClient\Model;
 
-use InvalidArgumentException;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\CurrencyCode;
 use ThePay\ApiClient\ValueObject\Identifier;
