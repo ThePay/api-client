@@ -1,102 +1,107 @@
-# Subscription payments
+# Subscription Payments
 
-It is possible to create long term subscription for your customers. The setup for subsription is done through regular endpoint for payment creation, but with the subscription properties set. The payment created can then be repeatedly paid by the customer, through a different endpoint.
+Subscription payments allow you to charge a customer repeatedly over time.
+A subscription is initialized through a standard payment creation request, but with subscription properties attached.
+Once the initial (parent) payment is completed, follow-up (child) payments can be realized using dedicated subscription endpoints.
 
-There are three different use cases with different endpoints for subscription payments, depending on payment time and payment amount needs.
-* Fixed time interval & fixed payment amount
-* Variable time interval & fixed payment amount
-* Fixed time interval & variable payment amount
+There are three main subscription types, depending on whether the time interval and payment amount are fixed or variable:
+- Fixed time interval & fixed amount
+- Variable time interval & fixed amount
+- Fixed time interval & variable amount
 
-The time interval or amount with fixed value is always set in the first (parent) payment upon payment creation. It is your responsibility to adhere to the values set in the parent payment. If you need to change the fixed payment amount or time period, a new subscription payment with different parameters must be used.
+Any value marked as fixed must be set in the parent payment, and it is your responsibility to adhere to it when creating child payments.
+If your subscription requires a different amount or interval, you must create a new parent subscription payment.
 
-**RECURRING PAYMENTS MUST BE ENABLED ON PROJECT**
+⚠️ **Important / Prerequisites**
+- **Recurring payments must be enabled on your project**.
 
-## Creating payment with subscription properties
+
+## Creating a Payment with Subscription Properties
 
 ```php
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
 
-// prepare subscription properties (first parameter is type, second parameter is day period between payments)
+// Prepare subscription properties:
+// First parameter: subscription type
+// Second parameter: number of days between payments (for fixed interval types)
 $subscription = new \ThePay\ApiClient\Model\Subscription(
     \ThePay\ApiClient\ValueObject\SubscriptionType::REGULAR,
     30
 );
 
-// Create payment (105.20 € with unique id 'subscriptionpayment')
-$createPayment = new \ThePay\ApiClient\Model\CreatePaymentParams(10520, 'EUR', 'subscriptionpayment');
+// Create initial subscription payment (105.20 € with UID 'uid_subscriptionpayment')
+$createPayment = new \ThePay\ApiClient\Model\CreatePaymentParams(10520, 'EUR', 'uid_subscriptionpayment', $customer);
 $createPayment->setSubscription($subscription);
 
 $payment = $thePayClient->createPayment($createPayment);
 
-// Get url where user can pay
+// Redirect the customer to complete the payment
 echo $payment->getPayUrl(); // https://demo.gate.thepay.cz/5aa4f4af546a74848/pay/
 ```
 
 ## Realizing subscription payment
 
-After the created payment was paid, we can realize subscription:
+After the parent payment is paid, you may charge the customer again using one of the three subscription realization types.
 
-### Realizing regular subscription payment type
+### Realizing a Regular (Fixed Interval & Fixed Amount) Subscription
 
 ```php
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
 
-// parameter is uid of new (child) payment
-$params = new \ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams('childpayment');
+// UID of the new (child) payment
+$params = new \ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams('uid_childpayment');
 
-// adding items is optional, if you do not add any item, items from parent payment will be used
+// You may optionally define items. If omitted, items from parent payment are reused.
 $item = new \ThePay\ApiClient\Model\CreatePaymentItem('item', 'Magazine #2', 10520, 1);
 $params->addItem($item);
 
-
-// first parameter is uid of parent payment (the one we create above with subscription property).
-// method will return ApiResponse
-$response = $thePayClient->realizeRegularSubscriptionPayment('subscriptionpayment', $params);
+// Parent payment UID is passed as the first parameter.
+// Method returns an ApiResponse.
+$response = $thePayClient->realizeRegularSubscriptionPayment('uid_subscriptionpayment', $params);
 
 if ($response->wasSuccessful()) {
     echo 'Subscription payment was realized';
 }
 ```
 
-### Realizing irregular subscription payment type
+### Realizing an Irregular (Variable Interval & Fixed Amount) Subscription
 
 ```php
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
 
-// parameter is uid of new (child) payment
-$params = new \ThePay\ApiClient\Model\RealizeIrregularSubscriptionPaymentParams('childpayment2');
+// UID of the new (child) payment
+$params = new \ThePay\ApiClient\Model\RealizeIrregularSubscriptionPaymentParams('uid_childpayment2');
 
-// adding items is optional, if you do not add any item, items from parent payment will be used
+// You may optionally define items. If omitted, items from parent payment are reused.
 $item = new \ThePay\ApiClient\Model\CreatePaymentItem('item', 'New book', 10520, 1);
 $params->addItem($item);
 
-
-// first parameter is uid of parent payment (the one we create above with subscription property).
-// method will return ApiResponse
-$response = $thePayClient->realizeIrregularSubscriptionPayment('subscriptionpayment', $params);
+// Parent payment UID is passed as the first parameter.
+// Method returns an ApiResponse.
+$response = $thePayClient->realizeIrregularSubscriptionPayment('uid_subscriptionpayment', $params);
 
 if ($response->wasSuccessful()) {
     echo 'Subscription payment was realized';
 }
 ```
 
-### Realizing usage based subscription payment type
+### Realizing a Usage-Based (Fixed Interval & Variable Amount) Subscription
 
 ```php
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
 
-// first parameter is uid of new (child) payment
-// second parameter is amount in cents (in parent payment currency)
-$params = new \ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams('childpayment3', 18000);
+// First param: UID of child payment
+// Second param: amount in cents (in the parent payment currency)
+$params = new \ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams('uid_childpayment3', 18000);
 
-// adding items is optional, if you do not add any item, items from parent payment will be used
+// You may optionally define items. If omitted, items from parent payment are reused.
 $item = new \ThePay\ApiClient\Model\CreatePaymentItem('item', 'Server usage', 18000, 1);
 $params->addItem($item);
 
 
-// first parameter is uid of parent payment (the one we create above with subscription property).
-// method will return ApiResponse
-$response = $thePayClient->realizeUsageBasedSubscriptionPayment('subscriptionpayment', $params);
+// Parent payment UID is passed as the first parameter.
+// Method returns an ApiResponse.
+$response = $thePayClient->realizeUsageBasedSubscriptionPayment('uid_subscriptionpayment', $params);
 
 if ($response->wasSuccessful()) {
     echo 'Subscription payment was realized';

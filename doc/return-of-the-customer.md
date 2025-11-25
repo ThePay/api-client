@@ -1,27 +1,29 @@
 # Return of the Customer
 
-After payment creation, you will have to wait to return of the customer, keep in mind:
+After you create a payment, you redirect the customer to the payment gateway using the URL provided.
+Once the customer finishes (or abandons) the process at the gateway, they may be redirected back to your website.
 
-- the customer may not return to your website
-- the payment may not be paid in the moment of the return
+Keep in mind:
+- The customer may **not** return to your website
+- The payment may **not** be paid at the moment they return
 
-The customer will be returned to url specified in administration (in the project settings):
+## Configuring the Return URL
+
+- The customer will be returned to url specified in administration (in the project settings):
 
 ![settings](img/settings.png)
 
-This value may be overridden for each payment in CreatePaymentParams by setReturnUrl() function.
+You can override this value on a per-payment basis in `CreatePaymentParams` using the `setReturnUrl()` method.
 
-There are two query parameters added to redirect url:
+## Return URL Parameters
 
-* payment_uid
-* project_id
+When the customer is redirected back, the following query parameters are appended:
+- payment_uid
+- project_id
 
-In most cases you want to check the state of payment after customer's return:
-
-[See how to make TheClient](../.github/README.md#theclient-instance)
+You can use these identifiers to load the current state of the payment:
 
 ```php
-
 $uid = $_GET["payment_uid"];
 $projectId = $_GET["project_id"];
 
