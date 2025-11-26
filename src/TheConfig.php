@@ -57,7 +57,7 @@ class TheConfig
     }
 
     /**
-     * @param string|null $specificVersion
+     * @param string|null $specificVersion If specified, it will use this version of the API instead of the default one.
      * @return string
      */
     public function getApiUrl($specificVersion = null)

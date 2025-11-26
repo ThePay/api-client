@@ -260,7 +260,7 @@ class ApiService implements ApiServiceInterface
     {
         $jsonParams = $params->toArray();
 
-        $url = $this->url(['v2', 'projects', $this->config->getProjectId(), 'payments', $parentPaymentUid, 'subscription', SubscriptionType::REGULAR], [], false);
+        $url = $this->url(['projects', $this->config->getProjectId(), 'payments', $parentPaymentUid, 'subscription', SubscriptionType::REGULAR], [], false, 'v2');
         $response = $this->sendRequest(self::METHOD_POST, $url, $jsonParams);
 
         if ( ! in_array($response->getStatusCode(), [200, 202], true)) {
@@ -279,7 +279,7 @@ class ApiService implements ApiServiceInterface
     {
         $jsonParams = $params->toArray();
 
-        $url = $this->url(['v2', 'projects', $this->config->getProjectId(), 'payments', $parentPaymentUid, 'subscription', SubscriptionType::IRREGULAR], [], false);
+        $url = $this->url(['projects', $this->config->getProjectId(), 'payments', $parentPaymentUid, 'subscription', SubscriptionType::IRREGULAR], [], false, 'v2');
         $response = $this->sendRequest(self::METHOD_POST, $url, $jsonParams);
 
         if ( ! in_array($response->getStatusCode(), [200, 202], true)) {
@@ -298,7 +298,7 @@ class ApiService implements ApiServiceInterface
     {
         $jsonParams = $params->toArray();
 
-        $url = $this->url(['v2', 'projects', $this->config->getProjectId(), 'payments', $parentPaymentUid, 'subscription', SubscriptionType::USAGE_BASED], [], false);
+        $url = $this->url(['projects', $this->config->getProjectId(), 'payments', $parentPaymentUid, 'subscription', SubscriptionType::USAGE_BASED], [], false, 'v2');
         $response = $this->sendRequest(self::METHOD_POST, $url, $jsonParams);
 
         if ( ! in_array($response->getStatusCode(), [200, 202], true)) {
@@ -317,7 +317,7 @@ class ApiService implements ApiServiceInterface
     {
         $jsonParams = $params->toArray();
 
-        $url = $this->url(['v2', 'projects', $this->config->getProjectId(), 'payments', $parentPaymentUid, 'savedauthorization'], [], false);
+        $url = $this->url(['projects', $this->config->getProjectId(), 'payments', $parentPaymentUid, 'savedauthorization'], [], false, 'v2');
         $response = $this->sendRequest(self::METHOD_POST, $url, $jsonParams);
 
         if ( ! in_array($response->getStatusCode(), [200, 202], true)) {
@@ -375,13 +375,12 @@ class ApiService implements ApiServiceInterface
     public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): ApiResponse
     {
         $url = $this->url([
-            'v2',
             'projects',
             $this->config->getProjectId(),
             'payments',
             $params->getUid(),
             'preauthorized',
-        ], [], false);
+        ], [], false, 'v2');
         $response = $this->sendRequest(self::METHOD_POST, $url, $params->toArray());
 
         if ( ! in_array($response->getStatusCode(), [200, 202], true)) {
@@ -508,9 +507,10 @@ class ApiService implements ApiServiceInterface
      * @param array<string> $path
      * @param array<string, mixed> $arguments
      * @param bool $includeProject
+     * @param string|null $specificVersion
      * @return string
      */
-    private function url($path = [], $arguments = [], $includeProject = true)
+    private function url($path = [], $arguments = [], $includeProject = true, $specificVersion = null)
     {
         if ( ! isset($arguments['merchant_id'])) {
             ($arguments['merchant_id'] = $this->config->getMerchantId());
@@ -523,12 +523,6 @@ class ApiService implements ApiServiceInterface
             // Specify project
             array_unshift($path, 'projects', $this->config->getProjectId());
         }
-
-        $specificVersion = null;
-        if (isset($path[0]) && is_string($path[0]) && preg_match('/^v[0-9]+$/', $path[0])) {
-            $specificVersion = array_shift($path);
-        }
-
 
         $pathImploded = implode('/', $path);
         if (strlen($pathImploded)) {

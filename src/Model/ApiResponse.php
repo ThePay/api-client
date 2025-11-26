@@ -87,19 +87,33 @@ class ApiResponse
 
     /**
      * Determines if the payment was realized successfully.
-     *
-     * @return bool|null Return null if the payment is still being processed asynchronously.
      */
-    public function wasSuccessful()
+    public function wasSuccessful(): bool
     {
-        if ($this->statusCode === 200 && $this->state === 'paid' || $this->state === 'success') {
+        if ($this->statusCode === 200 && ($this->state === 'paid' || $this->state === 'success')) {
             return true;
         }
 
+        return false;
+    }
+
+    /**
+     * Determines if the payment is still being processed
+     */
+    public function isPending(): bool
+    {
         if ($this->statusCode === 202 && $this->state === 'waiting_for_confirmation') {
-            return null;
+            return true;
         }
 
         return false;
+    }
+
+    /**
+     * Determines if the payment has failed and will not be processed
+     */
+    public function hasFailed(): bool
+    {
+        return ! $this->wasSuccessful() && ! $this->isPending();
     }
 }
