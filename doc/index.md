@@ -123,13 +123,19 @@ Will create payment.
 
 ### realizePreauthorizedPayment
 
-Will realize preauth payment
+Will realize preauth payment (V2 API endpoint).
 
 #### Parameters
 
 | name | type |  |
 | --- | --- | --- |
 | $params | RealizePreauthorizedPaymentParams | required |
+
+#### Return
+
+| return type |  |
+| --- | --- |
+| RealizePreauthorizedPaymentResult | Result with `getState()` returning 'paid' or 'waiting_for_confirmation' |
 
 ### cancelPreauthorizedPayment
 
@@ -182,48 +188,71 @@ Return information about transactions history
 
 ### realizeRegularSubscriptionPayment
 
-Realize subscription payment.
+Realize subscription payment (V2 API endpoint).
 
 #### Parameters
 
 | name | type |  | description |
 | --- | --- | --- | --- |
-| $uid | string | required | UID of parent payment |
+| $parentPaymentUid | string | required | UID of parent payment |
 | $params | RealizeRegularSubscriptionPaymentParams | required | |
+
+#### Return
+
+| return type |  |
+| --- | --- |
+| RecurringPaymentResult | Result with `getState()` and `isRecurringPaymentsAvailable()` |
 
 ### realizeIrregularSubscriptionPayment
 
-Realize subscription payment.
+Realize subscription payment (V2 API endpoint).
 
 #### Parameters
 
 | name | type |  | description |
 | --- | --- | --- | --- |
-| $uid | string | required | UID of parent payment |
+| $parentPaymentUid | string | required | UID of parent payment |
 | $params | RealizeIrregularSubscriptionPaymentParams | required | |
+
+#### Return
+
+| return type |  |
+| --- | --- |
+| RecurringPaymentResult | Result with `getState()` and `isRecurringPaymentsAvailable()` |
 
 ### realizeUsageBasedSubscriptionPayment
 
-Realize subscription payment.
+Realize subscription payment (V2 API endpoint).
 
 #### Parameters
 
 | name | type |  | description |
 | --- | --- | --- | --- |
-| $uid | string | required | UID of parent payment |
+| $parentPaymentUid | string | required | UID of parent payment |
 | $params | RealizeUsageBasedSubscriptionPaymentParams | required | |
 
+#### Return
+
+| return type |  |
+| --- | --- |
+| RecurringPaymentResult | Result with `getState()` and `isRecurringPaymentsAvailable()` |
 
 ### realizePaymentBySavedAuthorization
 
-Create new payment using saved authorization.
+Create new payment using saved authorization (V2 API endpoint).
 
 #### Parameters
 
 | name | type |  | description |
 | --- | --- | --- | --- |
-| $uid | string | required | UID of parent payment |
-| $params | RealizePaymentBySavedAuthorizationParams | required | |
+| $parentPaymentUid | string | required | UID of parent payment |
+| $params | RealizePaymentBySavedAuthorizationParams | required | Requires amount and currency code |
+
+#### Return
+
+| return type |  |
+| --- | --- |
+| RecurringPaymentResult | Result with `getState()` and `isRecurringPaymentsAvailable()` |
 
 ### getPaymentUrlsForPayment
 

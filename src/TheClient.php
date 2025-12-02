@@ -9,7 +9,6 @@ use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Model\AccountBalance;
-use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\CreatePaymentParams;
@@ -20,8 +19,10 @@ use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizeIrregularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
+use ThePay\ApiClient\Model\RealizePreauthorizedPaymentResult;
 use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
+use ThePay\ApiClient\Model\RecurringPaymentResult;
 use ThePay\ApiClient\Model\SimplePayment;
 use ThePay\ApiClient\Model\SimpleTransaction;
 use ThePay\ApiClient\Service\ApiServiceInterface;
@@ -146,10 +147,10 @@ class TheClient
     /**
      * @param string $parentPaymentUid UID of payment which initialized this subscription.
      * @param RealizeRegularSubscriptionPaymentParams $params
-     * @return ApiResponse
+     * @return RecurringPaymentResult
      * @throws ApiException|InvalidArgumentException
      */
-    public function realizeRegularSubscriptionPayment($parentPaymentUid, RealizeRegularSubscriptionPaymentParams $params)
+    public function realizeRegularSubscriptionPayment($parentPaymentUid, RealizeRegularSubscriptionPaymentParams $params): RecurringPaymentResult
     {
         $this->validateUid($parentPaymentUid);
         return $this->api->realizeRegularSubscriptionPayment(new Identifier($parentPaymentUid), $params);
@@ -158,10 +159,10 @@ class TheClient
     /**
      * @param string $parentPaymentUid UID of payment which initialized this subscription.
      * @param RealizeIrregularSubscriptionPaymentParams $params
-     * @return ApiResponse
+     * @return RecurringPaymentResult
      * @throws ApiException|InvalidArgumentException
      */
-    public function realizeIrregularSubscriptionPayment($parentPaymentUid, RealizeIrregularSubscriptionPaymentParams $params)
+    public function realizeIrregularSubscriptionPayment($parentPaymentUid, RealizeIrregularSubscriptionPaymentParams $params): RecurringPaymentResult
     {
         $this->validateUid($parentPaymentUid);
         return $this->api->realizeIrregularSubscriptionPayment(new Identifier($parentPaymentUid), $params);
@@ -170,10 +171,10 @@ class TheClient
     /**
      * @param string $parentPaymentUid UID of payment which initialized this subscription.
      * @param RealizeUsageBasedSubscriptionPaymentParams $params
-     * @return ApiResponse
+     * @return RecurringPaymentResult
      * @throws ApiException|InvalidArgumentException
      */
-    public function realizeUsageBasedSubscriptionPayment($parentPaymentUid, RealizeUsageBasedSubscriptionPaymentParams $params)
+    public function realizeUsageBasedSubscriptionPayment($parentPaymentUid, RealizeUsageBasedSubscriptionPaymentParams $params): RecurringPaymentResult
     {
         $this->validateUid($parentPaymentUid);
         return $this->api->realizeUsageBasedSubscriptionPayment(new Identifier($parentPaymentUid), $params);
@@ -182,10 +183,10 @@ class TheClient
     /**
      * @param string $parentPaymentUid UID of first payment created with save_authorization=true.
      * @param RealizePaymentBySavedAuthorizationParams $params
-     * @return ApiResponse
+     * @return RecurringPaymentResult
      * @throws ApiException|InvalidArgumentException
      */
-    public function realizePaymentBySavedAuthorization($parentPaymentUid, RealizePaymentBySavedAuthorizationParams $params)
+    public function realizePaymentBySavedAuthorization($parentPaymentUid, RealizePaymentBySavedAuthorizationParams $params): RecurringPaymentResult
     {
         $this->validateUid($parentPaymentUid);
         return $this->api->realizePaymentBySavedAuthorization(new Identifier($parentPaymentUid), $params);
@@ -283,13 +284,13 @@ class TheClient
 
     /**
      * @param RealizePreauthorizedPaymentParams $params
-     *
+     * @return RealizePreauthorizedPaymentResult
      * @throws ApiException|InvalidArgumentException
      */
-    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): void
+    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): RealizePreauthorizedPaymentResult
     {
         $this->validateUid($params->getUid()->getValue());
-        $this
+        return $this
             ->api
             ->realizePreauthorizedPayment($params);
     }

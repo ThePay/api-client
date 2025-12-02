@@ -6,7 +6,6 @@ use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Model\AccountBalance;
-use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\Collection\TransactionCollection;
@@ -19,8 +18,10 @@ use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizeIrregularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
+use ThePay\ApiClient\Model\RealizePreauthorizedPaymentResult;
 use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
+use ThePay\ApiClient\Model\RecurringPaymentResult;
 use ThePay\ApiClient\ValueObject\Amount;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
@@ -61,34 +62,34 @@ interface ApiServiceInterface
     /**
      * @param Identifier $parentPaymentUid UID of payment which initialized this subscription.
      * @param RealizeRegularSubscriptionPaymentParams $params
-     * @return ApiResponse
+     * @return RecurringPaymentResult
      * @throws ApiException
      */
-    public function realizeRegularSubscriptionPayment(Identifier $parentPaymentUid, RealizeRegularSubscriptionPaymentParams $params);
+    public function realizeRegularSubscriptionPayment(Identifier $parentPaymentUid, RealizeRegularSubscriptionPaymentParams $params): RecurringPaymentResult;
 
     /**
      * @param Identifier $parentPaymentUid UID of payment which initialized this subscription.
      * @param RealizeIrregularSubscriptionPaymentParams $params
-     * @return ApiResponse
+     * @return RecurringPaymentResult
      * @throws ApiException
      */
-    public function realizeIrregularSubscriptionPayment(Identifier $parentPaymentUid, RealizeIrregularSubscriptionPaymentParams $params);
+    public function realizeIrregularSubscriptionPayment(Identifier $parentPaymentUid, RealizeIrregularSubscriptionPaymentParams $params): RecurringPaymentResult;
 
     /**
      * @param Identifier $parentPaymentUid UID of payment which initialized this subscription.
      * @param RealizeUsageBasedSubscriptionPaymentParams $params
-     * @return ApiResponse
+     * @return RecurringPaymentResult
      * @throws ApiException
      */
-    public function realizeUsageBasedSubscriptionPayment(Identifier $parentPaymentUid, RealizeUsageBasedSubscriptionPaymentParams $params);
+    public function realizeUsageBasedSubscriptionPayment(Identifier $parentPaymentUid, RealizeUsageBasedSubscriptionPaymentParams $params): RecurringPaymentResult;
 
     /**
      * @param Identifier $parentPaymentUid UID of first payment created with save_authorization=true.
      * @param RealizePaymentBySavedAuthorizationParams $params
-     * @return ApiResponse
+     * @return RecurringPaymentResult
      * @throws ApiException
      */
-    public function realizePaymentBySavedAuthorization(Identifier $parentPaymentUid, RealizePaymentBySavedAuthorizationParams $params);
+    public function realizePaymentBySavedAuthorization(Identifier $parentPaymentUid, RealizePaymentBySavedAuthorizationParams $params): RecurringPaymentResult;
 
     /**
      * @param int<1, max> $page
@@ -118,7 +119,10 @@ interface ApiServiceInterface
      */
     public function createPayment(CreatePaymentParams $createPaymentParams, ?string $methodCode = null): CreatePaymentResponse;
 
-    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): void;
+    /**
+     * @throws ApiException
+     */
+    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): RealizePreauthorizedPaymentResult;
 
     public function cancelPreauthorizedPayment(Identifier $uid): void;
 

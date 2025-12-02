@@ -57,10 +57,14 @@ class TheConfig
     }
 
     /**
+     * @param non-empty-string|null $specificVersion If specified, it will use this version of the API instead of the default one.
      * @return string
      */
-    public function getApiUrl()
+    public function getApiUrl(?string $specificVersion = null): string
     {
+        if ($specificVersion !== null) {
+            return $this->apiUrl->getValue() . $specificVersion . '/';
+        }
         return $this->apiUrl->getValue() . $this->apiVersion . '/';
     }
 

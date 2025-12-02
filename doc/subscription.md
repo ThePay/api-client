@@ -46,6 +46,8 @@ After the parent payment is paid, you may charge the customer again using one of
 ### Realizing a Regular (Fixed Interval & Fixed Amount) Subscription
 
 ```php
+use ThePay\ApiClient\Model\RecurringPaymentResult;
+
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
 
 // UID of the new (child) payment
@@ -56,17 +58,40 @@ $item = new \ThePay\ApiClient\Model\CreatePaymentItem('item', 'Magazine #2', 105
 $params->addItem($item);
 
 // Parent payment UID is passed as the first parameter.
-// Method returns an ApiResponse.
-$response = $thePayClient->realizeRegularSubscriptionPayment('uid_subscriptionpayment', $params);
+// Method returns a RecurringPaymentResult.
+$result = $thePayClient->realizeRegularSubscriptionPayment('uid_subscriptionpayment', $params);
 
-if ($response->wasSuccessful()) {
-    echo 'Subscription payment was realized';
+match ($result->getState()) {
+    RecurringPaymentResult::STATE_PAID =>
+        echo 'Subscription payment was realized',
+
+    RecurringPaymentResult::STATE_WAITING_FOR_CONFIRMATION =>
+        echo 'Payment is being processed, you will receive a notification when complete',
+
+    RecurringPaymentResult::STATE_ERROR =>
+        echo 'Payment was not realized',
+};
+
+// Check if more payments can be realized with this parent
+if (!$result->isRecurringPaymentsAvailable()) {
+    // No more payments can be realized with this parent, inform customer to create new subscription
+    echo 'Saved authorization is no longer valid, customer needs to authorize a new payment';
 }
 ```
+
+**Note about V2 API:**
+The V2 API supports asynchronous payment processing:
+- State `paid` means immediate success
+- State `error` means immediate failure
+- State `waiting_for_confirmation` means the payment is being processed asynchronously
+- You will receive a notification when the async payment completes (state changes to `paid` or `error`)
+- Always check `isRecurringPaymentsAvailable()` to know if the subscription should end
 
 ### Realizing an Irregular (Variable Interval & Fixed Amount) Subscription
 
 ```php
+use ThePay\ApiClient\Model\RecurringPaymentResult;
+
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
 
 // UID of the new (child) payment
@@ -77,17 +102,32 @@ $item = new \ThePay\ApiClient\Model\CreatePaymentItem('item', 'New book', 10520,
 $params->addItem($item);
 
 // Parent payment UID is passed as the first parameter.
-// Method returns an ApiResponse.
-$response = $thePayClient->realizeIrregularSubscriptionPayment('uid_subscriptionpayment', $params);
+// Method returns a RecurringPaymentResult.
+$result = $thePayClient->realizeIrregularSubscriptionPayment('uid_subscriptionpayment', $params);
 
-if ($response->wasSuccessful()) {
-    echo 'Subscription payment was realized';
+match ($result->getState()) {
+    RecurringPaymentResult::STATE_PAID =>
+        echo 'Subscription payment was realized',
+
+    RecurringPaymentResult::STATE_WAITING_FOR_CONFIRMATION =>
+        echo 'Payment is being processed, you will receive a notification when complete',
+
+    RecurringPaymentResult::STATE_ERROR =>
+        echo 'Payment was not realized',
+};
+
+// Check if more payments can be realized
+if (!$result->isRecurringPaymentsAvailable()) {
+    // Parent payment no longer available for new subscriptions
+    echo 'Parent payment no longer available for new subscriptions';
 }
 ```
 
 ### Realizing a Usage-Based (Fixed Interval & Variable Amount) Subscription
 
 ```php
+use ThePay\ApiClient\Model\RecurringPaymentResult;
+
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
 
 // First param: UID of child payment
@@ -100,10 +140,23 @@ $params->addItem($item);
 
 
 // Parent payment UID is passed as the first parameter.
-// Method returns an ApiResponse.
-$response = $thePayClient->realizeUsageBasedSubscriptionPayment('uid_subscriptionpayment', $params);
+// Method returns a RecurringPaymentResult.
+$result = $thePayClient->realizeUsageBasedSubscriptionPayment('uid_subscriptionpayment', $params);
 
-if ($response->wasSuccessful()) {
-    echo 'Subscription payment was realized';
+match ($result->getState()) {
+    RecurringPaymentResult::STATE_PAID =>
+        echo 'Subscription payment was realized',
+
+    RecurringPaymentResult::STATE_WAITING_FOR_CONFIRMATION =>
+        echo 'Payment is being processed, you will receive a notification when complete',
+
+    RecurringPaymentResult::STATE_ERROR =>
+        echo 'Payment was not realized',
+};
+
+// Check if more payments can be realized
+if (!$result->isRecurringPaymentsAvailable()) {
+    // Parent payment no longer available for new subscriptions
+    echo 'Parent payment no longer available for new subscriptions';
 }
 ```

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ThePay\ApiClient\Tests;
 
-use ThePay\ApiClient\Model\ApiResponse;
+use ThePay\ApiClient\Model\RecurringPaymentResult;
 use ThePay\ApiClient\Model\RealizeIrregularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
@@ -19,12 +19,14 @@ final class RealizeSubscriptionPaymentTest extends BaseTestCase
     {
         parent::setUp();
 
-        $okResponse = new ApiResponse(
+        $okResponse = new RecurringPaymentResult(
             '{
-                "state": "success",
-                "message": "Ok"
-            }',
-            200
+                "state": "paid",
+                "message": "Ok",
+                "parent": {
+                    "recurring_payments_available": true
+                }
+            }'
         );
 
         $apiService = $this->createMock(ApiServiceInterface::class);
@@ -40,16 +42,20 @@ final class RealizeSubscriptionPaymentTest extends BaseTestCase
         $params = new RealizeRegularSubscriptionPaymentParams('childPayment');
         $result = $this->client->realizeRegularSubscriptionPayment('parentUid', $params);
 
-        self::assertSame(ApiResponse::class, get_class($result));
+        self::assertSame(RecurringPaymentResult::class, get_class($result));
+        self::assertSame(RecurringPaymentResult::STATE_PAID, $result->getState());
+        self::assertTrue($result->isRecurringPaymentsAvailable());
 
         $params = new RealizeIrregularSubscriptionPaymentParams('childPayment2');
         $result = $this->client->realizeIrregularSubscriptionPayment('parentUid', $params);
 
-        self::assertSame(ApiResponse::class, get_class($result));
+        self::assertSame(RecurringPaymentResult::class, get_class($result));
+        self::assertSame(RecurringPaymentResult::STATE_PAID, $result->getState());
 
         $params = new RealizeUsageBasedSubscriptionPaymentParams('childPayment3', 1000);
         $result = $this->client->realizeUsageBasedSubscriptionPayment('parentUid', $params);
 
-        self::assertSame(ApiResponse::class, get_class($result));
+        self::assertSame(RecurringPaymentResult::class, get_class($result));
+        self::assertSame(RecurringPaymentResult::STATE_PAID, $result->getState());
     }
 }

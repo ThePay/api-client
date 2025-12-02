@@ -11,6 +11,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
+use ThePay\ApiClient\Model\RealizePreauthorizedPaymentResult;
 use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\Service\SignatureService;
 use ThePay\ApiClient\TheClient;
@@ -46,7 +47,7 @@ final class RealizePreauthorizationPaymentTest extends BaseTestCase
             ->expects(self::once())
             ->method('sendRequest')
             ->willReturnCallback(function (RequestInterface $request): ResponseInterface {
-                $expectedUrl = $this->config->getApiUrl() . 'projects/1/payments/abc/preauthorized?merchant_id=' . self::MERCHANT_ID;
+                $expectedUrl = $this->config->getApiUrl('v2') . 'projects/1/payments/abc/preauthorized?merchant_id=' . self::MERCHANT_ID;
 
                 self::assertSame('POST', $request->getMethod());
                 self::assertSame($expectedUrl, $request->getUri()->__toString());
@@ -56,7 +57,10 @@ final class RealizePreauthorizationPaymentTest extends BaseTestCase
             })
         ;
 
-        $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(100, 'abc'));
+        $response = $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(100, 'abc'));
+
+        self::assertInstanceOf(RealizePreauthorizedPaymentResult::class, $response);
+        self::assertSame(RealizePreauthorizedPaymentResult::STATE_PAID, $response->getState());
     }
 
     public function testNotOkResponse(): void
@@ -70,7 +74,7 @@ final class RealizePreauthorizationPaymentTest extends BaseTestCase
 
     private function getOkResponse(): ResponseInterface
     {
-        return new Response(204);
+        return new Response(200, [], '{"state":"paid"}');
     }
 
     private function getNotOkResponse(): ResponseInterface
