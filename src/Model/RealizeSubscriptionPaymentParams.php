@@ -22,8 +22,7 @@ abstract class RealizeSubscriptionPaymentParams implements SignableRequest
     /** @var string|null */
     protected $descriptionForMerchant = null;
 
-    /** @var string|null */
-    protected $notifUrl = null;
+    protected ?string $notifUrl = null;
 
     /**
      * @return Amount
@@ -65,19 +64,12 @@ abstract class RealizeSubscriptionPaymentParams implements SignableRequest
         return $this->descriptionForMerchant;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getNotifUrl()
+    public function getNotifUrl(): ?string
     {
         return $this->notifUrl;
     }
 
-    /**
-     * @param string|null $notifUrl
-     * @return RealizeSubscriptionPaymentParams
-     */
-    public function setNotifUrl($notifUrl)
+    public function setNotifUrl(string $notifUrl): self
     {
         $this->notifUrl = $notifUrl;
         return $this;

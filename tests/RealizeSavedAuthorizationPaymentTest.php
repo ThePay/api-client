@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ThePay\ApiClient\Tests;
 
-use ThePay\ApiClient\Model\ApiResponse;
+use ThePay\ApiClient\Model\RecurringPaymentResult;
 use ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams;
 use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheClient;
@@ -17,15 +17,14 @@ final class RealizeSavedAuthorizationPaymentTest extends BaseTestCase
     {
         parent::setUp();
 
-        $okResponse = new ApiResponse(
+        $okResponse = new RecurringPaymentResult(
             '{
                 "state": "paid",
                 "message": "Ok",
                 "parent": {
                     "recurring_payments_available": true
                 }
-            }',
-            200
+            }'
         );
 
         $apiService = $this->createMock(ApiServiceInterface::class);
@@ -39,8 +38,8 @@ final class RealizeSavedAuthorizationPaymentTest extends BaseTestCase
         $params = new RealizePaymentBySavedAuthorizationParams('childPayment', 10000, 'CZK');
         $result = $this->client->realizePaymentBySavedAuthorization('parentUid', $params);
 
-        self::assertSame(ApiResponse::class, get_class($result));
-        self::assertTrue($result->wasSuccessful());
+        self::assertSame(RecurringPaymentResult::class, get_class($result));
+        self::assertSame(RecurringPaymentResult::STATE_PAID, $result->getState());
         self::assertTrue($result->isRecurringPaymentsAvailable());
     }
 }

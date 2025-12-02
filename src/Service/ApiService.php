@@ -10,7 +10,6 @@ use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Model\AccountBalance;
-use ThePay\ApiClient\Model\ApiResponse;
 use ThePay\ApiClient\Model\Collection\PaymentCollection;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Model\Collection\TransactionCollection;
@@ -25,8 +24,10 @@ use ThePay\ApiClient\Model\Project;
 use ThePay\ApiClient\Model\RealizeIrregularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
+use ThePay\ApiClient\Model\RealizePreauthorizedPaymentResult;
 use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
+use ThePay\ApiClient\Model\RecurringPaymentResult;
 use ThePay\ApiClient\TheClient;
 use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\Utils\Json;
@@ -256,7 +257,7 @@ class ApiService implements ApiServiceInterface
      *
      * @throws ApiException
      */
-    public function realizeRegularSubscriptionPayment(Identifier $parentPaymentUid, RealizeRegularSubscriptionPaymentParams $params): ApiResponse
+    public function realizeRegularSubscriptionPayment(Identifier $parentPaymentUid, RealizeRegularSubscriptionPaymentParams $params): RecurringPaymentResult
     {
         $jsonParams = $params->toArray();
 
@@ -267,7 +268,7 @@ class ApiService implements ApiServiceInterface
             throw $this->buildException($url, $response);
         }
 
-        return new ApiResponse($response->getBody()->getContents(), $response->getStatusCode());
+        return new RecurringPaymentResult($response->getBody()->getContents());
     }
 
     /**
@@ -275,7 +276,7 @@ class ApiService implements ApiServiceInterface
      *
      * @throws ApiException
      */
-    public function realizeIrregularSubscriptionPayment(Identifier $parentPaymentUid, RealizeIrregularSubscriptionPaymentParams $params): ApiResponse
+    public function realizeIrregularSubscriptionPayment(Identifier $parentPaymentUid, RealizeIrregularSubscriptionPaymentParams $params): RecurringPaymentResult
     {
         $jsonParams = $params->toArray();
 
@@ -286,7 +287,7 @@ class ApiService implements ApiServiceInterface
             throw $this->buildException($url, $response);
         }
 
-        return new ApiResponse($response->getBody()->getContents(), $response->getStatusCode());
+        return new RecurringPaymentResult($response->getBody()->getContents());
     }
 
     /**
@@ -294,7 +295,7 @@ class ApiService implements ApiServiceInterface
      *
      * @throws ApiException
      */
-    public function realizeUsageBasedSubscriptionPayment(Identifier $parentPaymentUid, RealizeUsageBasedSubscriptionPaymentParams $params): ApiResponse
+    public function realizeUsageBasedSubscriptionPayment(Identifier $parentPaymentUid, RealizeUsageBasedSubscriptionPaymentParams $params): RecurringPaymentResult
     {
         $jsonParams = $params->toArray();
 
@@ -305,7 +306,7 @@ class ApiService implements ApiServiceInterface
             throw $this->buildException($url, $response);
         }
 
-        return new ApiResponse($response->getBody()->getContents(), $response->getStatusCode());
+        return new RecurringPaymentResult($response->getBody()->getContents());
     }
 
     /**
@@ -313,7 +314,7 @@ class ApiService implements ApiServiceInterface
      *
      * @throws ApiException
      */
-    public function realizePaymentBySavedAuthorization(Identifier $parentPaymentUid, RealizePaymentBySavedAuthorizationParams $params): ApiResponse
+    public function realizePaymentBySavedAuthorization(Identifier $parentPaymentUid, RealizePaymentBySavedAuthorizationParams $params): RecurringPaymentResult
     {
         $jsonParams = $params->toArray();
 
@@ -324,7 +325,7 @@ class ApiService implements ApiServiceInterface
             throw $this->buildException($url, $response);
         }
 
-        return new ApiResponse($response->getBody()->getContents(), $response->getStatusCode());
+        return new RecurringPaymentResult($response->getBody()->getContents());
     }
 
 
@@ -372,7 +373,7 @@ class ApiService implements ApiServiceInterface
     /**
      * @throws ApiException
      */
-    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): ApiResponse
+    public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): RealizePreauthorizedPaymentResult
     {
         $url = $this->url([
             'projects',
@@ -387,7 +388,7 @@ class ApiService implements ApiServiceInterface
             throw $this->buildException($url, $response);
         }
 
-        return new ApiResponse($response->getBody()->getContents(), $response->getStatusCode());
+        return new RealizePreauthorizedPaymentResult($response->getBody()->getContents());
     }
 
     /**
@@ -507,10 +508,10 @@ class ApiService implements ApiServiceInterface
      * @param array<string> $path
      * @param array<string, mixed> $arguments
      * @param bool $includeProject
-     * @param string|null $specificVersion
+     * @param non-empty-string|null $specificVersion
      * @return string
      */
-    private function url($path = [], $arguments = [], $includeProject = true, $specificVersion = null)
+    private function url($path = [], $arguments = [], $includeProject = true, ?string $specificVersion = null)
     {
         if ( ! isset($arguments['merchant_id'])) {
             ($arguments['merchant_id'] = $this->config->getMerchantId());

@@ -11,6 +11,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
+use ThePay\ApiClient\Model\RealizePreauthorizedPaymentResult;
 use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\Service\SignatureService;
 use ThePay\ApiClient\TheClient;
@@ -58,9 +59,8 @@ final class RealizePreauthorizationPaymentTest extends BaseTestCase
 
         $response = $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(100, 'abc'));
 
-        self::assertInstanceOf(\ThePay\ApiClient\Model\ApiResponse::class, $response);
-        self::assertSame('paid', $response->getState());
-        self::assertTrue($response->wasSuccessful());
+        self::assertInstanceOf(RealizePreauthorizedPaymentResult::class, $response);
+        self::assertSame(RealizePreauthorizedPaymentResult::STATE_PAID, $response->getState());
     }
 
     public function testNotOkResponse(): void
@@ -74,7 +74,7 @@ final class RealizePreauthorizationPaymentTest extends BaseTestCase
 
     private function getOkResponse(): ResponseInterface
     {
-        return new Response(200, [], '{"state":"paid","message":"Payment realized successfully"}');
+        return new Response(200, [], '{"state":"paid"}');
     }
 
     private function getNotOkResponse(): ResponseInterface

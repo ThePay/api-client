@@ -26,8 +26,7 @@ final class RealizePaymentBySavedAuthorizationParams implements SignableRequest
     /** @var string|null */
     protected $descriptionForMerchant = null;
 
-    /** @var string|null */
-    protected $notifUrl = null;
+    protected ?string $notifUrl = null;
 
     /**
      * RealizePaymentBySavedAuthorizationParams constructor.
@@ -39,7 +38,7 @@ final class RealizePaymentBySavedAuthorizationParams implements SignableRequest
      * @param string|null $descriptionForMerchant
      * @param string|null $notifUrl
      */
-    public function __construct($uid, $amount, $currencyCode, $orderId = null, $descriptionForMerchant = null, $notifUrl = null)
+    public function __construct($uid, $amount, $currencyCode, $orderId = null, $descriptionForMerchant = null, ?string $notifUrl = null)
     {
         $this->uid = new Identifier($uid);
         $this->amount = new Amount($amount);
@@ -97,19 +96,12 @@ final class RealizePaymentBySavedAuthorizationParams implements SignableRequest
         return $this->descriptionForMerchant;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getNotifUrl()
+    public function getNotifUrl(): ?string
     {
         return $this->notifUrl;
     }
 
-    /**
-     * @param string|null $notifUrl
-     * @return RealizePaymentBySavedAuthorizationParams
-     */
-    public function setNotifUrl($notifUrl)
+    public function setNotifUrl(string $notifUrl): self
     {
         $this->notifUrl = $notifUrl;
         return $this;
