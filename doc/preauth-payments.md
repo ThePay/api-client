@@ -43,8 +43,7 @@ match ($result->getState()) {
 
 You may capture less than the originally preauthorized amount, but never more.
 
-**Note about V2 API:**
-The V2 API supports asynchronous payment processing:
+The API supports asynchronous payment processing:
 - State `paid` means immediate success
 - State `waiting_for_confirmation` means the payment is being processed asynchronously
 - You will receive a notification when the async payment completes (state changes to `paid` or `preauth_cancelled`)
