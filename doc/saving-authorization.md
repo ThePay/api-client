@@ -33,16 +33,17 @@ use ThePay\ApiClient\Model\RecurringPaymentResult;
 
 /** @var \ThePay\ApiClient\TheClient $thePayClient */
 
-// First parameter: UID of the new (child) payment
-// Second parameter: amount in cents (required)
-// Third parameter: currency code (required)
-$params = new \ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams('childpayment', 1000, 'EUR');
+$params = new \ThePay\ApiClient\Model\RealizePaymentBySavedAuthorizationParams(
+    'uid_childpayment', // UID of the new (child) payment
+    1000,               // Amount in cents
+    'EUR'               // Currency code
+);
 
-// adding items is optional, if you do not add any item, items from parent payment will be used
+// Items are optional; if none are added, the items from the parent payment are reused
 $item = new \ThePay\ApiClient\Model\CreatePaymentItem('item', 'Server setup', 1000, 1);
 $params->addItem($item);
 
-// First parameter: UID of the parent payment (one created with saveAuthorization=true)
+// First parameter: UID of the parent payment (created with saveAuthorization=true)
 // The method returns RecurringPaymentResult
 $result = $thePayClient->realizePaymentBySavedAuthorization('uid_savedauthtest', $params);
 
@@ -51,25 +52,23 @@ match ($result->getState()) {
         echo 'Payment was realized using saved authorization',
 
     RecurringPaymentResult::STATE_WAITING_FOR_CONFIRMATION =>
-        echo 'Payment is being processed, you will receive a notification when complete',
+        echo 'Payment is being processed; you will receive a notification when it completes',
 
     RecurringPaymentResult::STATE_ERROR =>
-        echo 'Payment was not realized',
+        echo 'Payment could not be realized',
 };
 
-// Check if more payments can be realized with this saved authorization
+// Determine whether the saved authorization can still be used for future payments
 if (!$result->isRecurringPaymentsAvailable()) {
     // Saved authorization is no longer valid, customer needs to authorize a new payment
-    echo 'Saved authorization is no longer valid, customer needs to authorize a new payment';
+    echo 'Saved authorization is no longer valid; the customer must authorize a new payment';
 }
 ```
 
-**Note about V2 API:**
-The V2 API introduces several important changes:
-- **Amount and currency are now required** - you must always specify both parameters
-- **Asynchronous processing**: Payment may have these states:
-  - `paid` - Payment realized successfully
-  - `error` - Payment realization failed
-  - `waiting_for_confirmation` - Payment is being processed asynchronously
-- **Parent availability tracking**: Check `isRecurringPaymentsAvailable()` to know if the saved authorization is still valid
+The API supports asynchronous payment processing, with the following states:
+- `paid` - Payment realized successfully
+- `error` - Payment realization failed
+- `waiting_for_confirmation` - Payment is being processed asynchronously
 - You will receive a notification when async payments complete (state changes to `paid` or `error`)
+
+**Saved authorization availability:** Check `isRecurringPaymentsAvailable()` to check if the saved authorization can still be used for future payments.

@@ -43,6 +43,15 @@ echo $payment->getPayUrl(); // https://demo.gate.thepay.cz/5aa4f4af546a74848/pay
 
 After the parent payment is paid, you may charge the customer again using one of the three subscription realization types.
 
+The API supports asynchronous payment processing:
+- State `paid` means immediate success
+- State `error` means immediate failure
+- State `waiting_for_confirmation` means the payment is being processed asynchronously
+- You will receive a notification when the async payment completes (state changes to `paid` or `error`)
+
+**Subscription availability:** Always check `isRecurringPaymentsAvailable()` to check if the subscription can still be used for future payments.
+
+
 ### Realizing a Regular (Fixed Interval & Fixed Amount) Subscription
 
 ```php
@@ -72,20 +81,11 @@ match ($result->getState()) {
         echo 'Payment was not realized',
 };
 
-// Check if more payments can be realized with this parent
+// Check if more payments can be realized under this parent payment
 if (!$result->isRecurringPaymentsAvailable()) {
-    // No more payments can be realized with this parent, inform customer to create new subscription
-    echo 'Saved authorization is no longer valid, customer needs to authorize a new payment';
+    // No more payments can be realized under this parent payment; inform the customer to create a new subscription
 }
 ```
-
-**Note about V2 API:**
-The V2 API supports asynchronous payment processing:
-- State `paid` means immediate success
-- State `error` means immediate failure
-- State `waiting_for_confirmation` means the payment is being processed asynchronously
-- You will receive a notification when the async payment completes (state changes to `paid` or `error`)
-- Always check `isRecurringPaymentsAvailable()` to know if the subscription should end
 
 ### Realizing an Irregular (Variable Interval & Fixed Amount) Subscription
 
@@ -116,10 +116,9 @@ match ($result->getState()) {
         echo 'Payment was not realized',
 };
 
-// Check if more payments can be realized
+// Check if more payments can be realized under this parent payment
 if (!$result->isRecurringPaymentsAvailable()) {
-    // Parent payment no longer available for new subscriptions
-    echo 'Parent payment no longer available for new subscriptions';
+    // No more payments can be realized under this parent payment; inform the customer to create a new subscription
 }
 ```
 
@@ -154,9 +153,8 @@ match ($result->getState()) {
         echo 'Payment was not realized',
 };
 
-// Check if more payments can be realized
+// Check if more payments can be realized under this parent payment
 if (!$result->isRecurringPaymentsAvailable()) {
-    // Parent payment no longer available for new subscriptions
-    echo 'Parent payment no longer available for new subscriptions';
+    // No more payments can be realized under this parent payment; inform the customer to create a new subscription
 }
 ```
