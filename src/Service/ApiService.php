@@ -62,11 +62,11 @@ class ApiService implements ApiServiceInterface
     private StreamFactoryInterface $streamFactory;
 
     public function __construct(
-        TheConfig               $config,
-        SignatureService        $signatureService,
-        ClientInterface         $httpClient,
+        TheConfig $config,
+        SignatureService $signatureService,
+        ClientInterface $httpClient,
         RequestFactoryInterface $requestFactory,
-        StreamFactoryInterface  $streamFactory
+        StreamFactoryInterface $streamFactory
     ) {
         $this->config = $config;
         $this->signatureService = $signatureService;
