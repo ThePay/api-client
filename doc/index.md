@@ -16,6 +16,7 @@
 | getPaymentRefund | https://thepay.docs.apiary.io/#reference/0/project-level-resources/payment-refund-info |
 | createPaymentRefund | https://thepay.docs.apiary.io/#reference/0/project-level-resources/payment-refund-request |
 | getAccountTransactionHistory | https://thepay.docs.apiary.io/#reference/0/merchant-level-resources/get-account-transaction-history |
+| getAccountStatementGPC | https://docs.thepay.cz/#tag/Transactions/paths/~1v1~1transactions~1%7Baccount_iban%7D~1account_statement~1gpc/get |
 | realizeRegularSubscriptionPayment | https://thepay.docs.apiary.io/#reference/0/project-level-resources/realize-regular-subscription-payment |
 | realizeIrregularSubscriptionPayment | https://thepay.docs.apiary.io/#reference/0/project-level-resources/realize-irregular-subscription-payment |
 | realizeUsageBasedSubscriptionPayment | https://thepay.docs.apiary.io/#reference/0/project-level-resources/realize-usage-based-subscription-payment |
@@ -41,6 +42,8 @@
 [Handling notification about changes](notifications.md)
 
 [Get account transaction history](get-transactions-history.md)
+
+[Download account transaction GPC statement](download-account-transaction-GPC.md)
 
 [Creating subscription](subscription.md)
 

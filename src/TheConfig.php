@@ -68,6 +68,11 @@ class TheConfig
         return $this->apiUrl->getValue() . $this->apiVersion . '/';
     }
 
+    public function getApiVersion(): string
+    {
+        return $this->apiVersion;
+    }
+
     /**
      * @return string
      */

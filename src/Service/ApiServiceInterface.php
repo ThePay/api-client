@@ -2,6 +2,7 @@
 
 namespace ThePay\ApiClient\Service;
 
+use Psr\Http\Message\StreamInterface;
 use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
@@ -23,6 +24,7 @@ use ThePay\ApiClient\Model\RealizeRegularSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RealizeUsageBasedSubscriptionPaymentParams;
 use ThePay\ApiClient\Model\RecurringPaymentResult;
 use ThePay\ApiClient\ValueObject\Amount;
+use ThePay\ApiClient\ValueObject\GPCPaymentIdentifier;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
 use ThePay\ApiClient\ValueObject\StringValue;
@@ -111,6 +113,8 @@ interface ApiServiceInterface
      * @param int<1, 1000> $limit
      */
     public function getAccountTransactionHistory(TransactionFilter $filter, int $page = 1, int $limit = 100): TransactionCollection;
+
+    public function getAccountStatementGPC(TransactionFilter $filter, ?GPCPaymentIdentifier $paymentIdentifier = null): StreamInterface;
 
     /**
      * @param non-empty-string|null $methodCode

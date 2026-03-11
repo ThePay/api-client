@@ -6,6 +6,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\StreamInterface;
 use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
@@ -32,6 +33,7 @@ use ThePay\ApiClient\TheClient;
 use ThePay\ApiClient\TheConfig;
 use ThePay\ApiClient\Utils\Json;
 use ThePay\ApiClient\ValueObject\Amount;
+use ThePay\ApiClient\ValueObject\GPCPaymentIdentifier;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
 use ThePay\ApiClient\ValueObject\StringValue;
@@ -60,11 +62,11 @@ class ApiService implements ApiServiceInterface
     private StreamFactoryInterface $streamFactory;
 
     public function __construct(
-        TheConfig $config,
-        SignatureService $signatureService,
-        ClientInterface $httpClient,
+        TheConfig               $config,
+        SignatureService        $signatureService,
+        ClientInterface         $httpClient,
         RequestFactoryInterface $requestFactory,
-        StreamFactoryInterface $streamFactory
+        StreamFactoryInterface  $streamFactory
     ) {
         $this->config = $config;
         $this->signatureService = $signatureService;
@@ -190,6 +192,29 @@ class ApiService implements ApiServiceInterface
         }
 
         return new TransactionCollection(Json::decode($response->getBody()->getContents(), true), $page, $limit, (int) $response->getHeaderLine('X-Total-Count'));
+    }
+
+    public function getAccountStatementGPC(TransactionFilter $filter, ?GPCPaymentIdentifier $paymentIdentifier = null): StreamInterface
+    {
+        $arguments = [
+            'date_from' => $filter->getDateFrom()->format('Y-m-d'),
+            'date_to' => $filter->getDateTo()->format('Y-m-d'),
+        ];
+        if ($filter->getCurrencyCode() !== null) {
+            $arguments['currency_code'] = $filter->getCurrencyCode()->getValue();
+        }
+        if ($paymentIdentifier !== null) {
+            $arguments['payment_identifier'] = $paymentIdentifier->getValue();
+        }
+
+        $url = $this->url(['transactions', $filter->getAccountIban(), 'account_statement', 'gpc'], $arguments, false);
+
+        $response = $this->sendRequest(self::METHOD_GET, $url);
+        if ($response->getStatusCode() !== 200) {
+            throw $this->buildException($url, $response);
+        }
+
+        return $response->getBody();
     }
 
     /**
