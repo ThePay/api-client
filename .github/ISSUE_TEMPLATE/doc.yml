@@ -1,6 +1,6 @@
-name: Apiary
+name: WS API documentation
 description: Issue about documentation for ThePay.cz WS API
-labels: ["Apiary"]
+labels: ["OpenAPI"]
 body:
   - type: markdown
     attributes:
