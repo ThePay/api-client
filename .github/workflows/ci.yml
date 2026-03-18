@@ -146,6 +146,9 @@ jobs:
             -   name: Checkout repository
                 uses: actions/checkout@v2
 
+            -   name: Composer update
+                run: composer self-update
+
             -   name: Install dependencies
                 run: composer install --no-interaction
 
