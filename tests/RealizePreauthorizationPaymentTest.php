@@ -24,7 +24,7 @@ class RealizePreauthorizationPaymentTest extends BaseTestCase
      */
     public function testRequest()
     {
-        $result = $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(100, 'abc'));
+        $result = $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(9945, 'efd7d8e6-2fa3-3c46-b475-51762331bf56'));
 
         self::assertTrue($result);
     }

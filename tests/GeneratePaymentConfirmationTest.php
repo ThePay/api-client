@@ -43,8 +43,8 @@ final class GeneratePaymentConfirmationTest extends BaseTestCase
     public function dataFailed()
     {
         return array(
-            // failed response code
-            array('RuntimeException'),
+            // failed input
+            array('InvalidArgumentException'),
         );
     }
 }
