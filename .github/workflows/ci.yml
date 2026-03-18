@@ -150,7 +150,7 @@ jobs:
                 run: composer self-update
 
             -   name: Install dependencies
-                run: composer install --no-interaction
+                run: composer install --no-interaction --no-security-blocking
 
             -   name: Run static analysis
                 run: composer stan7
