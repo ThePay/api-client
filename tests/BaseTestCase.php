@@ -3,8 +3,8 @@
 namespace ThePay\ApiClient\Tests;
 
 use PHPUnit\Framework\TestCase;
+use ThePay\ApiClient\Tests\Mocks\TheConfig;
 use ThePay\ApiClient\TheClient;
-use ThePay\ApiClient\TheConfig;
 
 abstract class BaseTestCase extends TestCase
 {
@@ -20,23 +20,16 @@ abstract class BaseTestCase extends TestCase
     {
         parent::setUp();
 
-        $this->config = new TheConfig(self::MERCHANT_ID, 1, 'password', 'https://test.api.cz/', 'https://test.gate.cz/');
+        $this->config = new TheConfig();
     }
 
     /**
-     * method return TheClient witch use apiary mock server
+     * method return TheClient witch use mock server
      *
      * @return TheClient
      */
-    protected function getApiaryClient()
+    protected function getMockClient()
     {
-        $config = new TheConfig(
-            '6cdf1b24',
-            1212,
-            'password',
-            'https://private-aa6aa3-thepay.apiary-mock.com/',
-            'https://private-ddc40-gatezalozeniplatby.apiary-mock.com/'
-        );
-        return new TheClient($config);
+        return new TheClient(new TheConfig());
     }
 }

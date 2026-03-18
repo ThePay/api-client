@@ -10,6 +10,11 @@ jobs:
         name: "php 8.2"
         runs-on: ubuntu-latest
         container: "nofutur3/php-tests:8.2"
+        services:
+            openAPImock:
+                image: mockserver/mockserver
+                ports:
+                    - 1080:1080
         steps:
             -   name: Checkout repository
                 uses: actions/checkout@v3
@@ -27,6 +32,9 @@ jobs:
             -   name: Run static analysis
                 run: composer stan
 
+            -   name: Create mock server from our production OpenAPI
+                run: curl -X PUT -d "{\"specUrlOrPayload\":\"https://gate.thepay.cz/openapi.yaml\"}" http://openAPImock:1080/mockserver/openapi
+
             -   name: Run tests
                 run: composer test81
 
@@ -34,6 +42,11 @@ jobs:
         name: "php 8.1"
         runs-on: ubuntu-latest
         container: "nofutur3/php-tests:8.1"
+        services:
+            openAPImock:
+                image: mockserver/mockserver
+                ports:
+                    - 1080:1080
         steps:
             - name: Checkout repository
               uses: actions/checkout@v3
@@ -48,6 +61,9 @@ jobs:
 
             - name: Run static analysis
               run: composer stan
+
+            - name: Create mock server from our production OpenAPI
+              run: curl -X PUT -d "{\"specUrlOrPayload\":\"https://gate.thepay.cz/openapi.yaml\"}" http://openAPImock:1080/mockserver/openapi
 
             - name: Run tests
               run: composer test81
@@ -56,6 +72,11 @@ jobs:
         name: "php 8.0"
         runs-on: ubuntu-latest
         container: "nofutur3/php-tests:8.0"
+        services:
+            openAPImock:
+                image: mockserver/mockserver
+                ports:
+                    - 1080:1080
         steps:
             - name: Checkout repository
               uses: actions/checkout@v3
@@ -71,6 +92,9 @@ jobs:
             - name: Run static analysis
               run: composer stan
 
+            - name: Create mock server from our production OpenAPI
+              run: curl -X PUT -d "{\"specUrlOrPayload\":\"https://gate.thepay.cz/openapi.yaml\"}" http://openAPImock:1080/mockserver/openapi
+
             - name: Run tests
               run: composer test
 
@@ -78,6 +102,11 @@ jobs:
         name: "php 7.4"
         runs-on: ubuntu-latest
         container: "nofutur3/php-tests:7.4"
+        services:
+            openAPImock:
+                image: mockserver/mockserver
+                ports:
+                    - 1080:1080
         steps:
             # Deprecation example for future support removal.
             #
@@ -93,6 +122,9 @@ jobs:
             -   name: Run static analysis
                 run: composer stan7
 
+            -   name: Create mock server from our production OpenAPI
+                run: curl -X PUT -d "{\"specUrlOrPayload\":\"https://gate.thepay.cz/openapi.yaml\"}" http://openAPImock:1080/mockserver/openapi
+
             -   name: Run tests
                 run: composer test
 
@@ -100,6 +132,11 @@ jobs:
         name: "php 7.2"
         runs-on: ubuntu-latest
         container: "nofutur3/php-tests:7.2"
+        services:
+            openAPImock:
+                image: mockserver/mockserver
+                ports:
+                    - 1080:1080
         steps:
             # Deprecation example for future support removal.
             #
@@ -114,6 +151,9 @@ jobs:
 
             -   name: Run static analysis
                 run: composer stan7
+
+            -   name: Create mock server from our production OpenAPI
+                run: curl -X PUT -d "{\"specUrlOrPayload\":\"https://gate.thepay.cz/openapi.yaml\"}" http://openAPImock:1080/mockserver/openapi
 
             -   name: Run tests
                 run: composer test
