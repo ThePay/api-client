@@ -33,7 +33,7 @@ class PaymentMethodsTest extends BaseTestCase
      */
     public function testGettingActivePaymentMethods()
     {
-        $client = $this->getApiaryClient();
+        $client = $this->getMockClient();
 
         $methods = $client->getActivePaymentMethods();
         $cardMethod = $methods->get('card');

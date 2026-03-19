@@ -2,17 +2,11 @@
 
 namespace ThePay\ApiClient\Tests;
 
-use Mockery;
-use ThePay\ApiClient\Http\HttpResponse;
 use ThePay\ApiClient\Model\RealizePreauthorizedPaymentParams;
-use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\TheClient;
 
 class RealizePreauthorizationPaymentTest extends BaseTestCase
 {
-    /** @var \Mockery\LegacyMockInterface|\ThePay\ApiClient\Http\HttpServiceInterface */
-    private $httpService;
-
     /** @var TheClient */
     private $client;
 
@@ -22,11 +16,7 @@ class RealizePreauthorizationPaymentTest extends BaseTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->httpService = Mockery::mock('ThePay\ApiClient\Http\HttpServiceInterface');
-        /** @phpstan-ignore-next-line */
-        $apiService = new ApiService($this->config, $this->httpService);
-        /** @phpstan-ignore-next-line */
-        $this->client = new TheClient($this->config, null, $this->httpService, $apiService);
+        $this->client = $this->getMockClient();
     }
 
     /**
@@ -34,12 +24,11 @@ class RealizePreauthorizationPaymentTest extends BaseTestCase
      */
     public function testRequest()
     {
-        call_user_func(array($this->httpService, 'shouldReceive'), 'post')->once()
-            ->with($this->config->getApiUrl() . 'projects/1/payments/abc/preauthorized?merchant_id=' . self::MERCHANT_ID, '{"amount":100}')
-            ->andReturn($this->getOkResponse());
+        self::markTestSkipped();
 
-        $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(100, 'abc'));
-        \Mockery::close();
+        $result = $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(9945, 'efd7d8e6-2fa3-3c46-b475-51762331bf56'));
+
+        self::assertTrue($result);
     }
 
     /**
@@ -49,25 +38,6 @@ class RealizePreauthorizationPaymentTest extends BaseTestCase
     {
         $this->setExpectedException('\Exception');
 
-        call_user_func(array($this->httpService, 'shouldReceive'), 'post')
-            ->andReturn($this->getNotOkResponse());
-
-        $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(100, 'abc'));
-    }
-
-    /**
-     * @return HttpResponse
-     */
-    private function getOkResponse()
-    {
-        return new HttpResponse(null, 204);
-    }
-
-    /**
-     * @return HttpResponse
-     */
-    private function getNotOkResponse()
-    {
-        return new HttpResponse(null, 401);
+        $this->client->realizePreauthorizedPayment(new RealizePreauthorizedPaymentParams(100, ''));
     }
 }

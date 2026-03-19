@@ -30,6 +30,9 @@ use ThePay\ApiClient\ValueObject\PaymentMethodCode;
 use ThePay\ApiClient\ValueObject\PaymentRefundState;
 use ThePay\ApiClient\ValueObject\StringValue;
 
+/**
+ * @deprecated use BaseTestCase::getMockClient
+ */
 class ApiMockService implements ApiServiceInterface
 {
     /** @phpstan-ignore-next-line -- never used (never mind) */
