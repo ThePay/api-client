@@ -19,7 +19,7 @@ final class GeneratePaymentConfirmationTest extends BaseTestCase
     {
         $theClient = $this->getMockClient();
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         /** @phpstan-ignore-next-line */
         $theClient->generatePaymentConfirmationPdf('');
