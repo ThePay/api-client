@@ -9,8 +9,8 @@ use GuzzleHttp\Psr7\HttpFactory;
 use PHPUnit\Framework\TestCase;
 use ThePay\ApiClient\Service\ApiService;
 use ThePay\ApiClient\Service\SignatureService;
+use ThePay\ApiClient\Tests\Mocks\TheConfig;
 use ThePay\ApiClient\TheClient;
-use ThePay\ApiClient\TheConfig;
 
 abstract class BaseTestCase extends TestCase
 {
@@ -22,21 +22,15 @@ abstract class BaseTestCase extends TestCase
     {
         parent::setUp();
 
-        $this->config = new TheConfig(self::MERCHANT_ID, 1, 'password', 'https://test.api.cz/', 'https://test.gate.cz/');
+        $this->config = new TheConfig();
     }
 
     /**
-     * method return TheClient witch use apiary mock server
+     * method return TheClient witch use mock server
      */
-    protected function getApiaryClient(): TheClient
+    protected function getMockClient(): TheClient
     {
-        $config = new TheConfig(
-            '6cdf1b24',
-            1212,
-            'password',
-            'https://private-aa6aa3-thepay.apiary-mock.com/',
-            'https://private-ddc40-gatezalozeniplatby.apiary-mock.com/'
-        );
+        $config = new TheConfig();
 
         $httpFactory = new HttpFactory();
 

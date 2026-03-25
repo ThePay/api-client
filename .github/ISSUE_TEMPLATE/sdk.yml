@@ -20,8 +20,7 @@ body:
       options:
         - Production
         - Demo
-        - Apiary mock
-        - Apiary proxy
+        - OpenAPI mock
     validations:
       required: false
   - type: input

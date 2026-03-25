@@ -195,7 +195,7 @@ final class PaymentMethodsTest extends BaseTestCase
 
     public function testGettingActivePaymentMethods(): void
     {
-        $client = $this->getApiaryClient();
+        $client = $this->getMockClient();
 
         $methods = $client->getActivePaymentMethods();
         $cardMethod = $methods->get('card');
