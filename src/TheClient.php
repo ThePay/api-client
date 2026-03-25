@@ -39,7 +39,7 @@ use ThePay\ApiClient\ValueObject\StringValue;
 class TheClient
 {
     /** @var string */
-    public const VERSION = '2.1.3';
+    public const VERSION = '2.2.1';
 
     private TheConfig $config;
     private GateServiceInterface $gate;
