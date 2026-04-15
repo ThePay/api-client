@@ -2,11 +2,12 @@
 
 namespace ThePay\ApiClient\Tests;
 
+use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Model\Collection\PaymentMethodCollection;
 use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\TheClient;
 
-class TheClientTest extends BaseTestCase
+final class TheClientTest extends BaseTestCase
 {
     public function testPaymentMethods(): void
     {
@@ -50,6 +51,24 @@ class TheClientTest extends BaseTestCase
 
         static::assertSame('test_online', $methods[0]->getCode());
         static::assertSame('CZK', $methods[1]->getAvailableCurrencies()[0]);
+    }
+
+    public function testGetAccountStatementGPC(): void
+    {
+        $thePayClient = $this->getMockClient();
+
+        $filter = new TransactionFilter(
+            'TP7811112150822790787055',
+            new \DateTime('2024-01-01'),
+            new \DateTime('2024-01-31'),
+        );
+
+        $stream = $thePayClient->getAccountStatementGPC($filter);
+
+        $content = $stream->getContents();
+
+        self::assertIsString($content);
+        self::assertGreaterThan(0, strlen($content));
     }
 
     public function testRenderPaymentMethods(): void

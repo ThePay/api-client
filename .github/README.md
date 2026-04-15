@@ -84,6 +84,10 @@ $theConfig->setLanguage($language);
 
 Make sure to prepare the necessary dependencies before creating the `\ThePay\ApiClient\TheClient` instance.
 
+In any case of dependencies preparation, you MUST check if your PSR-18 HTTP client, will return real PSR-7 network stream!
+Because some API endpoints are not paginated for example: [getAccountStatementGPC](../doc/download-account-transaction-GPC.md), and can contain big amount of data!
+If an HTTP client will try load full response to memory, some of your API calls can crash on out of memory error!
+
 ### With dependency injection
 
 If you're using automatic dependency injection (as most frameworks do), all dependencies except `TheConfig`
@@ -103,7 +107,9 @@ $signatureService = new \ThePay\ApiClient\Service\SignatureService($theConfig);
 /** @var \Psr\Http\Message\RequestFactoryInterface $requestFactory some PSR-17 implementation */
 /** @var \Psr\Http\Message\StreamFactoryInterface $streamFactory some PSR-17 implementation */
 // if you install suggested guzzle implementation you can use this:
-// $httpClient = new \GuzzleHttp\Client();
+// you MUST use RequestOptions::STREAM with true value!
+// https://docs.guzzlephp.org/en/stable/request-options.html#stream
+// $httpClient = new \GuzzleHttp\Client([\GuzzleHttp\RequestOptions::STREAM => true]);
 // $requestFactory = $streamFactory = new \GuzzleHttp\Psr7\HttpFactory();
 $apiService = new \ThePay\ApiClient\Service\ApiService(
     $theConfig,

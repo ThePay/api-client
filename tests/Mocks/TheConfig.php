@@ -25,6 +25,6 @@ class TheConfig extends \ThePay\ApiClient\TheConfig
         if ($specificVersion !== null) {
             return 'http://openAPImock:1080/' . $specificVersion . '/';
         }
-        return 'http://openAPImock:1080/v1/';
+        return 'http://openAPImock:1080/' . $this->getApiVersion() . '/';
     }
 }

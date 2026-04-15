@@ -4,6 +4,7 @@ namespace ThePay\ApiClient;
 
 use Exception;
 use InvalidArgumentException;
+use Psr\Http\Message\StreamInterface;
 use ThePay\ApiClient\Exception\ApiException;
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Filter\PaymentsFilter;
@@ -29,6 +30,7 @@ use ThePay\ApiClient\Service\ApiServiceInterface;
 use ThePay\ApiClient\Service\GateService;
 use ThePay\ApiClient\Service\GateServiceInterface;
 use ThePay\ApiClient\ValueObject\Amount;
+use ThePay\ApiClient\ValueObject\GPCPaymentIdentifier;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
 use ThePay\ApiClient\ValueObject\StringValue;
@@ -97,6 +99,20 @@ class TheClient
         return $this
             ->api
             ->getAccountTransactionHistory($filter, $page, $limit);
+    }
+
+    /**
+     * @see https://docs.thepay.cz/#tag/Transactions/paths/~1v1~1transactions~1%7Baccount_iban%7D~1account_statement~1gpc/get
+     * @see ../doc/download-account-transaction-GPC.md
+     *
+     * @return StreamInterface MUST return real PSR-7 network stream, make sure you have your PSR-18 HTTP client correctly configured, GPC format is not paginated!
+     * @return StreamInterface content is windows-1250 encoded
+     */
+    public function getAccountStatementGPC(TransactionFilter $filter, ?GPCPaymentIdentifier $paymentIdentifier = null): StreamInterface
+    {
+        return $this
+            ->api
+            ->getAccountStatementGPC($filter, $paymentIdentifier);
     }
 
     /**
