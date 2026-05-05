@@ -22,6 +22,6 @@ class TheConfig extends \ThePay\ApiClient\TheConfig
      */
     public function getApiUrl()
     {
-        return 'http://openAPImock:1080/v1/';
+        return 'http://localhost:1080/v1/';
     }
 }
