@@ -6,13 +6,13 @@ on:
             - "**"
 
 jobs:
-    php-81-and-higher-tests:
+    php-tests:
         name: php ${{ matrix.php-version }}
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
-                php-version: ['7.2', '7.4', '8.0', '8.1', '8.2', '8.3']
+                php-version: ['7.4', '8.0', '8.1', '8.3', '8.4', '8.5']
 
         steps:
             -   name: Start mock server
@@ -29,33 +29,55 @@ jobs:
                     extensions: mbstring, intl, curl
 
             -   name: Install dependencies
-                run: composer install --no-interaction --no-security-blocking
+                run: composer install --no-interaction
 
-            -   name: Old phpunit compatibility for php 8
-                if: startsWith(matrix.php-version, '8.')
-                run: composer require christiaanbye/polyfill-each --dev --no-interaction
-
-            -   name: Check code style (PHP 8.1)
-                if: matrix.php-version == '8.1'
+            -   name: Check code style (PHP 8.5)
+                if: matrix.php-version == '8.5'
                 run: composer cs-check
 
-            -   name: Run static analysis (PHP 8)
-                if: startsWith(matrix.php-version, '8.')
+            -   name: Run static analysis
                 run: composer stan
-
-            -   name: Run static analysis (PHP 7)
-                if: startsWith(matrix.php-version, '7.')
-                run: composer stan7
 
             -   name: Create mock server from our production OpenAPI
                 run: curl -X PUT -d "{\"specUrlOrPayload\":\"https://gate.thepay.cz/openapi.yaml\"}" http://localhost:1080/mockserver/openapi
 
-            -   name: Run tests (PHP 8.1+)
-                if: startsWith(matrix.php-version, '8.') && matrix.php-version != '8.0'
-                run: composer test81
+            -   name: Run tests
+                run: composer test
 
-            -   name: Run tests (PHP < 8.1)
-                if: "! (startsWith(matrix.php-version, '8.') && matrix.php-version != '8.0')"
+
+    php-with-psr-tests:
+        name: php ${{ matrix.php-version }} psr/http-message ${{ matrix.psr-http-message-version }}
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version: ['8.2']
+                psr-http-message-version: ['1.0', '2.0']
+
+        steps:
+            -   name: Start mock server
+                run: docker run -d -p 1080:1080 mockserver/mockserver
+
+            -   name: Checkout repository
+                uses: actions/checkout@v6
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-version }}
+                    coverage: none
+                    extensions: mbstring, intl, curl
+
+            -   name: Install dependencies
+                run: composer update --no-interaction --with psr/http-message:^${{ matrix.psr-http-message-version }}
+
+            -   name: Run static analysis
+                run: composer stan
+
+            -   name: Create mock server from our production OpenAPI
+                run: curl -X PUT -d "{\"specUrlOrPayload\":\"https://gate.thepay.cz/openapi.yaml\"}" http://localhost:1080/mockserver/openapi
+
+            -   name: Run tests
                 run: composer test
 
     npm:
