@@ -6,159 +6,56 @@ on:
             - "**"
 
 jobs:
-    php82:
-        name: "php 8.2"
+    php-81-and-higher-tests:
+        name: php ${{ matrix.php-version }}
         runs-on: ubuntu-latest
-        container: "nofutur3/php-tests:8.2"
-        services:
-            openAPImock:
-                image: mockserver/mockserver
-                ports:
-                    - 1080:1080
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version: ['7.2', '7.4', '8.0', '8.1', '8.2', '8.3']
+
         steps:
-            -   name: Checkout repository
-                uses: actions/checkout@v3
-
-            -   name: Install dependencies
-                run: composer install --no-interaction
-            -   name: Old phpunit compatibility for php 8
-                run: composer require christiaanbye/polyfill-each --dev --no-interaction
-
-            # Disabled for now, fixer do not support PHP 8.2 yet.
-            #
-            #-   name: Check code style
-            #    run: composer cs-check
-
-            -   name: Run static analysis
-                run: composer stan
-
-            -   name: Create mock server from our production OpenAPI
-                run: curl -X PUT -d "{\"specUrlOrPayload\":\"https://gate.thepay.cz/openapi.yaml\"}" http://openAPImock:1080/mockserver/openapi
-
-            -   name: Run tests
-                run: composer test81
-
-    php81:
-        name: "php 8.1"
-        runs-on: ubuntu-latest
-        container: "nofutur3/php-tests:8.1"
-        services:
-            openAPImock:
-                image: mockserver/mockserver
-                ports:
-                    - 1080:1080
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v3
-
-            - name: Install dependencies
-              run: composer install --no-interaction
-            - name: Old phpunit compatibility for php 8
-              run: composer require christiaanbye/polyfill-each --dev --no-interaction
-
-            - name: Check code style
-              run: composer cs-check
-
-            - name: Run static analysis
-              run: composer stan
-
-            - name: Create mock server from our production OpenAPI
-              run: curl -X PUT -d "{\"specUrlOrPayload\":\"https://gate.thepay.cz/openapi.yaml\"}" http://openAPImock:1080/mockserver/openapi
-
-            - name: Run tests
-              run: composer test81
-
-    php80:
-        name: "php 8.0"
-        runs-on: ubuntu-latest
-        container: "nofutur3/php-tests:8.0"
-        services:
-            openAPImock:
-                image: mockserver/mockserver
-                ports:
-                    - 1080:1080
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v3
-
-            - name: Install dependencies
-              run: composer install --no-interaction
-            - name: Old phpunit compatibility for php 8
-              run: composer require christiaanbye/polyfill-each --dev --no-interaction
-
-            - name: Check code style
-              run: composer cs-check
-
-            - name: Run static analysis
-              run: composer stan
-
-            - name: Create mock server from our production OpenAPI
-              run: curl -X PUT -d "{\"specUrlOrPayload\":\"https://gate.thepay.cz/openapi.yaml\"}" http://openAPImock:1080/mockserver/openapi
-
-            - name: Run tests
-              run: composer test
-
-    php74:
-        name: "php 7.4"
-        runs-on: ubuntu-latest
-        container: "nofutur3/php-tests:7.4"
-        services:
-            openAPImock:
-                image: mockserver/mockserver
-                ports:
-                    - 1080:1080
-        steps:
-            # Deprecation example for future support removal.
-            #
-            #-   name: Deprecation check (2023-01-01T00:00:00+01:00)
-            #    run: if [ "$(date +%s)" -gt "1672527600" ]; then echo "This PHP version support ended"; exit1; else echo "Deprecation OK"; fi
+            -   name: Start mock server
+                run: docker run -d -p 1080:1080 mockserver/mockserver
 
             -   name: Checkout repository
-                uses: actions/checkout@v3
+                uses: actions/checkout@v6
 
-            -   name: Install dependencies
-                run: composer install --no-interaction
-
-            -   name: Run static analysis
-                run: composer stan7
-
-            -   name: Create mock server from our production OpenAPI
-                run: curl -X PUT -d "{\"specUrlOrPayload\":\"https://gate.thepay.cz/openapi.yaml\"}" http://openAPImock:1080/mockserver/openapi
-
-            -   name: Run tests
-                run: composer test
-
-    php72:
-        name: "php 7.2"
-        runs-on: ubuntu-latest
-        container: "nofutur3/php-tests:7.2"
-        services:
-            openAPImock:
-                image: mockserver/mockserver
-                ports:
-                    - 1080:1080
-        steps:
-            # Deprecation example for future support removal.
-            #
-            #-   name: Deprecation check (2023-01-01T00:00:00+01:00)
-            #    run: if [ "$(date +%s)" -gt "1672527600" ]; then echo "This PHP version support ended"; exit1; else echo "Deprecation OK"; fi
-
-            -   name: Checkout repository
-                uses: actions/checkout@v2
-
-            -   name: Composer update
-                run: composer self-update
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-version }}
+                    coverage: none
+                    extensions: mbstring, intl, curl
 
             -   name: Install dependencies
                 run: composer install --no-interaction --no-security-blocking
 
-            -   name: Run static analysis
+            -   name: Old phpunit compatibility for php 8
+                if: startsWith(matrix.php-version, '8.')
+                run: composer require christiaanbye/polyfill-each --dev --no-interaction
+
+            -   name: Check code style (PHP 8.1)
+                if: matrix.php-version == '8.1'
+                run: composer cs-check
+
+            -   name: Run static analysis (PHP 8)
+                if: startsWith(matrix.php-version, '8.')
+                run: composer stan
+
+            -   name: Run static analysis (PHP 7)
+                if: startsWith(matrix.php-version, '7.')
                 run: composer stan7
 
             -   name: Create mock server from our production OpenAPI
-                run: curl -X PUT -d "{\"specUrlOrPayload\":\"https://gate.thepay.cz/openapi.yaml\"}" http://openAPImock:1080/mockserver/openapi
+                run: curl -X PUT -d "{\"specUrlOrPayload\":\"https://gate.thepay.cz/openapi.yaml\"}" http://localhost:1080/mockserver/openapi
 
-            -   name: Run tests
+            -   name: Run tests (PHP 8.1+)
+                if: startsWith(matrix.php-version, '8.') && matrix.php-version != '8.0'
+                run: composer test81
+
+            -   name: Run tests (PHP < 8.1)
+                if: "! (startsWith(matrix.php-version, '8.') && matrix.php-version != '8.0')"
                 run: composer test
 
     npm:
@@ -167,7 +64,7 @@ jobs:
         container: "node"
         steps:
             -   name: Checkout repository
-                uses: actions/checkout@v3
+                uses: actions/checkout@v6
 
             -   name: Install dependencies
                 run: npm install
