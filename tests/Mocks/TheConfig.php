@@ -22,9 +22,6 @@ class TheConfig extends \ThePay\ApiClient\TheConfig
      */
     public function getApiUrl(?string $specificVersion = null): string
     {
-        if ($specificVersion !== null) {
-            return 'http://openAPImock:1080/' . $specificVersion . '/';
-        }
-        return 'http://openAPImock:1080/' . $this->getApiVersion() . '/';
+        return 'http://localhost:1080/' . ($specificVersion ?? $this->getApiVersion()) . '/';
     }
 }
