@@ -45,13 +45,19 @@ jobs:
                 run: composer test
 
 
-    php-with-psr-tests:
-        name: php ${{ matrix.php-version }} psr/http-message ${{ matrix.psr-http-message-version }}
+    php-with-packages-tests:
+        name: >
+            php ${{ matrix.php-version }}
+            egulias/email-validator ${{ matrix.egulias-email-validator }}
+            psr/http-message ${{ matrix.psr-http-message-version }}
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
+                # platform
                 php-version: ['8.2']
+                # packages
+                egulias-email-validator: ['3.2', '4.0']
                 psr-http-message-version: ['1.0', '2.0']
 
         steps:
@@ -69,7 +75,10 @@ jobs:
                     extensions: mbstring, intl, curl
 
             -   name: Install dependencies
-                run: composer update --no-interaction --with psr/http-message:^${{ matrix.psr-http-message-version }}
+                run: >
+                    composer update --no-interaction
+                    --with egulias/email-validator:^${{ matrix.egulias-email-validator }}
+                    --with psr/http-message:^${{ matrix.psr-http-message-version }}
 
             -   name: Run static analysis
                 run: composer stan
