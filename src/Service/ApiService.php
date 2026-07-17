@@ -7,7 +7,9 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
-use ThePay\ApiClient\Exception\ApiException;
+use ThePay\ApiClient\Exception\ApiExceptionInterface;
+use ThePay\ApiClient\Exception\NotFoundApiException;
+use ThePay\ApiClient\Exception\ServiceUnavailableApiException;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Model\AccountBalance;
@@ -75,13 +77,6 @@ class ApiService implements ApiServiceInterface
         $this->streamFactory = $streamFactory;
     }
 
-    /**
-     * Fetch all projects for merchant set in TheConfig
-     *
-     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/project-info/get-projects
-     *
-     * @return array<Project>
-     */
     public function getProjects(): array
     {
         $url = $this->config->getApiUrl() . 'projects?merchant_id=' . $this->config->getMerchantId();
@@ -103,15 +98,6 @@ class ApiService implements ApiServiceInterface
         return $projects;
     }
 
-    /**
-     * Fetch all active payment methods.
-     *
-     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/project-info/get-payment-methods
-     *
-     * @param LanguageCode|null $languageCode language for payment method titles, null value language from TheConfig used
-     *
-     * @throws ApiException
-     */
     public function getActivePaymentMethods(?LanguageCode $languageCode = null): PaymentMethodCollection
     {
         $arguments = [];
@@ -129,13 +115,6 @@ class ApiService implements ApiServiceInterface
         return new PaymentMethodCollection($response->getBody()->getContents());
     }
 
-    /**
-     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
-     *
-     * @param int|null $projectId
-     *
-     * @return array<AccountBalance>
-     */
     public function getAccountsBalances(?StringValue $accountIban = null, $projectId = null, ?\DateTime $balanceAt = null)
     {
         $arguments = [];
@@ -170,16 +149,6 @@ class ApiService implements ApiServiceInterface
         );
     }
 
-    /**
-     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/transactions/get-account-transaction-history
-     *
-     * @param int<1, max> $page
-     * @param int<1, 1000> $limit
-     *
-     * @return TransactionCollection
-     *
-     * @throws \Exception
-     */
     public function getAccountTransactionHistory(TransactionFilter $filter, int $page = 1, int $limit = 100): TransactionCollection
     {
         $paginatedCollectionParams = new PaginatedCollectionParams($filter, $page, $limit);
@@ -217,13 +186,6 @@ class ApiService implements ApiServiceInterface
         return $response->getBody();
     }
 
-    /**
-     * Get complete information about the specified payment.
-     *
-     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/payments/get-payment-detail
-     *
-     * @throws ApiException
-     */
     public function getPayment(Identifier $paymentUid): Payment
     {
         $url = $this->url(['payments', $paymentUid]);
@@ -236,13 +198,6 @@ class ApiService implements ApiServiceInterface
         return new Payment($response->getBody()->getContents());
     }
 
-    /**
-     * Invalidates the specified payment.
-     *
-     * @see https://thepay.docs.apiary.io/#reference/payment-management/general-payment-management/invalidate-payment
-     *
-     * @throws ApiException
-     */
     public function invalidatePayment(Identifier $paymentUid): void
     {
         $url = $this->url(['payments', $paymentUid, 'invalidate']);
@@ -253,16 +208,6 @@ class ApiService implements ApiServiceInterface
         }
     }
 
-    /**
-     * Fetch information about payments by filter.
-     *
-     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/payments/project-get-payments
-     *
-     * @param int<1, max> $page
-     * @param int<1, 1000> $limit
-     *
-     * @throws ApiException
-     */
     public function getPayments(PaymentsFilter $filter, int $page = 1, int $limit = 25): PaymentCollection
     {
         $paginatedCollectionParams = new PaginatedCollectionParams($filter, $page, $limit);
@@ -277,11 +222,6 @@ class ApiService implements ApiServiceInterface
         return new PaymentCollection($response->getBody()->getContents(), $page, $limit, (int) $response->getHeaderLine('X-Total-Count'));
     }
 
-    /**
-     * @param Identifier $parentPaymentUid UID of payment which initialized this subscription.
-     *
-     * @throws ApiException
-     */
     public function realizeRegularSubscriptionPayment(Identifier $parentPaymentUid, RealizeRegularSubscriptionPaymentParams $params): RecurringPaymentResult
     {
         $jsonParams = $params->toArray();
@@ -296,11 +236,6 @@ class ApiService implements ApiServiceInterface
         return new RecurringPaymentResult($response->getBody()->getContents());
     }
 
-    /**
-     * @param Identifier $parentPaymentUid UID of payment which initialized this subscription.
-     *
-     * @throws ApiException
-     */
     public function realizeIrregularSubscriptionPayment(Identifier $parentPaymentUid, RealizeIrregularSubscriptionPaymentParams $params): RecurringPaymentResult
     {
         $jsonParams = $params->toArray();
@@ -315,11 +250,6 @@ class ApiService implements ApiServiceInterface
         return new RecurringPaymentResult($response->getBody()->getContents());
     }
 
-    /**
-     * @param Identifier $parentPaymentUid UID of payment which initialized this subscription.
-     *
-     * @throws ApiException
-     */
     public function realizeUsageBasedSubscriptionPayment(Identifier $parentPaymentUid, RealizeUsageBasedSubscriptionPaymentParams $params): RecurringPaymentResult
     {
         $jsonParams = $params->toArray();
@@ -334,11 +264,6 @@ class ApiService implements ApiServiceInterface
         return new RecurringPaymentResult($response->getBody()->getContents());
     }
 
-    /**
-     * @param Identifier $parentPaymentUid UID of first payment created with save_authorization=true.
-     *
-     * @throws ApiException
-     */
     public function realizePaymentBySavedAuthorization(Identifier $parentPaymentUid, RealizePaymentBySavedAuthorizationParams $params): RecurringPaymentResult
     {
         $jsonParams = $params->toArray();
@@ -353,12 +278,6 @@ class ApiService implements ApiServiceInterface
         return new RecurringPaymentResult($response->getBody()->getContents());
     }
 
-
-    /**
-     * @param non-empty-string|null $methodCode
-     *
-     * @throws ApiException
-     */
     public function createPayment(CreatePaymentParams $createPaymentParams, ?string $methodCode = null): CreatePaymentResponse
     {
         $jsonParams = $createPaymentParams->toArray();
@@ -376,11 +295,6 @@ class ApiService implements ApiServiceInterface
         return new CreatePaymentResponse($response->getBody()->getContents(), $response->getStatusCode() === 201);
     }
 
-    /**
-     * @param non-empty-string $methodCode
-     *
-     * @throws ApiException
-     */
     public function changePaymentMethod(Identifier $uid, string $methodCode): void
     {
         $url = $this->url(['payments', $uid, 'method']);
@@ -395,9 +309,6 @@ class ApiService implements ApiServiceInterface
         }
     }
 
-    /**
-     * @throws ApiException
-     */
     public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): RealizePreauthorizedPaymentResult
     {
         $url = $this->url([
@@ -416,9 +327,6 @@ class ApiService implements ApiServiceInterface
         return new RealizePreauthorizedPaymentResult($response->getBody()->getContents());
     }
 
-    /**
-     * @throws ApiException
-     */
     public function cancelPreauthorizedPayment(Identifier $uid): void
     {
         $url = $this->url(['payments', $uid, 'preauthorized']);
@@ -429,9 +337,6 @@ class ApiService implements ApiServiceInterface
         }
     }
 
-    /**
-     * Returns information about payment refund.
-     */
     public function getPaymentRefund(Identifier $uid): PaymentRefundInfo
     {
         $url = $this->url(['payments', $uid->getValue(), 'refund']);
@@ -450,11 +355,6 @@ class ApiService implements ApiServiceInterface
         return new PaymentRefundInfo($responseData->available_amount, $responseData->currency, $refunds);
     }
 
-    /**
-     * Will create request for automatic refund of payment.
-     *
-     * @param Amount $amount amount which should be refunded in cents (currency used for refunding is same as payment currency)
-     */
     public function createPaymentRefund(Identifier $uid, Amount $amount, string $reason): void
     {
         $url = $this->url(['payments', $uid->getValue(), 'refund']);
@@ -472,11 +372,6 @@ class ApiService implements ApiServiceInterface
         }
     }
 
-    /**
-     * Returns an array of available payment methods with pay URLs for certain payment.
-     *
-     * @return array<PaymentMethodWithPayUrl>
-     */
     public function getPaymentUrlsForPayment(Identifier $uid, ?LanguageCode $languageCode = null): array
     {
         $arguments = [];
@@ -501,15 +396,6 @@ class ApiService implements ApiServiceInterface
         return $paymentMethods;
     }
 
-    /**
-     * Method will generate PDF file as confirmation for paid payment
-     *
-     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/payments/get-payment-confirmation
-     *
-     * @return string with binary content of PDF file
-     *
-     * @throws ApiException if payment is not paid yet
-     */
     public function generatePaymentConfirmationPdf(Identifier $uid, ?LanguageCode $languageCode = null): string
     {
         $arguments = [];
@@ -590,17 +476,22 @@ class ApiService implements ApiServiceInterface
         return $this->httpClient->sendRequest($request);
     }
 
-    private function buildException(string $requestUrl, ResponseInterface $response): \Exception
+    private function buildException(string $requestUrl, ResponseInterface $response): ApiExceptionInterface
     {
         $responseCode = $response->getStatusCode();
         $message = 'TheApi call "' . $requestUrl . '" failed, status code: ' . $responseCode . ' ' . $response->getReasonPhrase();
         $message .= $this->getErrorResponseMessage($response->getBody()->getContents());
 
-        if ($responseCode == 0 || $responseCode >= 500) {
-            return new ApiException($message, $responseCode);
+        switch (true) {
+            case $responseCode == 404:
+                return new NotFoundApiException($message, $responseCode);
+            case $responseCode >= 500:
+            case $responseCode == 0: // network communication failure
+                return new ServiceUnavailableApiException($message, $responseCode);
+            default:
+                return new class ($message, $responseCode) extends \RuntimeException implements ApiExceptionInterface {
+                };
         }
-
-        return new \RuntimeException($message, $responseCode);
     }
 
     /**

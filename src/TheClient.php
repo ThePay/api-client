@@ -2,10 +2,10 @@
 
 namespace ThePay\ApiClient;
 
-use Exception;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
-use ThePay\ApiClient\Exception\ApiException;
+use ThePay\ApiClient\Exception\ApiExceptionInterface;
+use ThePay\ApiClient\Exception\NotFoundApiException;
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
@@ -60,10 +60,11 @@ class TheClient
     /**
      * Fetch all projects for merchant set in TheConfig
      *
-     * @see https://thepay.docs.apiary.io/#reference/0/merchant-level-resources/get-projects
+     * @see ApiServiceInterface::getProjects()
      *
      * @return Project[]
-     * @throws ApiException
+     *
+     * @throws ApiExceptionInterface
      */
     public function getProjects()
     {
@@ -71,12 +72,14 @@ class TheClient
     }
 
     /**
-     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/transactions/get-balance-history
+     * @see ApiServiceInterface::getAccountsBalances()
      *
      * @param string|null $accountIban
      * @param int|null $projectId
      *
      * @return array<AccountBalance>
+     *
+     * @throws NotFoundApiException|ApiExceptionInterface
      */
     public function getAccountsBalances($accountIban = null, $projectId = null, ?\DateTime $balanceAt = null)
     {
@@ -91,8 +94,10 @@ class TheClient
      * @param TransactionFilter $filter
      * @param int $page
      * @param int $limit
+     *
      * @return Model\Collection\TransactionCollection<SimpleTransaction>
-     * @throws Exception
+     *
+     * @throws NotFoundApiException|ApiExceptionInterface
      */
     public function getAccountTransactionHistory(TransactionFilter $filter, $page = 1, $limit = 100)
     {
@@ -102,11 +107,13 @@ class TheClient
     }
 
     /**
-     * @see https://docs.thepay.cz/#tag/Transactions/paths/~1v1~1transactions~1%7Baccount_iban%7D~1account_statement~1gpc/get
+     * @see ApiServiceInterface::getAccountStatementGPC()
      * @see ../doc/download-account-transaction-GPC.md
      *
      * @return StreamInterface MUST return real PSR-7 network stream, make sure you have your PSR-18 HTTP client correctly configured, GPC format is not paginated!
      * @return StreamInterface content is windows-1250 encoded
+     *
+     * @throws NotFoundApiException|ApiExceptionInterface
      */
     public function getAccountStatementGPC(TransactionFilter $filter, ?GPCPaymentIdentifier $paymentIdentifier = null): StreamInterface
     {
@@ -120,8 +127,10 @@ class TheClient
      * @param LanguageCode|null $languageCode language for payment method titles, null value language from TheConfig used
      * @param bool $isRecurring
      * @param bool $isDeposit
+     *
      * @return PaymentMethodCollection
-     * @throws ApiException
+     *
+     * @throws ApiExceptionInterface
      */
     public function getActivePaymentMethods(?PaymentMethodFilter $filter = null, ?LanguageCode $languageCode = null, $isRecurring = false, $isDeposit = true)
     {
@@ -138,8 +147,10 @@ class TheClient
 
     /**
      * @param string $paymentUid
+     *
      * @return Model\Payment
-     * @throws ApiException|InvalidArgumentException
+     *
+     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface
      */
     public function getPayment($paymentUid)
     {
@@ -151,8 +162,10 @@ class TheClient
 
     /**
      * @param string $paymentUid
+     *
      * @return void
-     * @throws ApiException|InvalidArgumentException
+     *
+     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface
      */
     public function invalidatePayment($paymentUid)
     {
@@ -164,7 +177,7 @@ class TheClient
      * @param string $parentPaymentUid UID of payment which initialized this subscription.
      * @param RealizeRegularSubscriptionPaymentParams $params
      * @return RecurringPaymentResult
-     * @throws ApiException|InvalidArgumentException
+     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface
      */
     public function realizeRegularSubscriptionPayment($parentPaymentUid, RealizeRegularSubscriptionPaymentParams $params): RecurringPaymentResult
     {
@@ -175,8 +188,10 @@ class TheClient
     /**
      * @param string $parentPaymentUid UID of payment which initialized this subscription.
      * @param RealizeIrregularSubscriptionPaymentParams $params
+     *
      * @return RecurringPaymentResult
-     * @throws ApiException|InvalidArgumentException
+     *
+     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface
      */
     public function realizeIrregularSubscriptionPayment($parentPaymentUid, RealizeIrregularSubscriptionPaymentParams $params): RecurringPaymentResult
     {
@@ -187,8 +202,10 @@ class TheClient
     /**
      * @param string $parentPaymentUid UID of payment which initialized this subscription.
      * @param RealizeUsageBasedSubscriptionPaymentParams $params
+     *
      * @return RecurringPaymentResult
-     * @throws ApiException|InvalidArgumentException
+     *
+     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface
      */
     public function realizeUsageBasedSubscriptionPayment($parentPaymentUid, RealizeUsageBasedSubscriptionPaymentParams $params): RecurringPaymentResult
     {
@@ -199,8 +216,10 @@ class TheClient
     /**
      * @param string $parentPaymentUid UID of first payment created with save_authorization=true.
      * @param RealizePaymentBySavedAuthorizationParams $params
+     *
      * @return RecurringPaymentResult
-     * @throws ApiException|InvalidArgumentException
+     *
+     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface
      */
     public function realizePaymentBySavedAuthorization($parentPaymentUid, RealizePaymentBySavedAuthorizationParams $params): RecurringPaymentResult
     {
@@ -210,11 +229,13 @@ class TheClient
 
 
     /**
-     * @param PaymentsFilter $filter Associative array of filters
+     * @param PaymentsFilter|null $filter Associative array of filters
      * @param int $page
      * @param null|int $limit
+     *
      * @return PaymentCollection<SimplePayment>
-     * @throws ApiException
+     *
+     * @throws NotFoundApiException|ApiExceptionInterface
      */
     public function getPayments(?PaymentsFilter $filter = null, $page = 1, $limit = 25)
     {
@@ -232,7 +253,10 @@ class TheClient
      *
      * @param string $uid UID of payment,
      * @param string|null $languageCode language code in ISO 6391 format
+     *
      * @return array<PaymentMethodWithPayUrl>
+     *
+     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface
      */
     public function getPaymentUrlsForPayment($uid, $languageCode = null)
     {
@@ -271,7 +295,7 @@ class TheClient
     /**
      * @param non-empty-string|null $methodCode
      *
-     * @throws ApiException
+     * @throws ApiExceptionInterface
      */
     public function createPayment(CreatePaymentParams $params, ?string $methodCode = null): CreatePaymentResponse
     {
@@ -288,7 +312,7 @@ class TheClient
      * @param non-empty-string $paymentUid
      * @param non-empty-string $methodCode
      *
-     * @throws ApiException|InvalidArgumentException
+     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface
      */
     public function changePaymentMethod(string $paymentUid, string $methodCode): void
     {
@@ -300,8 +324,10 @@ class TheClient
 
     /**
      * @param RealizePreauthorizedPaymentParams $params
+     *
      * @return RealizePreauthorizedPaymentResult
-     * @throws ApiException|InvalidArgumentException
+     *
+     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface
      */
     public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): RealizePreauthorizedPaymentResult
     {
@@ -314,7 +340,7 @@ class TheClient
     /**
      * @param non-empty-string $paymentUid
      *
-     * @throws ApiException|InvalidArgumentException
+     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface
      */
     public function cancelPreauthorizedPayment(string $paymentUid): void
     {
@@ -328,8 +354,10 @@ class TheClient
      * Returns information about payment refund.
      *
      * @param string $paymentUid
+     *
      * @return PaymentRefundInfo
-     * @throws ApiException|InvalidArgumentException
+     *
+     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface
      */
     public function getPaymentRefund($paymentUid)
     {
@@ -343,8 +371,10 @@ class TheClient
      * @param string $paymentUid
      * @param int $amount amount which should be refunded in cents (currency used for refunding is same as payment currency)
      * @param string $reason
+     *
      * @return void
-     * @throws ApiException|InvalidArgumentException
+     *
+     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface
      */
     public function createPaymentRefund($paymentUid, $amount, $reason)
     {
@@ -355,14 +385,14 @@ class TheClient
     /**
      * Method will generate PDF file as confirmation for paid payment
      *
-     * @see https://thepay.docs.apiary.io/#reference/data-retrieval/payments/get-payment-confirmation
+     * @see ApiServiceInterface::generatePaymentConfirmationPdf()
      *
      * @param non-empty-string $paymentUid
      * @param non-empty-string|null $languageCode
      *
      * @return string with binary content of PDF file
      *
-     * @throws ApiException if payment is not paid yet
+     * @throws NotFoundApiException|ApiExceptionInterface if payment is not paid yet
      */
     public function generatePaymentConfirmationPdf(string $paymentUid, ?string $languageCode = null): string
     {
