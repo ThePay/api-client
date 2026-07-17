@@ -8,8 +8,14 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use ThePay\ApiClient\Exception\ApiExceptionInterface;
+use ThePay\ApiClient\Exception\BadRequestApiException;
+use ThePay\ApiClient\Exception\ConflictApiException;
+use ThePay\ApiClient\Exception\ForbiddenApiException;
 use ThePay\ApiClient\Exception\NotFoundApiException;
 use ThePay\ApiClient\Exception\ServiceUnavailableApiException;
+use ThePay\ApiClient\Exception\TooManyRequestsApiException;
+use ThePay\ApiClient\Exception\UnauthorizedApiException;
+use ThePay\ApiClient\Exception\UnprocessableContentApiException;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Model\AccountBalance;
@@ -483,8 +489,20 @@ class ApiService implements ApiServiceInterface
         $message .= $this->getErrorResponseMessage($response->getBody()->getContents());
 
         switch (true) {
+            case $responseCode == 400:
+                return new BadRequestApiException($message, $responseCode);
+            case $responseCode == 401:
+                return new UnauthorizedApiException($message, $responseCode);
+            case $responseCode == 403:
+                return new ForbiddenApiException($message, $responseCode);
             case $responseCode == 404:
                 return new NotFoundApiException($message, $responseCode);
+            case $responseCode == 409:
+                return new ConflictApiException($message, $responseCode);
+            case $responseCode == 422:
+                return new UnprocessableContentApiException($message, $responseCode);
+            case $responseCode == 429:
+                return new TooManyRequestsApiException($message, $responseCode);
             case $responseCode >= 500:
             case $responseCode == 0: // network communication failure
                 return new ServiceUnavailableApiException($message, $responseCode);
