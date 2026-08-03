@@ -2,6 +2,8 @@
 
 namespace ThePay\ApiClient\Service;
 
+use ThePay\ApiClient\Exception\ApiExceptionInterface;
+use ThePay\ApiClient\Exception\NotFoundApiException;
 use ThePay\ApiClient\Model\IPaymentMethod;
 use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
@@ -28,7 +30,10 @@ class GateService implements GateServiceInterface
 
     /**
      * @param Identifier $uid UID of payment
+     *
      * @return string HTML
+     *
+     * @throws NotFoundApiException|ApiExceptionInterface
      */
     public function getPaymentButtonsForPayment(Identifier $uid, ?LanguageCode $languageCode = null)
     {
