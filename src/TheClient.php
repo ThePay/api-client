@@ -5,7 +5,9 @@ namespace ThePay\ApiClient;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use ThePay\ApiClient\Exception\ApiExceptionInterface;
+use ThePay\ApiClient\Exception\ConflictApiException;
 use ThePay\ApiClient\Exception\NotFoundApiException;
+use ThePay\ApiClient\Exception\UnprocessableContentApiException;
 use ThePay\ApiClient\Filter\PaymentMethodFilter;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
@@ -295,7 +297,7 @@ class TheClient
     /**
      * @param non-empty-string|null $methodCode
      *
-     * @throws ApiExceptionInterface
+     * @throws ConflictApiException|ApiExceptionInterface
      */
     public function createPayment(CreatePaymentParams $params, ?string $methodCode = null): CreatePaymentResponse
     {
@@ -327,7 +329,7 @@ class TheClient
      *
      * @return RealizePreauthorizedPaymentResult
      *
-     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface
+     * @throws InvalidArgumentException|NotFoundApiException|UnprocessableContentApiException|ApiExceptionInterface
      */
     public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): RealizePreauthorizedPaymentResult
     {
@@ -340,7 +342,7 @@ class TheClient
     /**
      * @param non-empty-string $paymentUid
      *
-     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface
+     * @throws InvalidArgumentException|NotFoundApiException|UnprocessableContentApiException|ApiExceptionInterface
      */
     public function cancelPreauthorizedPayment(string $paymentUid): void
     {
@@ -392,7 +394,7 @@ class TheClient
      *
      * @return string with binary content of PDF file
      *
-     * @throws NotFoundApiException|ApiExceptionInterface if payment is not paid yet
+     * @throws InvalidArgumentException|NotFoundApiException|ApiExceptionInterface if payment is not paid yet
      */
     public function generatePaymentConfirmationPdf(string $paymentUid, ?string $languageCode = null): string
     {

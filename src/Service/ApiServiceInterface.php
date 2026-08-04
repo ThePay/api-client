@@ -4,7 +4,9 @@ namespace ThePay\ApiClient\Service;
 
 use Psr\Http\Message\StreamInterface;
 use ThePay\ApiClient\Exception\ApiExceptionInterface;
+use ThePay\ApiClient\Exception\ConflictApiException;
 use ThePay\ApiClient\Exception\NotFoundApiException;
+use ThePay\ApiClient\Exception\UnprocessableContentApiException;
 use ThePay\ApiClient\Filter\PaymentsFilter;
 use ThePay\ApiClient\Filter\TransactionFilter;
 use ThePay\ApiClient\Model\AccountBalance;
@@ -30,6 +32,9 @@ use ThePay\ApiClient\ValueObject\Identifier;
 use ThePay\ApiClient\ValueObject\LanguageCode;
 use ThePay\ApiClient\ValueObject\StringValue;
 
+/**
+ * @note List only exceptions meant for flow control in `@throws`, all other errors should be covered by {@see ApiExceptionInterface}.
+ */
 interface ApiServiceInterface
 {
     /**
@@ -171,7 +176,7 @@ interface ApiServiceInterface
      *
      * @param non-empty-string|null $methodCode
      *
-     * @throws ApiExceptionInterface
+     * @throws ConflictApiException|ApiExceptionInterface
      */
     public function createPayment(CreatePaymentParams $createPaymentParams, ?string $methodCode = null): CreatePaymentResponse;
 
@@ -180,7 +185,7 @@ interface ApiServiceInterface
      *
      * @see https://docs.thepay.eu/#tag/Preauthorized-Payments/paths/~1v2~1projects~1%7Bproject_id%7D~1payments~1%7Bpayment_uid%7D~1preauthorized/post
      *
-     * @throws NotFoundApiException|ApiExceptionInterface
+     * @throws NotFoundApiException|UnprocessableContentApiException|ApiExceptionInterface
      */
     public function realizePreauthorizedPayment(RealizePreauthorizedPaymentParams $params): RealizePreauthorizedPaymentResult;
 
@@ -189,7 +194,7 @@ interface ApiServiceInterface
      *
      * @see https://docs.thepay.eu/#tag/Preauthorized-Payments/paths/~1v1~1projects~1%7Bproject_id%7D~1payments~1%7Bpayment_uid%7D~1preauthorized/delete
      *
-     * @throws NotFoundApiException|ApiExceptionInterface
+     * @throws NotFoundApiException|UnprocessableContentApiException|ApiExceptionInterface
      */
     public function cancelPreauthorizedPayment(Identifier $uid): void;
 
